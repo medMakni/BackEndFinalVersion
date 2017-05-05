@@ -25,7 +25,7 @@
         <flowNodeRef>traitterParEmployéTask</flowNodeRef>
       </lane>
     </laneSet>
-    <userTask id="créerUnCourrierTask" name="Créer un  courrier"></userTask>
+    <userTask id="créerUnCourrierTask" name="Créer un  courrier"   activiti:formKey="/"></userTask>
     <userTask id="validerUnCourrierTask" name="Valider un  courrier"></userTask>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <userTask id="traiterUnCourrierTask" name="traiter un courrier du  département"></userTask>
@@ -44,7 +44,7 @@
     <sequenceFlow id="flow11" name="fin du traitement " sourceRef="exclusivegateway3" targetRef="endevent3"></sequenceFlow>
     <sequenceFlow id="flow12" name="réaffecter  la tâche" sourceRef="exclusivegateway3" targetRef="traitterParEmployéTask"></sequenceFlow>
     <sequenceFlow id="flow16" name="non" sourceRef="exclusivegateway1" targetRef="créerUnCourrierTask"></sequenceFlow>
-    <startEvent id="startevent1" name="Start" activiti:formKey="/BackEndFinalVersion/WebContent/test.jsp"></startEvent>
+    <startEvent id="startevent1" name="Start" activiti:formKey="/"></startEvent>
     <sequenceFlow id="flow17" sourceRef="startevent1" targetRef="créerUnCourrierTask"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Collaboration">
