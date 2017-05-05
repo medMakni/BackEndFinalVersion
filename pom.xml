@@ -27,6 +27,12 @@
 		</plugins>
 	</build>
 	<dependencies>
+<!-- https://mvnrepository.com/artifact/org.alfresco.cmis.client/alfresco-opencmis-extension -->
+<dependency>
+    <groupId>org.alfresco.cmis.client</groupId>
+    <artifactId>alfresco-opencmis-extension</artifactId>
+    <version>0.3</version>
+</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -206,6 +212,17 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.2</version>
+		</dependency>
+			<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.1.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
 		</dependency>
 	</dependencies>
 </project>
