@@ -1,4 +1,4 @@
-package services;
+package biz.picosoft.services;
 
 import java.security.Principal;
 import java.util.List;

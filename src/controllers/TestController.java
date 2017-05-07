@@ -1,6 +1,5 @@
 package controllers;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import services.TestService;
+import biz.picosoft.services.TestService;
 
 @Controller
 public class TestController {

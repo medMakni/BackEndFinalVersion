@@ -3,7 +3,7 @@
   <collaboration id="Collaboration">
     <participant id="pool1" name="EnvoyerUnCourrier" processRef="process_pool1"></participant>
   </collaboration>
-  <process id="process_pool1" name="process_pool1" isExecutable="true">
+  <process id="courriersArrivés" name="courriersArrivés" isExecutable="true">
     <laneSet id="laneSet_process_pool1">
       <lane id="lane1"></lane>
       <lane id="lane2" name="Secretériat">
