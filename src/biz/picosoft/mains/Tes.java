@@ -1,7 +1,10 @@
 package biz.picosoft.mains;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -10,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -70,12 +72,14 @@ public class Tes extends HttpServlet {
 		//System.out.println(processInstance1.getId()+"   "+processInstance1.getActivityId()+"   "+processInstance1.getProcessDefinitionId()); 
 	
 	*/
+			
 		 CourriersArrivésImplLocal courriersArrivésImplLocal=new CourriersArrivésImplLocal(processEngine);
 		
 			Map<String, Object> proprietés = new HashMap<String, Object>();
 			proprietés.put("date", "19-5-5");
 			proprietés.put("département", "rh");
 			proprietés.put("isValidated", false);
+	 
 			 ProcessInstance processInstance=courriersArrivésImplLocal.créerCourrier(proprietés);
 		 courriersArrivésImplLocal.validerCourrier(processInstance.getId(), true);
 			System.out.println(runtimeService.getVariables(processInstance.getId()).toString());

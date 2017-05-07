@@ -24,7 +24,7 @@ public class FolderDaoImpl implements FolderDao {
 
 	public CmisObject getFolderByPath(String path) {
 
-		CmisObject cmisObject = session.getObjectByPath(path) ;
+		CmisObject cmisObject = session.getObjectByPath(path);
 
 		return cmisObject;
 	}
@@ -40,12 +40,12 @@ public class FolderDaoImpl implements FolderDao {
 		folder.deleteTree(true, UnfileObject.DELETE, true);
 	}
 
-	public void createFolder(Folder rootFolder, String name) {
+	public Folder createFolder(Folder rootFolder, String name) {
 		Map<String, String> newFolderProps = new HashMap<String, String>();
 		newFolderProps.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
 		newFolderProps.put(PropertyIds.NAME, name);
 		Folder newFolder = rootFolder.createFolder(newFolderProps);
-
+		return newFolder;
 	}
 
 	public Session getSession() {
@@ -57,7 +57,7 @@ public class FolderDaoImpl implements FolderDao {
 	}
 
 	public CmisObject getFolderById(ObjectId id) {
-		CmisObject cmisObject = session.getObject(id) ;
+		CmisObject cmisObject = session.getObject(id);
 
 		return cmisObject;
 	}

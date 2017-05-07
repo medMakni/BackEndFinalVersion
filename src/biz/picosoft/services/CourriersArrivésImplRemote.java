@@ -1,5 +1,6 @@
 package biz.picosoft.services;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,12 @@ public class CourriersArrivésImplRemote implements CourriersArrivésServices{
 
 	@Override
 	public List<Courrier> getListCourriersArrivées() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String attachFiles(List<File> listePiécesJointes, String expéditeur, String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

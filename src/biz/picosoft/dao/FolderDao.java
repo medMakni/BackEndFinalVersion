@@ -19,5 +19,5 @@ public interface FolderDao {
 
 	public void deleteFolder(Folder folder);
 
-	public void createFolder(Folder rootFolder, String name);
+	public Folder createFolder(Folder rootFolder, String name);
 }
