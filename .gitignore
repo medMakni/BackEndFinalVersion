@@ -18,6 +18,8 @@ pom.properties
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
+target/m2e-wtp/web-resources/META-INF/maven/BackEndFinalVersion/BackEndFinalVersion/
+pom.properties
 # Windows Installer files
 *.cab
 *.msi
