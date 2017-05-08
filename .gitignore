@@ -14,7 +14,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-
+pom.properties
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
