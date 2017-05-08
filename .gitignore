@@ -5,18 +5,9 @@ ehthumbs.db
 # Folder config file
 Desktop.ini
 
+# Maven
+log/
 target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-pom.properties
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
 
 target/m2e-wtp/web-resources/META-INF/maven/BackEndFinalVersion/BackEndFinalVersion/
 pom.properties
