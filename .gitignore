@@ -9,8 +9,6 @@ Desktop.ini
 log/
 target/
 
-target/m2e-wtp/web-resources/META-INF/maven/BackEndFinalVersion/BackEndFinalVersion/
-pom.properties
 # Windows Installer files
 *.cab
 *.msi
