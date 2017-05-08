@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import biz.picosoft.entity.Courrier;
@@ -17,13 +18,19 @@ public class CourriersArrivésImplRemote implements CourriersArrivésServices{
 	}
 
 	@Override
-	public void validerCourrier(String idCourrier,boolean isValidated) {
+	public void réviser(String idCourrier, boolean isValidated) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier){
+	public void validerCourrier(ProcessInstance processInstance, RuntimeService runtimeService) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void traiterCourrier(String idCourrier, Map<String, Object> proprietésCourrier) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -35,16 +42,16 @@ public class CourriersArrivésImplRemote implements CourriersArrivésServices{
 	}
 
 	@Override
-	public List<Courrier> getListCourriersArrivées() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String attachFiles(List<File> listePiécesJointes, String expéditeur, String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public List<Courrier> getListCourriersArrivées() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+ 
 	 
 }

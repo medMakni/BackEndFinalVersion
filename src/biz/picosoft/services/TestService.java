@@ -1,6 +1,5 @@
 package biz.picosoft.services;
 
-import java.security.Principal;
 import java.util.List;
 
 import org.activiti.engine.ProcessEngine;
@@ -11,8 +10,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 @Configuration("activit.cfg.xml")
 @Service("TestService")
