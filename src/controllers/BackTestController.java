@@ -1,4 +1,4 @@
-package biz.picosoft.controllers;
+package controllers;
 
 import java.util.HashMap;
 import java.util.List;
