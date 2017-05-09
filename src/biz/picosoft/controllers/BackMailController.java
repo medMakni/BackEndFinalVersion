@@ -1,4 +1,4 @@
-package controllers;
+package biz.picosoft.controllers;
 
 
 
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @Controller
-public class MailController {
+public class BackMailController {
 	@RequestMapping(value = "/uploadMultipleFile", method = RequestMethod.POST, produces = "application/json",consumes="multipart/form-data")
 	public @ResponseBody Boolean uploadMultipleFileHandler(@RequestParam("files") List<MultipartFile> files , @RequestParam("names") List<Object> names) {
 		//MailService ms= new MailService();

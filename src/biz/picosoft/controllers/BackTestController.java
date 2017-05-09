@@ -1,4 +1,4 @@
-package controllers;
+package biz.picosoft.controllers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import biz.picosoft.services.TestService;
 
 @Controller
-public class TestController {
+public class BackTestController {
 	TestService ts = new TestService();
 
 	@RequestMapping(value = "/create")
