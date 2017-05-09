@@ -21,7 +21,7 @@ import biz.picosoft.entity.Courrier;
 public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 	ProcessEngine processEngine;
 	Session session;
-	TaskService taskService = processEngine.getTaskService();
+	
 
 	@Override
 	// this method create a mail process and attach its file to it by calling
@@ -41,7 +41,7 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 
 		}
 		// TODO Do not forget redirection with dipatcher
-
+		TaskService taskService = processEngine.getTaskService();
 		taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
 		//add the groups to ldap and affect réviserCourrier to BO
 		/*taskService.addCandidateGroup(
@@ -68,6 +68,7 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 	public void validerCourrier(ProcessInstance processInstance, RuntimeService runtimeService) {
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((processInstance.getId()));
 		proprietésCourrier.replace("isValidated", true);
+		TaskService taskService = processEngine.getTaskService();
 		taskService = processEngine.getTaskService();
 		taskService.complete(
 				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
