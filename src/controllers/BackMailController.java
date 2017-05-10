@@ -22,7 +22,7 @@ public class BackMailController {
 		//MailService ms= new MailService();
 
 		//Map<String, Object> rval = new HashMap<String, Object>();
-		String message = "";
+		//String message = "";
 		System.out.println("looool");
 		System.out.println(files);
 		System.out.println(names);
@@ -56,7 +56,7 @@ public class BackMailController {
 
 
 			} catch (Exception e) {
-				message += "You failed to upload " + " => " + e.getMessage();
+				//message += "You failed to upload " + " => " + e.getMessage();
 				//rval.put("error", message);
 				return false;
 			}

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Configuration("activit.cfg.xml")
 @Service("TestService")
 public class TestService {
-	@SuppressWarnings("resource")
 	ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 	RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
 	String deploymentId = repositoryService.createDeployment().addClasspathResource("yz.bpmn").deploy().getId();

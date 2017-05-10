@@ -1,7 +1,9 @@
 package biz.picosoft.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.identity.Group;
@@ -12,15 +14,35 @@ public class LoginService {
 
 	ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 
-	public List<String> findUserById(String uid) throws Exception {
+	public List<String> findUserGroupsById(String uid) throws Exception {
 		List<String> l = new ArrayList<String>();
 
 		List<Group> j = processEngine.getIdentityService().createGroupQuery().groupMember(uid).list();
-		for (Group user : j) {
-			System.out.println(user.getName());
-			l.add(user.getName());
+		for (Group group : j) {
+			System.out.println(group.getName());
+			l.add(group.getName());
 		}
 		return l;
+	}
+	public Map<String, Object> findUserDirectionAndRoleById(String uid) throws Exception {
+		List<String> direction = new ArrayList<String>();
+		List<String> role = new ArrayList<String>();
+		Map<String, Object> map = new HashMap<String,Object>();
+		List<Group> j = processEngine.getIdentityService().createGroupQuery().groupMember(uid).list();
+		for (Group group : j) {
+			String groupName=group.getName();
+			if (groupName.contains("ROLE_")){
+				role.add(groupName);
+			}
+			else if (groupName.contains("Direction")) {
+				direction.add(groupName);
+			}
+			
+		}
+		map.put("roles",role);
+		map.put("directions",direction);
+
+		return map;
 	}
 
 }
