@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
-@RestController
+ 
 public class CourriersArrivésImpl implements CourriersArrivésServices {
 	
 	ProcessEngine processEngine;
@@ -105,15 +105,11 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 	//this method return all instances of courriers arrivés Process
 	@Override
-	@RequestMapping(value = "/listCourriersArrivés")
-	
 	public List  getListCourriersArrivées() {
-		/*RuntimeService runtimeService = processEngine.getRuntimeService();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
 		List<ProcessInstance>listAllCourrierArrivé =runtimeService.createProcessInstanceQuery().processDefinitionKey("courriersArrivés").list();
-		*/
-		List a=new ArrayList<>();
-		a.add("vxcvxcv");
-		return a;
+		return listAllCourrierArrivé;
+		
  
 	}
 

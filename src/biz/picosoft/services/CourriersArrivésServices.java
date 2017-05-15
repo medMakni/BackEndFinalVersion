@@ -17,7 +17,7 @@ public void validerCourrier(ProcessInstance processInstance, RuntimeService runt
 void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier);
 void archiverCourrier(String idCourrier);
 String attachFiles(List<File> listePiécesJointes, String expéditeur, String id);
-List  getListCourriersArrivées();
+List<ProcessInstance> getListCourriersArrivées();
 List<Task> getListCourriersArrivésParUser(String userName);
 List<Task> getListCourrierArrivéParDirection(String direction);
 }

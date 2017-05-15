@@ -20,8 +20,11 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biz.picosoft.dao.DocumentDao;
+import biz.picosoft.mains.TestDao;
 
 public class DocumentDaoImpl implements DocumentDao {
 	Session session;
@@ -75,6 +78,13 @@ public class DocumentDaoImpl implements DocumentDao {
 
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public DocumentDaoImpl() {
+		super();
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
+		this.session = ctx.getBean(Session.class);
+		  
 	}
 
 }
