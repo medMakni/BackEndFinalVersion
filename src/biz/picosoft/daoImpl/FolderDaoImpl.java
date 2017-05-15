@@ -62,4 +62,9 @@ public class FolderDaoImpl implements FolderDao {
 		return cmisObject;
 	}
 
+	public FolderDaoImpl(Session session) {
+		super();
+		this.session = session;
+	}
+
 }

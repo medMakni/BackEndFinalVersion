@@ -52,6 +52,18 @@ public class CourriersArrivésImplRemote implements CourriersArrivésServices{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List getListCourriersArrivésParUser(String userName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List getListCourrierArrivéParDirection(String direction) {
+		// TODO Auto-generated method stub
+		return null;
+	}
  
 	 
 }
