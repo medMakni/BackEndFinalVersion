@@ -6,18 +6,18 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.bpmn.model.Task;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.springframework.stereotype.Service;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.entity.Courrier;
-
+@Service
 public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 	ProcessEngine processEngine;
 	Session session;
