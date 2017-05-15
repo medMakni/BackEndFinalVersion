@@ -16,7 +16,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import biz.picosoft.services.CourriersArrivésImplLocal;
+import biz.picosoft.services.CourriersArrivésImpl;
 
 /**
  * Servlet implementation class Tes
@@ -84,7 +84,7 @@ public class Tes extends HttpServlet {
 		 * 
 		 */
 
-		CourriersArrivésImplLocal courriersArrivésImplLocal = new CourriersArrivésImplLocal();
+		CourriersArrivésImpl courriersArrivésImplLocal = new CourriersArrivésImpl();
 
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");

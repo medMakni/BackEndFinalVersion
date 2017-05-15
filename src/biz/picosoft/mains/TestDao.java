@@ -13,7 +13,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -25,12 +24,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import biz.picosoft.daoImpl.FolderDaoImpl;
-import biz.picosoft.services.CourriersArrivésImplLocal;
+import biz.picosoft.services.CourriersArrivésImpl;
+
 @Configuration
 public class TestDao {
 	@Bean
-	public Session getAlfrescoSession(){
+	public Session getAlfrescoSession() {
 		Map<String, String> parameter = new HashMap<String, String>();
 
 		// user credentials
@@ -49,12 +48,50 @@ public class TestDao {
 		Session session = factory.getRepositories(parameter).get(0).createSession();
 		return session;
 	}
+
 	public static void main(String[] args) throws FileNotFoundException {
-	 
-		 ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
-		 Session session=ctx.getBean(Session.class);
-		//Folder root = session.getRootFolder();
-		//FolderDaoImpl folderDaoImpl = new FolderDaoImpl();
+
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
+		Session session = ctx.getBean(Session.class);
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
+		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
+		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn").deploy().getId();
+		repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
+		System.out.println("idddddd" + deploymentId);
+	
+		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		TaskService taskService = processEngine.getTaskService();
+		
+		CourriersArrivésImpl courriersArrivésImplLocal = new CourriersArrivésImpl();
+		
+		Map<String, Object> proprietés = new HashMap<String, Object>();
+		proprietés.put("date", "19-5-5");
+		proprietés.put("départmentId", "ROLE_ADMIN");
+		proprietés.put("isValidated", false);
+		proprietés.put("expéditeur", "Steg");
+		File file=new File("C://cover letter.pdf");
+		List listePiécesJointes=new ArrayList<>();
+		listePiécesJointes.add(file);
+		proprietés.put("listePiécesJointes", listePiécesJointes);
+		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
+		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
+		System.out.println(courriersArrivésImplLocal.getListCourriersArrivésParUser("fbm"));
+		
+		ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
+		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
+		System.out.println(taskb);
+		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
+		/*ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
+		 taskService.addCandidateUser(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(), "fbm");
+		 
+			List<Task> taskByProceeAndUser = taskService.createTaskQuery().processDefinitionKey("myProcess").taskCandidateUser("mwm")
+					.list();
+			List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
+			System.out.println(taskByProceeAndUser.size());
+			System.out.println(taskb.size());*/
+		// Folder root = session.getRootFolder();
+		// FolderDaoImpl folderDaoImpl = new FolderDaoImpl();
 		// folderDaoImpl.createFolder(root, "fatma2");
 
 		/*
@@ -74,7 +111,7 @@ public class TestDao {
 		 * CmisObject obj= doi.getDocument(o);
 		 * System.out.println(obj.getName()); doi.inserte(file);
 		 */
-		
+
 		/*
 		 * DocumentDaoImpl doi=new DocumentDaoImpl(); doi.setSession(session);
 		 * File file=new File("C://cover letter.pdf"); //doi.inserte(file);
@@ -86,20 +123,12 @@ public class TestDao {
 		 * obj=folderDaoImpl.getFolderById(o) ;
 		 * System.out.println(obj.getName()); doi.inserte(file,(Folder) obj);
 		 */
-		List<File> listePiécesJointes = new ArrayList<File>();
-		File file = new File("C://cover letter.pdf");
-		listePiécesJointes.add(file);
-		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
-		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
-		String deploymentId = repositoryService.createDeployment().addClasspathResource("yfz.bpmn")
-				.deploy().getId();
-		System.out.println("idddddd" + deploymentId);
-	
-		CourriersArrivésImplLocal courriersArrivésImplLocal = new CourriersArrivésImplLocal();
+		
+	/*	CourriersArrivésImpl courriersArrivésImplLocal = new CourriersArrivésImpl();
 		ProcessEngine processEngine = courriersArrivésImplLocal.getProcessEngine();
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
-		//courriersArrivésImplLocal.setSession(session);
+		// courriersArrivésImplLocal.setSession(session);
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "ROLE_ADMIN");
@@ -109,18 +138,13 @@ public class TestDao {
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
-		System.out.println(runtimeService.getVariables(processInstance.getId()).toString());
-		TaskService taskService = processEngine.getTaskService();
-		System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().toString());
-		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("mwm").list();
+		System.out.println(runtimeService.getVariables(processInstance.getId()).toString());*/
+	 
+		//System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().toString());
+
+
+		//ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
+	//	System.out.println(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().toString());
 		
-		ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess2");
-		taskService.addCandidateGroup(
-				taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(),
-				"ROLE_ADMIN");
-		List<Task> taskByProceeAndUser = taskService.createTaskQuery().processDefinitionId("myProcess2").taskCandidateUser("mwm").list();
-		System.out.println(taskByProceeAndUser);
-		System.out.println(taskb);
-		System.out.println("xbcvbcvbcvbb");
 	}
 }

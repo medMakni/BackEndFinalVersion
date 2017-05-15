@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 import biz.picosoft.entity.Courrier;
 
@@ -16,7 +17,7 @@ public void validerCourrier(ProcessInstance processInstance, RuntimeService runt
 void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier);
 void archiverCourrier(String idCourrier);
 String attachFiles(List<File> listePiécesJointes, String expéditeur, String id);
-List <Courrier> getListCourriersArrivées();
-List getListCourriersArrivésParUser(String userName);
-List getListCourrierArrivéParDirection(String direction);
+List  getListCourriersArrivées();
+List<Task> getListCourriersArrivésParUser(String userName);
+List<Task> getListCourrierArrivéParDirection(String direction);
 }

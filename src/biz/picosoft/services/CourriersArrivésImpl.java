@@ -11,25 +11,30 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
-import biz.picosoft.entity.Courrier;
 import biz.picosoft.mains.TestDao;
-
-public class CourriersArrivésImplLocal implements CourriersArrivésServices {
+@RestController
+public class CourriersArrivésImpl implements CourriersArrivésServices {
+	
 	ProcessEngine processEngine;
 	Session session;
 
 	@Override
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
-	// and then attach the folder of the mail to
+	// and then attach the folder of the mail
+	
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -79,7 +84,6 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 		taskService = processEngine.getTaskService();
 		taskService.complete(
 				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-		String départmentId = (String) proprietésCourrier.get("départmentId");
 		taskService.addCandidateGroup(
 				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 				"ROLE_ADMIN");
@@ -99,12 +103,18 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 
 	}
 
+	//this method return all instances of courriers arrivés Process
 	@Override
-	public List<Courrier> getListCourriersArrivées() {
-		List l = new ArrayList<>();
-		Courrier c = new Courrier(2, 1, null);
-		l.add(c);
-		return l;
+	@RequestMapping(value = "/listCourriersArrivés")
+	
+	public List  getListCourriersArrivées() {
+		/*RuntimeService runtimeService = processEngine.getRuntimeService();
+		List<ProcessInstance>listAllCourrierArrivé =runtimeService.createProcessInstanceQuery().processDefinitionKey("courriersArrivés").list();
+		*/
+		List a=new ArrayList<>();
+		a.add("vxcvxcv");
+		return a;
+ 
 	}
 
 	// this method attach files to a process and return the folder id
@@ -147,7 +157,6 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 
 		return folderCourrier.getId();
 	}
- 
 
 	public ProcessEngine getProcessEngine() {
 		return processEngine;
@@ -157,13 +166,13 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 		this.processEngine = processEngine;
 	}
 
-	public CourriersArrivésImplLocal() {
+	public CourriersArrivésImpl() {
 		super();
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
-		 ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
-		  session=ctx.getBean(Session.class);
-	 
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
+		session = ctx.getBean(Session.class);
+
 	}
 
 	public Session getSession() {
@@ -175,15 +184,22 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 	}
 
 	@Override
-	public List getListCourriersArrivésParUser(String userName) {
+	public List<Task> getListCourriersArrivésParUser(String userName) {
 		// TODO Auto-generated method stub
-		return null;
+		TaskService taskService = processEngine.getTaskService();
+		List<Task> listTaskByProceeAndUser = taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
+				.taskCandidateUser(userName).list();
+		return listTaskByProceeAndUser;
 	}
 
 	@Override
-	public List getListCourrierArrivéParDirection(String direction) {
+	public List<Task> getListCourrierArrivéParDirection(String directionName) {
 		// TODO Auto-generated method stub
-		return null;
+		TaskService taskService = processEngine.getTaskService();
+		List<Task> listTaskByDirection= taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
+				.taskCandidateGroup(directionName).list();
+		return listTaskByDirection;
+	
 	}
 
 }
