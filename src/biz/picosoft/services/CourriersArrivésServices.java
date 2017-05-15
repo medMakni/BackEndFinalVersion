@@ -17,5 +17,6 @@ void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier);
 void archiverCourrier(String idCourrier);
 String attachFiles(List<File> listePiécesJointes, String expéditeur, String id);
 List <Courrier> getListCourriersArrivées();
-
+List getListCourriersArrivésParUser(String userName);
+List getListCourrierArrivéParDirection(String direction);
 }

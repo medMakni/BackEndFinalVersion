@@ -84,7 +84,7 @@ public class Tes extends HttpServlet {
 		 * 
 		 */
 
-		CourriersArrivésImplLocal courriersArrivésImplLocal = new CourriersArrivésImplLocal(processEngine);
+		CourriersArrivésImplLocal courriersArrivésImplLocal = new CourriersArrivésImplLocal();
 
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
