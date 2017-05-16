@@ -2,7 +2,6 @@ package biz.picosoft.services;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -17,41 +16,43 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
- 
+
 public class CourriersArrivésImpl implements CourriersArrivésServices {
-	
+
 	ProcessEngine processEngine;
 	Session session;
+	RuntimeService runtimeService;
+	TaskService taskService;
 
 	@Override
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
 	// and then attach the folder of the mail
-	
+
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriersArrivés",
 				proprietésCourrier);
-		List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
-		if (listePiécesJointes != null) {
-			String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
-					(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
-			proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
-			runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
+		if ((boolean) proprietésCourrier.get("isValidated") != false) {
+			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
+			if (listePiécesJointes != null) {
+				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
+						(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
+				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
+				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
 
+			}
+		} else {
+			traiterCourrier(processInstance.getId(), proprietésCourrier);
 		}
 		// TODO Do not forget redirection with dispatcher
-		TaskService taskService = processEngine.getTaskService();
-		taskService.complete(
-				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
 		// add the groups to ldap and affect réviserCourrier to BO
 		/*
 		 * taskService.addCandidateGroup(
@@ -70,22 +71,24 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 		if (isValidated) {
 
-			validerCourrier(processInstance, runtimeService);
+			validerCourrier( processInstance.getId());
 
+		} else {
+			refuserCourrier(processInstance.getId());
 		}
 
 	}
 
 	@Override
-	public void validerCourrier(ProcessInstance processInstance, RuntimeService runtimeService) {
-		Map<String, Object> proprietésCourrier = runtimeService.getVariables((processInstance.getId()));
+	public void validerCourrier(String idCourrier) {
+		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
 		proprietésCourrier.replace("isValidated", true);
-		TaskService taskService = processEngine.getTaskService();
-		taskService = processEngine.getTaskService();
-		taskService.complete(
-				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-		taskService.addCandidateGroup(
-				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+		this.taskService = processEngine.getTaskService();
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+				proprietésCourrier);
+		this.taskService.addCandidateGroup(
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"ROLE_ADMIN");
 	}
 
@@ -103,14 +106,14 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 	}
 
-	//this method return all instances of courriers arrivés Process
+	// this method return all instances of courriers arrivés Process
 	@Override
-	public List  getListCourriersArrivées() {
+	public List getListCourriersArrivées() {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		List<ProcessInstance>listAllCourrierArrivé =runtimeService.createProcessInstanceQuery().processDefinitionKey("courriersArrivés").list();
+		List<ProcessInstance> listAllCourrierArrivé = runtimeService.createProcessInstanceQuery()
+				.processDefinitionKey("courriersArrivés").list();
 		return listAllCourrierArrivé;
-		
- 
+
 	}
 
 	// this method attach files to a process and return the folder id
@@ -166,6 +169,8 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		super();
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
+		this.runtimeService=processEngine.getRuntimeService();
+		this.taskService=processEngine.getTaskService();
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
 
@@ -182,8 +187,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	@Override
 	public List<Task> getListCourriersArrivésParUser(String userName) {
 		// TODO Auto-generated method stub
-		TaskService taskService = processEngine.getTaskService();
-		List<Task> listTaskByProceeAndUser = taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
+		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateUser(userName).list();
 		return listTaskByProceeAndUser;
 	}
@@ -191,11 +195,40 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	@Override
 	public List<Task> getListCourrierArrivéParDirection(String directionName) {
 		// TODO Auto-generated method stub
-		TaskService taskService = processEngine.getTaskService();
-		List<Task> listTaskByDirection= taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
+		List<Task> listTaskByDirection = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateGroup(directionName).list();
 		return listTaskByDirection;
-	
+
+	}
+
+	@Override
+	public void refuserCourrier(String idCourrier) {
+		// TODO Auto-generated method stub
+		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
+		proprietésCourrier.replace("isValidated", false);
+		this.taskService = processEngine.getTaskService();
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+				proprietésCourrier);
+		this.taskService.addCandidateGroup(
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+				"ROLE_ADMIN");
+	}
+
+	public RuntimeService getRuntimeService() {
+		return runtimeService;
+	}
+
+	public void setRuntimeService(RuntimeService runtimeService) {
+		this.runtimeService = runtimeService;
+	}
+
+	public TaskService getTaskService() {
+		return taskService;
+	}
+
+	public void setTaskService(TaskService taskService) {
+		this.taskService = taskService;
 	}
 
 }

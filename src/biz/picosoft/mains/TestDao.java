@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -56,7 +57,7 @@ public class TestDao {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
 		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn").deploy().getId();
-		repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
+	//	repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
 		System.out.println("idddddd" + deploymentId);
 	
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
@@ -68,17 +69,25 @@ public class TestDao {
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "ROLE_ADMIN");
-		proprietés.put("isValidated", false);
+		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "Steg");
 		File file=new File("C://cover letter.pdf");
 		List listePiécesJointes=new ArrayList<>();
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
-		System.out.println(courriersArrivésImplLocal.getListCourriersArrivésParUser("fbm"));
-		
-		ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
+		courriersArrivésImplLocal.réviser(processInstance.getId(), false);
+		System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getName());
+		//System.out.println(courriersArrivésImplLocal.getListCourriersArrivésParUser("fbm"));
+		HistoryService historyService=courriersArrivésImplLocal.getProcessEngine().getHistoryService();
+		List<HistoricActivityInstance> historicActivityInstances = historyService.
+				  createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).
+				  orderByHistoricActivityInstanceStartTime().asc().list();
+	 System.out.println(historicActivityInstances);
+	 historicActivityInstances = historyService.
+			  createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).
+			  orderByHistoricActivityInstanceStartTime().asc().list();
+		/*	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
 		System.out.println(taskb);
 		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
