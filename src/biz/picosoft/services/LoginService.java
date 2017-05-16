@@ -8,7 +8,8 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.identity.Group;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
+import org.springframework.stereotype.Service;
+@Service
 public class LoginService {
 	ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 
@@ -32,7 +33,7 @@ public class LoginService {
 		for (Group group : j) {
 			String groupName=group.getName();
 			if (groupName.contains("ROLE_")){
-				role.add(groupName);
+				role.add(groupName.substring(5, groupName.length()));
 			}
 			else if (groupName.contains("Direction")) {
 				direction.add(groupName);

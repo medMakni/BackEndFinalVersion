@@ -13,16 +13,28 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
+
+import org.springframework.stereotype.Service;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
+<<<<<<< HEAD:src/biz/picosoft/services/CourriersArriv√©sImpl.java
 import biz.picosoft.mains.TestDao;
 
 public class CourriersArrivÈsImpl implements CourriersArrivÈsServices {
 
+=======
+import biz.picosoft.entity.Courrier;
+
+
+import biz.picosoft.mains.TestDao;
+@Service
+public class CourriersArrivÈsImplLocal implements CourriersArrivÈsServices {
+>>>>>>> 946d9a930ae0cfab614e87e9e25e67980eb10979:src/biz/picosoft/services/CourriersArriv√©sImplLocal.java
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
