@@ -68,7 +68,7 @@ public class TestDao {
 		
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "ROLE_ADMIN");
+		proprietés.put("départmentId", "DirectionIT");
 		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "Steg");
 		File file=new File("C://cover letter.pdf");
@@ -76,8 +76,10 @@ public class TestDao {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		courriersArrivésImplLocal.réviser(processInstance.getId(), false);
-		System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getName());
+		System.out.println("BO"+courriersArrivésImplLocal.getListCourriersArrivésParUser("rb"));
+		courriersArrivésImplLocal.réviser(processInstance.getId(), false);     
+		System.out.println("secrét"+courriersArrivésImplLocal.getListCourriersArrivésParUser("ac"));
+		
 		//System.out.println(courriersArrivésImplLocal.getListCourriersArrivésParUser("fbm"));
 		HistoryService historyService=courriersArrivésImplLocal.getProcessEngine().getHistoryService();
 		List<HistoricActivityInstance> historicActivityInstances = historyService.

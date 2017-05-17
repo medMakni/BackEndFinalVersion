@@ -13,28 +13,18 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
-
-import org.springframework.stereotype.Service;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
-<<<<<<< HEAD:src/biz/picosoft/services/CourriersArrivÃ©sImpl.java
 import biz.picosoft.mains.TestDao;
 
+@Service
 public class CourriersArrivésImpl implements CourriersArrivésServices {
 
-=======
-import biz.picosoft.entity.Courrier;
-
-
-import biz.picosoft.mains.TestDao;
-@Service
-public class CourriersArrivésImplLocal implements CourriersArrivésServices {
->>>>>>> 946d9a930ae0cfab614e87e9e25e67980eb10979:src/biz/picosoft/services/CourriersArrivÃ©sImplLocal.java
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
@@ -66,11 +56,11 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
 		// add the groups to ldap and affect réviserCourrier to BO
-		/*
-		 * taskService.addCandidateGroup(
-		 * taskService.createTaskQuery().processInstanceId(processInstance.getId
-		 * ()).list().get(0).getId(), "Bureau D'ordre");
-		 */
+
+		taskService.addCandidateGroup(
+				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				"Bureau d'ordre");
+
 		return processInstance;
 	}
 
@@ -83,7 +73,7 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 
 		if (isValidated) {
 
-			validerCourrier( processInstance.getId());
+			validerCourrier(processInstance.getId());
 
 		} else {
 			refuserCourrier(processInstance.getId());
@@ -100,8 +90,7 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"ROLE_ADMIN");
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), proprietésCourrier.get("départmentId").toString());
 	}
 
 	@Override
@@ -181,8 +170,8 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 		super();
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
-		this.runtimeService=processEngine.getRuntimeService();
-		this.taskService=processEngine.getTaskService();
+		this.runtimeService = processEngine.getRuntimeService();
+		this.taskService = processEngine.getTaskService();
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
 
@@ -223,8 +212,7 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"ROLE_ADMIN");
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), "ROLE_Secrétaire Générale");
 	}
 
 	public RuntimeService getRuntimeService() {
