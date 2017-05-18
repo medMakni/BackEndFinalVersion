@@ -18,13 +18,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
+
 import org.springframework.web.multipart.MultipartFile;
+
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
+
 @Service
 public class CourriersArrivésImpl implements CourriersArrivésServices {
+
+
+
+
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
@@ -61,11 +68,11 @@ System.out.println("prop here"+proprietésCourrier);
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
 		// add the groups to ldap and affect réviserCourrier to BO
-		/*
-		 * taskService.addCandidateGroup(
-		 * taskService.createTaskQuery().processInstanceId(processInstance.getId
-		 * ()).list().get(0).getId(), "Bureau D'ordre");
-		 */
+
+		taskService.addCandidateGroup(
+				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				"Bureau d'ordre");
+
 		return processInstance;
 	}
 
@@ -78,7 +85,7 @@ System.out.println("prop here"+proprietésCourrier);
 
 		if (isValidated) {
 
-			validerCourrier( processInstance.getId());
+			validerCourrier(processInstance.getId());
 
 		} else {
 			refuserCourrier(processInstance.getId());
@@ -95,8 +102,7 @@ System.out.println("prop here"+proprietésCourrier);
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"ROLE_ADMIN");
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), proprietésCourrier.get("départmentId").toString());
 	}
 
 	@Override
@@ -176,8 +182,8 @@ System.out.println("prop here"+proprietésCourrier);
 		super();
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
-		this.runtimeService=processEngine.getRuntimeService();
-		this.taskService=processEngine.getTaskService();
+		this.runtimeService = processEngine.getRuntimeService();
+		this.taskService = processEngine.getTaskService();
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
 
@@ -218,8 +224,7 @@ System.out.println("prop here"+proprietésCourrier);
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"ROLE_ADMIN");
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), "ROLE_Secrétaire Générale");
 	}
 
 	public RuntimeService getRuntimeService() {
