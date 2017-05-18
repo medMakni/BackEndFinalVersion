@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.services.CourriersArrivésImpl;
+import biz.picosoft.services.CourriersArrivésServices;
 
 @Configuration
 public class TestDao {
@@ -64,14 +65,14 @@ public class TestDao {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		TaskService taskService = processEngine.getTaskService();
 		
-		CourriersArrivésImpl courriersArrivésImplLocal = new CourriersArrivésImpl();
+		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
 		
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "ROLE_ADMIN");
 		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "Steg");
-		File file=new File("C://cover letter.pdf");
+		File file=new File("C://Users/Wassim/Desktop/uploads/Capture.PNG");
 		List listePiécesJointes=new ArrayList<>();
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
@@ -79,7 +80,7 @@ public class TestDao {
 		courriersArrivésImplLocal.réviser(processInstance.getId(), false);
 		System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getName());
 		//System.out.println(courriersArrivésImplLocal.getListCourriersArrivésParUser("fbm"));
-		HistoryService historyService=courriersArrivésImplLocal.getProcessEngine().getHistoryService();
+		HistoryService historyService=((CourriersArrivésImpl) courriersArrivésImplLocal).getProcessEngine().getHistoryService();
 		List<HistoricActivityInstance> historicActivityInstances = historyService.
 				  createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).
 				  orderByHistoricActivityInstanceStartTime().asc().list();

@@ -31,7 +31,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 					<!-- Server connection params -->
 					<property name="server" value="ldap://localhost" />
-					<property name="port" value="10389" />
+					<property name="port" value="8389" />
 					<property name="user" value="uid=admin,ou=system" />
 					<property name="password" value="secret" />
 

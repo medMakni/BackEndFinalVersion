@@ -2,6 +2,7 @@ package biz.picosoft.services;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -13,40 +14,34 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
-
-import org.springframework.stereotype.Service;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
-<<<<<<< HEAD:src/biz/picosoft/services/CourriersArrivÃ©sImpl.java
-import biz.picosoft.mains.TestDao;
-
-public class CourriersArrivésImpl implements CourriersArrivésServices {
-
-=======
-import biz.picosoft.entity.Courrier;
-
-
 import biz.picosoft.mains.TestDao;
 @Service
-public class CourriersArrivésImplLocal implements CourriersArrivésServices {
->>>>>>> 946d9a930ae0cfab614e87e9e25e67980eb10979:src/biz/picosoft/services/CourriersArrivÃ©sImplLocal.java
+public class CourriersArrivésImpl implements CourriersArrivésServices {
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
 	TaskService taskService;
 
+	
+	
+	
 	@Override
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
 	// and then attach the folder of the mail
 
+	
+	
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
-
+System.out.println("prop here"+proprietésCourrier);
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriersArrivés",
 				proprietésCourrier);
@@ -242,5 +237,22 @@ public class CourriersArrivésImplLocal implements CourriersArrivésServices {
 	public void setTaskService(TaskService taskService) {
 		this.taskService = taskService;
 	}
+
+	@Override
+	public File multipartToFile(MultipartFile multipart) {
+		File convFile = new File( multipart.getOriginalFilename());
+	    try {
+			multipart.transferTo(convFile);
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return convFile;
+	}
+
+	
 
 }
