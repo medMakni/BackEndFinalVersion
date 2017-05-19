@@ -12,7 +12,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
@@ -57,51 +57,110 @@ public class TestDao {
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
-		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn").deploy().getId();
-	//	repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
+		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn")
+				.deploy().getId();
+		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
 		System.out.println("idddddd" + deploymentId);
-	
+
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		TaskService taskService = processEngine.getTaskService();
-		
+
 		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
-		
+
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "DirectionIT");
+		proprietés.put("départmentId", "chefsIT");
 		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "Steg");
-		File file=new File("C://Users/Wassim/Desktop/uploads/Capture.PNG");
-		List listePiécesJointes=new ArrayList<>();
+		proprietés.put("isFinished", false);
+		File file = new File("D://cv/cover letter.docx");
+		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		System.out.println("BO"+courriersArrivésImplLocal.getListCourriersArrivésParUser("rb"));
-		courriersArrivésImplLocal.réviser(processInstance.getId(), false);     
-		System.out.println("secrét"+courriersArrivésImplLocal.getListCourriersArrivésParUser("ac"));
+		System.out.println("BO" + courriersArrivésImplLocal.getListCourriersArrivésParUser("jm"));
+
+		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
+
+		System.out.println("chef It" + courriersArrivésImplLocal.getListCourriersArrivésParUser("rb"));
+
+		proprietés.put("affectedTo", "secrétaireitù");
+		proprietés.put("isFinished", false);
+		courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);
+		System.out.println("siz oactive tasks "
+				+ taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().size());
+		System.out.println("level 1" + courriersArrivésImplLocal.getListCourriersArrivésParUser("jm"));
+
+		proprietés.replace("isFinished", true);
+		courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);
+		System.out.println("siz oactive tasks lev 2 "
+				+ taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().size());
+
+		System.out.println(runtimeService.createProcessInstanceQuery().active().count());
+		HistoryService historyService = processEngine.getHistoryService();
+		System.out.println(historyService.createHistoricTaskInstanceQuery().taskCandidateUser("ha")
+				.processDefinitionKey("courriersArrivés").finished().list().get(0).getProcessInstanceId());
+
+		List listFinishedCourriersId = new ArrayList<>();
+		List<HistoricProcessInstance> listFinishedCourriersArrivé =   historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés") .finished().list();
+
+		for (int j = 0; j < listFinishedCourriersArrivé.size(); j++) {
+			listFinishedCourriersId.add(listFinishedCourriersArrivé.get(j).getId());
+		}
+	
+		System.out.println( historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés") .finished().list().size());
+	 List listFinishedCourriersInvolvedMrX = new ArrayList<>();
+		for (int i = 0; i < historyService.createHistoricTaskInstanceQuery().taskCandidateUser("ha")
+				.processDefinitionKey("courriersArrivés").finished().list().size(); i++) {
+			listFinishedCourriersInvolvedMrX.add( historyService.createHistoricTaskInstanceQuery().taskCandidateUser("ha")
+					.processDefinitionKey("courriersArrivés").finished().list().get(i).getProcessInstanceId());
+ 
+		} 
 		
-		//System.out.println(courriersArrivésImplLocal.getListCourriersArrivésParUser("fbm"));
-		HistoryService historyService=((CourriersArrivésImpl) courriersArrivésImplLocal).getProcessEngine().getHistoryService();
-		List<HistoricActivityInstance> historicActivityInstances = historyService.
-				  createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).
-				  orderByHistoricActivityInstanceStartTime().asc().list();
-	 System.out.println(historicActivityInstances);
-	 historicActivityInstances = historyService.
-			  createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).
-			  orderByHistoricActivityInstanceStartTime().asc().list();
-		/*	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
-		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
-		System.out.println(taskb);
-		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
-		/*ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
-		 taskService.addCandidateUser(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(), "fbm");
-		 
-			List<Task> taskByProceeAndUser = taskService.createTaskQuery().processDefinitionKey("myProcess").taskCandidateUser("mwm")
-					.list();
-			List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
-			System.out.println(taskByProceeAndUser.size());
-			System.out.println(taskb.size());*/
+		 System.out.println("finished process involve mr x are" + listFinishedCourriersInvolvedMrX.toString());
+			System.out.println("id finished courriers :" + listFinishedCourriersId.toString());
+		 System.out.println("union"+listFinishedCourriersInvolvedMrX.retainAll (listFinishedCourriersId ));
+		 System.out.println("finally :p"+listFinishedCourriersInvolvedMrX);
+	//	 ena taw 3malt ili finished w process which include mr x
+		// courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
+		// proprietés);
+		/*
+		 * //System.out.println(courriersArrivésImplLocal.
+		 * getListCourriersArrivésParUser("fbm")); HistoryService
+		 * historyService=((CourriersArrivésImpl)
+		 * courriersArrivésImplLocal).getProcessEngine().getHistoryService();
+		 * List<HistoricActivityInstance> historicActivityInstances =
+		 * historyService.
+		 * createHistoricActivityInstanceQuery().processInstanceId(
+		 * processInstance.getId()).
+		 * orderByHistoricActivityInstanceStartTime().asc().list();
+		 * System.out.println(historicActivityInstances);
+		 * historicActivityInstances = historyService.
+		 * createHistoricActivityInstanceQuery().processInstanceId(
+		 * processInstance.getId()).
+		 * orderByHistoricActivityInstanceStartTime().asc().list();
+		 */
+		/*
+		 * ProcessInstance processInstance1 =
+		 * runtimeService.startProcessInstanceByKey("myProcess"); List<Task>
+		 * taskb =
+		 * taskService.createTaskQuery().taskCandidateUser("fbm").list();
+		 * System.out.println(taskb);
+		 * System.out.println(courriersArrivésImplLocal.getListCourriersArrivées
+		 * ()); /*ProcessInstance processInstance1 =
+		 * runtimeService.startProcessInstanceByKey("myProcess");
+		 * taskService.addCandidateUser(taskService.createTaskQuery().
+		 * processInstanceId(processInstance1.getId()).list().get(0).getId(),
+		 * "fbm");
+		 * 
+		 * List<Task> taskByProceeAndUser =
+		 * taskService.createTaskQuery().processDefinitionKey("myProcess").
+		 * taskCandidateUser("mwm") .list(); List<Task> taskb =
+		 * taskService.createTaskQuery().taskCandidateUser("fbm").list();
+		 * System.out.println(taskByProceeAndUser.size());
+		 * System.out.println(taskb.size());
+		 */
 		// Folder root = session.getRootFolder();
 		// FolderDaoImpl folderDaoImpl = new FolderDaoImpl();
 		// folderDaoImpl.createFolder(root, "fatma2");
@@ -135,28 +194,32 @@ public class TestDao {
 		 * obj=folderDaoImpl.getFolderById(o) ;
 		 * System.out.println(obj.getName()); doi.inserte(file,(Folder) obj);
 		 */
-		
-	/*	CourriersArrivésImpl courriersArrivésImplLocal = new CourriersArrivésImpl();
-		ProcessEngine processEngine = courriersArrivésImplLocal.getProcessEngine();
-		RuntimeService runtimeService = processEngine.getRuntimeService();
 
-		// courriersArrivésImplLocal.setSession(session);
-		Map<String, Object> proprietés = new HashMap<String, Object>();
-		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "ROLE_ADMIN");
-		proprietés.put("isValidated", false);
-		proprietés.put("expéditeur", "Steg");
+		/*
+		 * CourriersArrivésImpl courriersArrivésImplLocal = new
+		 * CourriersArrivésImpl(); ProcessEngine processEngine =
+		 * courriersArrivésImplLocal.getProcessEngine(); RuntimeService
+		 * runtimeService = processEngine.getRuntimeService();
+		 * 
+		 * // courriersArrivésImplLocal.setSession(session); Map<String, Object>
+		 * proprietés = new HashMap<String, Object>(); proprietés.put("date",
+		 * "19-5-5"); proprietés.put("départmentId", "ROLE_ADMIN");
+		 * proprietés.put("isValidated", false); proprietés.put("expéditeur",
+		 * "Steg");
+		 * 
+		 * proprietés.put("listePiécesJointes", listePiécesJointes);
+		 * ProcessInstance processInstance =
+		 * courriersArrivésImplLocal.créerCourrier(proprietés);
+		 * courriersArrivésImplLocal.réviser(processInstance.getId(), true);
+		 * System.out.println(runtimeService.getVariables(processInstance.getId(
+		 * )).toString());
+		 */
 
-		proprietés.put("listePiécesJointes", listePiécesJointes);
-		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
-		System.out.println(runtimeService.getVariables(processInstance.getId()).toString());*/
-	 
-		//System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().toString());
+		// System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().toString());
 
+		// ProcessInstance processInstance1 =
+		// runtimeService.startProcessInstanceByKey("myProcess");
+		// System.out.println(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().toString());
 
-		//ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
-	//	System.out.println(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().toString());
-		
 	}
 }

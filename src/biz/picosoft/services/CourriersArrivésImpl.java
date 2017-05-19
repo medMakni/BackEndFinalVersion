@@ -62,7 +62,7 @@ System.out.println("prop here"+proprietésCourrier);
 
 			}
 		} else {
-			traiterCourrier(processInstance.getId(), proprietésCourrier);
+			traiterCourrier(processInstance.getId(), proprietésCourrier );
 		}
 		// TODO Do not forget redirection with dispatcher
 		this.taskService.complete(
@@ -106,13 +106,20 @@ System.out.println("prop here"+proprietésCourrier);
 	}
 
 	@Override
-	public void traiterCourrier(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
+	public void traiterCourrier(String idCourrier, Map<String, Object> nouvellesProprietésCourrier ) {
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
 				.singleResult();
-		runtimeService.setVariables(processInstance.getDeploymentId(), nouvellesProprietésCourrier);
-	}
+		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),nouvellesProprietésCourrier);
+		 if( (boolean)nouvellesProprietésCourrier.get("isFinished")!=true){
+		taskService.addCandidateGroup(
+				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				nouvellesProprietésCourrier.get("affectedTo").toString());
+		 }
+		 }
 
 	@Override
 	public void archiverCourrier(String idCourrier) {
@@ -208,6 +215,7 @@ System.out.println("prop here"+proprietésCourrier);
 	@Override
 	public List<Task> getListCourrierArrivéParDirection(String directionName) {
 		// TODO Auto-generated method stub
+	
 		List<Task> listTaskByDirection = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateGroup(directionName).list();
 		return listTaskByDirection;

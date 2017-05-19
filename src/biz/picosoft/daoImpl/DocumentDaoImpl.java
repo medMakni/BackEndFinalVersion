@@ -49,9 +49,10 @@ public class DocumentDaoImpl implements DocumentDao {
 			DataInputStream dis = new DataInputStream(fis);
 			byte[] bytes = new byte[(int) file.length()];
 			dis.readFully(bytes);
-			ContentStream contentStream = new ContentStreamImpl(file.getAbsolutePath(), null,
-					URLConnection.guessContentTypeFromName(file.getName()), new ByteArrayInputStream(bytes));
-
+			ContentStream contentStream =
+					session.getObjectFactory().createContentStream(file.getName(),
+					file.length(), "text/plain", new ByteArrayInputStream(bytes));
+			
 			AlfrescoDocument newDocument = (AlfrescoDocument) folder.createDocument(properties, contentStream, vs);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

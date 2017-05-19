@@ -18,7 +18,7 @@ ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier);
 void réviser(String idCourrier,boolean isValidated) ;
 public void validerCourrier(String idCourrier);
 public void refuserCourrier(String idCourrier);
-void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier);
+void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier );
 void archiverCourrier(String idCourrier);
 String attachFiles(List<File> listePiécesJointes, String expéditeur, String id);
 List<ProcessInstance> getListCourriersArrivées();
