@@ -10,6 +10,9 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.util.json.JSONArray;
+import org.activiti.engine.impl.util.json.JSONException;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -18,9 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.multipart.MultipartFile;
-
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
@@ -207,7 +208,6 @@ System.out.println("prop here"+proprietésCourrier);
 
 	@Override
 	public List<Task> getListCourrierArrivéParDirection(String directionName) {
-		// TODO Auto-generated method stub
 		List<Task> listTaskByDirection = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateGroup(directionName).list();
 		return listTaskByDirection;
@@ -256,6 +256,27 @@ System.out.println("prop here"+proprietésCourrier);
 			e.printStackTrace();
 		}
 	    return convFile;
+	}
+
+	@Override
+	public JSONArray listmap_to_json_string(List<Map<String, Object>> list)
+	{       
+	    JSONArray json_arr=new JSONArray();
+	    for (Map<String, Object> map : list) {
+	        JSONObject json_obj=new JSONObject();
+	        for (Map.Entry<String, Object> entry : map.entrySet()) {
+	            String key = entry.getKey();
+	            Object value = entry.getValue();
+	            try {
+	                json_obj.put(key,value);
+	            } catch (JSONException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }                           
+	        }
+	        json_arr.put(json_obj);
+	    }
+	    return json_arr;
 	}
 
 	

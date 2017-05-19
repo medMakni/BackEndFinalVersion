@@ -34,7 +34,7 @@ import biz.picosoft.services.CourriersArrivésServices;
 public class CourriersArrivésController {
 	CourriersArrivésServices courriersArrivésServices= new CourriersArrivésImpl();
 
-	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET)
+	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET,produces = "application/json")
 	@ResponseBody
 	public List<Map<String, Object>> getAllCourriers() {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
@@ -42,9 +42,14 @@ public class CourriersArrivésController {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
 		List<ProcessInstance> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
+		
 		List<Map<String, Object>> customTaskList = new ArrayList<>();
+		int i=0;
 		for (ProcessInstance task : listeCourrier) {
-
+			System.out.println(i+"    "+listeCourrier.size());
+			i++;
+			System.out.println("bla bla"+task.getId());
+			System.out.println(runtimeService.getVariables(task.getId()));
 			customTaskList.add(runtimeService.getVariables(task.getId()));
 		}
 		return customTaskList;

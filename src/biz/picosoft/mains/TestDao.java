@@ -67,7 +67,7 @@ public class TestDao {
 		
 		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
 		
-		Map<String, Object> proprietés = new HashMap<String, Object>();
+		/*Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "DirectionIT");
 		proprietés.put("isValidated", true);
@@ -92,7 +92,7 @@ public class TestDao {
 			  orderByHistoricActivityInstanceStartTime().asc().list();
 		/*	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
-		System.out.println(taskb);
+		System.out.println(taskb);*/
 		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
 		/*ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		 taskService.addCandidateUser(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(), "fbm");
