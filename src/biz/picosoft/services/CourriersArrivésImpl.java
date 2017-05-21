@@ -201,11 +201,23 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	}
 
 	@Override
-	public List<Task> getListActiveCourriersArrivésParUser(String userName) {
-		// TODO Auto-generated method stub
+	//this method will return vars of active process per user 
+	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
+		// list of vars of active process per user
+		List<Map<String, Object>> listVarsOfActiveProcesPerUser = new ArrayList<Map<String, Object>>();
+		// get the list active tasks per user
 		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateUser(userName).list();
-		return listTaskByProceeAndUser;
+
+		if (listTaskByProceeAndUser != null) {
+			//this will hold the vars of one task of the list of active process per user
+			Map<String, Object> varsOfAnActiveProcessPerUser;
+			for (int i = 0; i <= listTaskByProceeAndUser.size(); i++) {
+				varsOfAnActiveProcessPerUser = listTaskByProceeAndUser.get(i).getProcessVariables();
+				listVarsOfActiveProcesPerUser.add(varsOfAnActiveProcessPerUser);
+			}
+		}
+		return listVarsOfActiveProcesPerUser;
 	}
 
 	@Override
@@ -213,8 +225,8 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	public List<String> getListFinishedCourrierArrivéPerUser(String userId) {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
-		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService.createHistoricProcessInstanceQuery()
-				.processDefinitionKey("courriersArrivés").finished().list();
+		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
+				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished().list();
 
 		for (int j = 0; j < listFinishedCourriersArrivéInstances.size(); j++) {
 			listFinishedCourriersId.add(listFinishedCourriersArrivéInstances.get(j).getId());
@@ -231,17 +243,31 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 		}
 
-	
 		return listFinishedCourriersInvolvedMrX;
 	}
 
 	@Override
-	public List<Task> getListCourrierArrivéParDirection(String directionName) {
+	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String directionName) {
 		// TODO Auto-generated method stub
 
-		List<Task> listTaskByDirection = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
-				.taskCandidateGroup(directionName).list();
-		return listTaskByDirection;
+		
+		// list of vars of active process per direction
+				List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
+				// get the list active tasks per user
+				List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
+						.taskCandidateGroup(directionName).list();
+
+				if (listOfActiveTasksByDirection != null) {
+					//this will hold the vars of one task of the list of active process per direction
+					Map<String, Object> varsOfAnActiveProcessPerUser;
+					for (int i = 0; i <= listOfActiveTasksByDirection.size(); i++) {
+						varsOfAnActiveProcessPerUser = listOfActiveTasksByDirection.get(i).getProcessVariables();
+						listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
+					}
+				}
+				return listVarsOfActiveProcesPerDirection;
+	
+	 
 
 	}
 
