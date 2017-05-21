@@ -212,8 +212,8 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		if (listTaskByProceeAndUser != null) {
 			//this will hold the vars of one task of the list of active process per user
 			Map<String, Object> varsOfAnActiveProcessPerUser;
-			for (int i = 0; i <= listTaskByProceeAndUser.size(); i++) {
-				varsOfAnActiveProcessPerUser = listTaskByProceeAndUser.get(i).getProcessVariables();
+			for (int i = 0; i < listTaskByProceeAndUser.size(); i++) {
+				varsOfAnActiveProcessPerUser =runtimeService.getVariables(listTaskByProceeAndUser.get(i).getProcessInstanceId() ) ;
 				listVarsOfActiveProcesPerUser.add(varsOfAnActiveProcessPerUser);
 			}
 		}
@@ -261,7 +261,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 					//this will hold the vars of one task of the list of active process per direction
 					Map<String, Object> varsOfAnActiveProcessPerUser;
 					for (int i = 0; i <= listOfActiveTasksByDirection.size(); i++) {
-						varsOfAnActiveProcessPerUser = listOfActiveTasksByDirection.get(i).getProcessVariables();
+						varsOfAnActiveProcessPerUser = runtimeService.getVariables( listOfActiveTasksByDirection.get(i).getProcessInstanceId());
 						listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
 					}
 				}
