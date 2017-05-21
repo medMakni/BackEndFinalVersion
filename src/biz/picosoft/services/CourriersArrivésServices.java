@@ -14,13 +14,13 @@ ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier);
 void réviser(String idCourrier,boolean isValidated) ;
 public void validerCourrier(String idCourrier);
 public void refuserCourrier(String idCourrier);
-void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier);
+void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier );
 void archiverCourrier(String idCourrier);
 String attachFiles(List<File> listePiécesJointes, String expéditeur, String id);
 List<ProcessInstance> getListCourriersArrivées();
-List<Task> getListCourriersArrivésParUser(String userName);
+List<Task> getListActiveCourriersArrivésParUser(String userName);
 List<Task> getListCourrierArrivéParDirection(String direction);
 public File multipartToFile(MultipartFile multipart);
-public JSONArray listmap_to_json_string(List<Map<String, Object>> list);
 
+List<String> getListFinishedCourrierArrivéPerUser(String userId);
 }

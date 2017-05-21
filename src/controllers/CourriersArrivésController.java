@@ -149,7 +149,7 @@ System.out.println(proprietésCourrier);
 	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Task> getListCourriersArrivésParUser(String userName) {
-		courriersArrivésServices.getListCourriersArrivésParUser(userName);
+		courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
 		return null;
 	}
 
