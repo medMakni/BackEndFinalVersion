@@ -81,7 +81,7 @@ public class TestDao {
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 		List<Task> listTaskByProceeAndUser =  taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateUser("ha").list();
-		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("ha"));
+		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListActiveCourrierArrivéParDirection("Bureau d'ordre"));
 		
 		 
 	/*	Map<String, Object> proprietés = new HashMap<String, Object>();
