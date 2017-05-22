@@ -14,6 +14,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -67,13 +68,35 @@ public class TestDao {
 		TaskService taskService = processEngine.getTaskService();
 		
 		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
+		System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
 		
 		/*Map<String, Object> proprietés = new HashMap<String, Object>();
 =======
 
+<<<<<<< HEAD
 	/*	CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
 
 		Map<String, Object> proprietés = new HashMap<String, Object>();
+>>>>>>> branch 'master' of https://github.com/medMakni/BackEndFinalVersion.git
+=======
+	 	CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
+	 	Map<String, Object> proprietés = new HashMap<String, Object>();
+		proprietés.put("date", "19-5-5");
+		proprietés.put("départmentId", "chefsIT");
+		proprietés.put("isValidated", true);
+		proprietés.put("expéditeur", "Steg");
+		proprietés.put("isFinished", false);
+		File file = new File("D://cv/cover letter.docx");
+		List listePiécesJointes = new ArrayList<>();
+		listePiécesJointes.add(file);
+		proprietés.put("listePiécesJointes", listePiécesJointes);
+		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
+		List<Task> listTaskByProceeAndUser =  taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
+				.taskCandidateUser("ha").list();
+		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListActiveCourrierArrivéParDirection("Bureau d'ordre"));
+		
+		 
+	/*	Map<String, Object> proprietés = new HashMap<String, Object>();
 >>>>>>> branch 'master' of https://github.com/medMakni/BackEndFinalVersion.git
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");

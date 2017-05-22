@@ -32,7 +32,7 @@ import biz.picosoft.services.CourriersArrivésServices;
 
 @RestController
 public class CourriersArrivésController {
-	CourriersArrivésServices courriersArrivésServices= new CourriersArrivésImpl();
+	CourriersArrivésServices courriersArrivésServices = new CourriersArrivésImpl();
 
 	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET,produces = "application/json")
 	@ResponseBody
@@ -55,21 +55,23 @@ public class CourriersArrivésController {
 		return customTaskList;
 	}
 
-	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST,produces = "application/json",consumes="multipart/form-data")
+	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
-	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,@RequestParam("objet") String objet) {
+	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
+			@RequestParam("objet") String objet) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
-		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn").deploy().getId();
-	//	repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
+		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn")
+				.deploy().getId();
+		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
 		System.out.println("idddddd" + deploymentId);
-	
+
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		TaskService taskService = processEngine.getTaskService();
-		Map<String, Object> proprietésCourrier = new HashMap<String,Object>();
+		Map<String, Object> proprietésCourrier = new HashMap<String, Object>();
 		for (int i = 0; i < listePiécesJointes.size(); i++) {
 			System.out.println(listePiécesJointes.get(i).getClass());
 
@@ -78,18 +80,16 @@ public class CourriersArrivésController {
 		proprietésCourrier.put("départmentId", "ROLE_ADMIN");
 		proprietésCourrier.put("isValidated", true);
 		proprietésCourrier.put("expéditeur", "Steg");
-		List<File> listeFile =new ArrayList<>();
-		for(int i=0;i<listePiécesJointes.size();i++){
+		List<File> listeFile = new ArrayList<>();
+		for (int i = 0; i < listePiécesJointes.size(); i++) {
 			listeFile.add(courriersArrivésServices.multipartToFile(listePiécesJointes.get(i)));
 		}
-		
 
 		proprietésCourrier.put("listePiécesJointes", listeFile);
-		
 
-System.out.println(proprietésCourrier);
+		System.out.println(proprietésCourrier);
 		courriersArrivésServices.créerCourrier(proprietésCourrier);
-		
+
 	}
 
 	@RequestMapping(value = "/getDoc", method = RequestMethod.GET)
@@ -146,17 +146,17 @@ System.out.println(proprietésCourrier);
 		return null;
 	}
 
-	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET,produces = "application/json")
 	@ResponseBody
-	public List<Task> getListCourriersArrivésParUser(String userName) {
-		courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
-		return null;
+	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
+	
+		return 	courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
 	}
 
-	@RequestMapping(value = "/getListCourrierArrivéParDirection", method = RequestMethod.GET)
+	@RequestMapping(value = "/getListCourrierArrivéParDirection", method = RequestMethod.GET,produces = "application/json")
 	@ResponseBody
-	public List<Task> getListCourrierArrivéParDirection(String direction) {
-		courriersArrivésServices.getListCourrierArrivéParDirection(direction);
-		return null;
+	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String direction) {
+		
+		return courriersArrivésServices.getListActiveCourrierArrivéParDirection(direction);
 	}
 }
