@@ -172,7 +172,7 @@ public class CourrierSortieImpl implements CourriersArrivésServices {
 
 
 	@Override
-	public List<ProcessInstance> getListCourriersArrivées() {
+	public List<Map<String, Object> > getListCourriersArrivées() {
 		// TODO Auto-generated method stub
 		return null;
 	}

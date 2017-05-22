@@ -72,7 +72,7 @@ public class TestDao {
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");
 		proprietés.put("isValidated", true);
-		proprietés.put("expéditeur", "joseph");
+		proprietés.put("expéditeur", "noz");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "Steg");
 		proprietés.put("objet", "facture");
@@ -81,9 +81,9 @@ public class TestDao {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
 	 
-		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListActiveCourrierArrivéParDirection("chefsIT"));
+	 
+		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am"));
 		
 		 
 	/*	Map<String, Object> proprietés = new HashMap<String, Object>();

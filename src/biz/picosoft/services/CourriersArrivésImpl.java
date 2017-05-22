@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
@@ -125,11 +124,33 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 	// this method return all instances of courriers arrivés Process
 	@Override
-	public List getListCourriersArrivées() {
+	public List<Map<String, Object>> getListCourriersArrivées() {
+		String expéditeur;
+		String société;
+		String date;
+		String objet;
+
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		List<ProcessInstance> listAllCourrierArrivé = runtimeService.createProcessInstanceQuery()
 				.processDefinitionKey("courriersArrivés").list();
-		return listAllCourrierArrivé;
+		List<Map<String, Object>> listVarsOfAllCourriers = new ArrayList<Map<String, Object>>();
+		Map<String, Object> varsOfAnActiveProcess;
+		for (int i = 0; i < listAllCourrierArrivé.size(); i++) {
+			varsOfAnActiveProcess = new HashMap<String, Object>();
+			expéditeur = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(),
+					"expéditeur");
+			société = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(),
+					"société");
+			date = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(), "date");
+			objet = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(), "objet");
+
+			varsOfAnActiveProcess.put("expéditeur", expéditeur);
+			varsOfAnActiveProcess.put("société", société);
+			varsOfAnActiveProcess.put("date", date);
+			varsOfAnActiveProcess.put("objet", objet);
+			listVarsOfAllCourriers.add(varsOfAnActiveProcess);
+		}
+		return listVarsOfAllCourriers;
 
 	}
 
@@ -213,8 +234,9 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		if (listTaskByProceeAndUser != null) {
 			// this will hold the vars of one task of the list of active process
 			// per user
-			Map<String, Object> varsOfAnActiveProcessPerUser = new HashMap<String, Object>();
+			Map<String, Object> varsOfAnActiveProcessPerUser ;
 			for (int i = 0; i < listTaskByProceeAndUser.size(); i++) {
+				varsOfAnActiveProcessPerUser= new HashMap<String, Object>();
 				String expéditeur = (String) runtimeService
 						.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(), "expéditeur");
 				String société = (String) runtimeService

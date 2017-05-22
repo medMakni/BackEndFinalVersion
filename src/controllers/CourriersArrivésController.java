@@ -41,13 +41,9 @@ public class CourriersArrivésController {
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
-		List<ProcessInstance> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
-		List<Map<String, Object>> customTaskList = new ArrayList<>();
-		for (ProcessInstance task : listeCourrier) {
-
-			customTaskList.add(runtimeService.getVariables(task.getId()));
-		}
-		return customTaskList;
+		  List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
+	 
+		return listeCourrier;
 	}
 
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")

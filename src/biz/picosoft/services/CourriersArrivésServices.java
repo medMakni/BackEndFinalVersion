@@ -21,7 +21,7 @@ public void refuserCourrier(String idCourrier);
 void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier );
 void archiverCourrier(String idCourrier);
 String attachFiles(List<File> listePiécesJointes, String expéditeur, String id);
-List<ProcessInstance> getListCourriersArrivées();
+List<Map<String, Object> > getListCourriersArrivées();
 List<Map<String, Object> > getListActiveCourriersArrivésParUser(String userName);
 List<Map<String, Object> > getListActiveCourrierArrivéParDirection(String direction);
 public File multipartToFile(MultipartFile multipart);
