@@ -12,11 +12,6 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-
-import org.activiti.engine.impl.util.json.JSONArray;
-import org.activiti.engine.impl.util.json.JSONException;
-import org.activiti.engine.impl.util.json.JSONObject;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -25,15 +20,13 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
 
-@Service
-public class CourriersArrivésImpl implements CourriersArrivésServices {
+public class CourrierInterne implements CourriersArrivésServices {
 
 	ProcessEngine processEngine;
 	Session session;
@@ -48,7 +41,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 		System.out.println("prop here" + proprietésCourrier);
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriersArrivés",
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CourriersInternes",
 				proprietésCourrier);
 		if ((boolean) proprietésCourrier.get("isValidated") != false) {
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
@@ -66,10 +59,10 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
 		// add the groups to ldap and affect réviserCourrier to BO
-
+		// TODO do not forget to change that with of the owner
 		taskService.addCandidateGroup(
 				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-				"Bureau d'ordre");
+				"chefsIT");
 
 		return processInstance;
 	}
@@ -131,7 +124,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	public List getListCourriersArrivées() {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		List<ProcessInstance> listAllCourrierArrivé = runtimeService.createProcessInstanceQuery()
-				.processDefinitionKey("courriersArrivés").list();
+				.processDefinitionKey("CourriersInternes").list();
 		return listAllCourrierArrivé;
 
 	}
@@ -145,25 +138,25 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		if (listePiécesJointes != null) {
 			DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
 			FolderDaoImpl folderDaoImpl = new FolderDaoImpl(this.session);
-			Folder courriersArrivésFolderPerYear;
-			Folder courriersArrivésFolder;
+			Folder CourriersInternesFolderPerYear;
+			Folder CourriersInternesFolder;
 
 			try {
 				try {
-					courriersArrivésFolder = (Folder) folderDaoImpl.getFolderByPath("/courriersArrivés");
+					CourriersInternesFolder = (Folder) folderDaoImpl.getFolderByPath("/courriersInternes");
 				} catch (Exception myExction) {
-					courriersArrivésFolder = folderDaoImpl.createFolder((Folder) folderDaoImpl.getFolderByPath("/"),
-							"courriersArrivés");
+					CourriersInternesFolder = folderDaoImpl.createFolder((Folder) folderDaoImpl.getFolderByPath("/"),
+							"courriersInternes");
 				}
-				courriersArrivésFolderPerYear = (Folder) folderDaoImpl.getFolderByPath(
-						courriersArrivésFolder.getPath() + "/" + Calendar.getInstance().get(Calendar.YEAR));
+				CourriersInternesFolderPerYear = (Folder) folderDaoImpl.getFolderByPath(
+						CourriersInternesFolder.getPath() + "/" + Calendar.getInstance().get(Calendar.YEAR));
 			} catch (Exception myExction) {
 
-				courriersArrivésFolderPerYear = folderDaoImpl.createFolder(
-						(Folder) folderDaoImpl.getFolderByPath("/courriersArrivés"),
+				CourriersInternesFolderPerYear = folderDaoImpl.createFolder(
+						(Folder) folderDaoImpl.getFolderByPath("/courriersInternes"),
 						Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
 			}
-			folderCourrier = folderDaoImpl.createFolder(courriersArrivésFolderPerYear, expéditeur + id);
+			folderCourrier = folderDaoImpl.createFolder(CourriersInternesFolderPerYear, expéditeur + id);
 			for (int i = 0; i < listePiécesJointes.size(); i++) {
 				try {
 					documentDaoImpl.inserte(listePiécesJointes.get(i), folderCourrier);
@@ -185,7 +178,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		this.processEngine = processEngine;
 	}
 
-	public CourriersArrivésImpl() {
+	public CourrierInterne() {
 		super();
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
@@ -205,19 +198,21 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	}
 
 	@Override
-	//this method will return vars of active process per user 
+	// this method will return vars of active process per user
 	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
 		// list of vars of active process per user
 		List<Map<String, Object>> listVarsOfActiveProcesPerUser = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
-		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
+		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("CourriersInternes")
 				.taskCandidateUser(userName).list();
 
 		if (listTaskByProceeAndUser != null) {
-			//this will hold the vars of one task of the list of active process per user
+			// this will hold the vars of one task of the list of active process
+			// per user
 			Map<String, Object> varsOfAnActiveProcessPerUser;
 			for (int i = 0; i < listTaskByProceeAndUser.size(); i++) {
-				varsOfAnActiveProcessPerUser =runtimeService.getVariables(listTaskByProceeAndUser.get(i).getProcessInstanceId() ) ;
+				varsOfAnActiveProcessPerUser = runtimeService
+						.getVariables(listTaskByProceeAndUser.get(i).getProcessInstanceId());
 				listVarsOfActiveProcesPerUser.add(varsOfAnActiveProcessPerUser);
 			}
 		}
@@ -254,24 +249,23 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String directionName) {
 		// TODO Auto-generated method stub
 
-		
 		// list of vars of active process per direction
-				List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
-				// get the list active tasks per user
-				List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
-						.taskCandidateGroup(directionName).list();
+		List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
+		// get the list active tasks per user
+		List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery()
+				.processDefinitionKey("CourriersInternes").taskCandidateGroup(directionName).list();
 
-				if (listOfActiveTasksByDirection != null) {
-					//this will hold the vars of one task of the list of active process per direction
-					Map<String, Object> varsOfAnActiveProcessPerUser;
-					for (int i = 0; i <listOfActiveTasksByDirection.size(); i++) {
-						varsOfAnActiveProcessPerUser = runtimeService.getVariables( listOfActiveTasksByDirection.get(i).getProcessInstanceId());
-						listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
-					}
-				}
-				return listVarsOfActiveProcesPerDirection;
-	
-	 
+		if (listOfActiveTasksByDirection != null) {
+			// this will hold the vars of one task of the list of active process
+			// per direction
+			Map<String, Object> varsOfAnActiveProcessPerUser;
+			for (int i = 0; i < listOfActiveTasksByDirection.size(); i++) {
+				varsOfAnActiveProcessPerUser = runtimeService
+						.getVariables(listOfActiveTasksByDirection.get(i).getProcessInstanceId());
+				listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
+			}
+		}
+		return listVarsOfActiveProcesPerDirection;
 
 	}
 
@@ -319,10 +313,5 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		}
 		return convFile;
 	}
-
-
-
-	
-
 
 }
