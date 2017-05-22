@@ -58,7 +58,7 @@ public class CourriersArrivésController {
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
 	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
-			@RequestParam("objet") String objet ,@RequestParam("dateIn") String dateIn,@RequestParam("dateOut") String dateOut,@RequestParam("direction") String direction) {
+			@RequestParam("objet") String objet ,@RequestParam("isValidated")Boolean isValidated,@RequestParam("dateIn") String dateIn,@RequestParam("dateOut") String dateOut,@RequestParam("societe") String societe) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
@@ -76,10 +76,11 @@ public class CourriersArrivésController {
 			System.out.println(listePiécesJointes.get(i).getClass());
 
 		}
-		proprietésCourrier.put("date", dateOut);
-		proprietésCourrier.put("départmentId", direction);
-		proprietésCourrier.put("isValidated", true);
 		proprietésCourrier.put("expéditeur", "Steg");
+		proprietésCourrier.put("date", dateOut);
+		proprietésCourrier.put("societe", societe);
+		proprietésCourrier.put("objet", objet);
+		proprietésCourrier.put("isValidated", true);
 		List<File> listeFile = new ArrayList<>();
 		for (int i = 0; i < listePiécesJointes.size(); i++) {
 			listeFile.add(courriersArrivésServices.multipartToFile(listePiécesJointes.get(i)));
@@ -87,7 +88,7 @@ public class CourriersArrivésController {
 
 		proprietésCourrier.put("listePiécesJointes", listeFile);
 
-		System.out.println(proprietésCourrier);
+		System.out.println("plkjnb"+proprietésCourrier);
 		courriersArrivésServices.créerCourrier(proprietésCourrier);
 
 	}
