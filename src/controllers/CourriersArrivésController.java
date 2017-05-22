@@ -58,7 +58,7 @@ public class CourriersArrivésController {
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
 	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
-			@RequestParam("objet") String objet) {
+			@RequestParam("objet") String objet ,@RequestParam("dateIn") String dateIn,@RequestParam("dateOut") String dateOut,@RequestParam("direction") String direction) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
@@ -76,8 +76,8 @@ public class CourriersArrivésController {
 			System.out.println(listePiécesJointes.get(i).getClass());
 
 		}
-		proprietésCourrier.put("date", "19-5-5");
-		proprietésCourrier.put("départmentId", "ROLE_ADMIN");
+		proprietésCourrier.put("date", dateOut);
+		proprietésCourrier.put("départmentId", direction);
 		proprietésCourrier.put("isValidated", true);
 		proprietésCourrier.put("expéditeur", "Steg");
 		List<File> listeFile = new ArrayList<>();
@@ -149,14 +149,13 @@ public class CourriersArrivésController {
 	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET,produces = "application/json")
 	@ResponseBody
 	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
-	
+		 	System.out.println("je suis"+courriersArrivésServices.getListActiveCourriersArrivésParUser(userName));
 		return 	courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
 	}
 
 	@RequestMapping(value = "/getListCourrierArrivéParDirection", method = RequestMethod.GET,produces = "application/json")
 	@ResponseBody
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String direction) {
-		
 		return courriersArrivésServices.getListActiveCourrierArrivéParDirection(direction);
 	}
 }

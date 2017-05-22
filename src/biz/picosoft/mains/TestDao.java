@@ -84,8 +84,10 @@ public class TestDao {
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");
 		proprietés.put("isValidated", true);
-		proprietés.put("expéditeur", "Steg");
+		proprietés.put("expéditeur", "joseph");
 		proprietés.put("isFinished", false);
+		proprietés.put("société", "Steg");
+		proprietés.put("objet", "facture");
 		File file = new File("D://cv/cover letter.docx");
 		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);

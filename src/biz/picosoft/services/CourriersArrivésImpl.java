@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -205,7 +206,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	}
 
 	@Override
-	//this method will return vars of active process per user 
+	// this method will return vars of active process per user
 	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
 		// list of vars of active process per user
 		List<Map<String, Object>> listVarsOfActiveProcesPerUser = new ArrayList<Map<String, Object>>();
@@ -214,11 +215,25 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 				.taskCandidateUser(userName).list();
 
 		if (listTaskByProceeAndUser != null) {
-			//this will hold the vars of one task of the list of active process per user
-			Map<String, Object> varsOfAnActiveProcessPerUser;
+			// this will hold the vars of one task of the list of active process
+			// per user
+			Map<String, Object> varsOfAnActiveProcessPerUser = new HashMap<String, Object>();
 			for (int i = 0; i < listTaskByProceeAndUser.size(); i++) {
-				varsOfAnActiveProcessPerUser =runtimeService.getVariables(listTaskByProceeAndUser.get(i).getProcessInstanceId() ) ;
+				String expéditeur = (String) runtimeService
+						.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(), "expéditeur");
+				String société = (String) runtimeService
+						.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(), "société");
+				String date = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
+						"date");
+				String objet = (String) runtimeService
+						.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(), "objet");
+
+				varsOfAnActiveProcessPerUser.put("expéditeur", expéditeur);
+				varsOfAnActiveProcessPerUser.put("société", société);
+				varsOfAnActiveProcessPerUser.put("date", date);
+				varsOfAnActiveProcessPerUser.put("objet", objet);
 				listVarsOfActiveProcesPerUser.add(varsOfAnActiveProcessPerUser);
+
 			}
 		}
 		return listVarsOfActiveProcesPerUser;
@@ -254,24 +269,23 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String directionName) {
 		// TODO Auto-generated method stub
 
-		
 		// list of vars of active process per direction
-				List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
-				// get the list active tasks per user
-				List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
-						.taskCandidateGroup(directionName).list();
+		List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
+		// get the list active tasks per user
+		List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery()
+				.processDefinitionKey("courriersArrivés").taskCandidateGroup(directionName).list();
 
-				if (listOfActiveTasksByDirection != null) {
-					//this will hold the vars of one task of the list of active process per direction
-					Map<String, Object> varsOfAnActiveProcessPerUser;
-					for (int i = 0; i <listOfActiveTasksByDirection.size(); i++) {
-						varsOfAnActiveProcessPerUser = runtimeService.getVariables( listOfActiveTasksByDirection.get(i).getProcessInstanceId());
-						listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
-					}
-				}
-				return listVarsOfActiveProcesPerDirection;
-	
-	 
+		if (listOfActiveTasksByDirection != null) {
+			// this will hold the vars of one task of the list of active process
+			// per direction
+			Map<String, Object> varsOfAnActiveProcessPerUser;
+			for (int i = 0; i < listOfActiveTasksByDirection.size(); i++) {
+				varsOfAnActiveProcessPerUser = runtimeService
+						.getVariables(listOfActiveTasksByDirection.get(i).getProcessInstanceId());
+				listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
+			}
+		}
+		return listVarsOfActiveProcesPerDirection;
 
 	}
 
@@ -321,8 +335,10 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	}
 
 
-
-	
-
+	@Override
+	public Map<String, Object> getCourrierDetails(String idCourrier) {
+		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
+		return courriersDetails;
+	}
 
 }
