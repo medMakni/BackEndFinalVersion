@@ -26,7 +26,7 @@ import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
 
-public class CourrierInterne implements CourriersArrivésServices {
+public class CourrierInterneImpl implements CourriersArrivésServices {
 
 	ProcessEngine processEngine;
 	Session session;
@@ -178,7 +178,7 @@ public class CourrierInterne implements CourriersArrivésServices {
 		this.processEngine = processEngine;
 	}
 
-	public CourrierInterne() {
+	public CourrierInterneImpl() {
 		super();
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
@@ -312,6 +312,12 @@ public class CourrierInterne implements CourriersArrivésServices {
 			e.printStackTrace();
 		}
 		return convFile;
+	}
+
+	@Override
+	public Map<String, Object> getCourrierDetails(String idCourrier) {
+		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
+		return courriersDetails;
 	}
 
 }

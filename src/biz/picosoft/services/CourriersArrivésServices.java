@@ -26,4 +26,5 @@ List<Map<String, Object> > getListActiveCourriersArrivésParUser(String userName)
 List<Map<String, Object> > getListActiveCourrierArrivéParDirection(String direction);
 public File multipartToFile(MultipartFile multipart);
 List<String> getListFinishedCourrierArrivéPerUser(String userId);
+Map<String, Object> getCourrierDetails(String idCourrier);
 }

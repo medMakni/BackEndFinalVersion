@@ -304,4 +304,10 @@ public class CourrierSortieImpl implements CourriersArrivésServices {
 		this.taskService = taskService;
 	}
 
+	@Override
+	public Map<String, Object> getCourrierDetails(String idCourrier) {
+		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
+		return courriersDetails;
+	}
+
 }
