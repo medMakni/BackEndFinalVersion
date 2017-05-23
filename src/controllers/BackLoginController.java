@@ -40,8 +40,8 @@ public class BackLoginController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("work");
 		}
 				return groups;
 	}
+
 }

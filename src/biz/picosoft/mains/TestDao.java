@@ -66,7 +66,19 @@ public class TestDao {
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		TaskService taskService = processEngine.getTaskService();
+		
+		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
+		System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+		
+		/*Map<String, Object> proprietés = new HashMap<String, Object>();
+=======
 
+<<<<<<< HEAD
+	/*	CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
+
+		Map<String, Object> proprietés = new HashMap<String, Object>();
+>>>>>>> branch 'master' of https://github.com/medMakni/BackEndFinalVersion.git
+=======
 	 	CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
 	 	Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
@@ -87,6 +99,7 @@ public class TestDao {
 		
 		 
 	/*	Map<String, Object> proprietés = new HashMap<String, Object>();
+>>>>>>> branch 'master' of https://github.com/medMakni/BackEndFinalVersion.git
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");
 		proprietés.put("isValidated", true);
@@ -97,7 +110,33 @@ public class TestDao {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		System.out.println("BO" + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("jm"));
+<<<<<<< HEAD
+		System.out.println("BO"+courriersArrivésImplLocal.getListCourriersArrivésParUser("rb"));
+		courriersArrivésImplLocal.réviser(processInstance.getId(), false);     
+		System.out.println("secrét"+courriersArrivésImplLocal.getListCourriersArrivésParUser("ac"));
+		
+		//System.out.println(courriersArrivésImplLocal.getListCourriersArrivésParUser("fbm"));
+		HistoryService historyService=((CourriersArrivésImpl) courriersArrivésImplLocal).getProcessEngine().getHistoryService();
+		List<HistoricActivityInstance> historicActivityInstances = historyService.
+				  createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).
+				  orderByHistoricActivityInstanceStartTime().asc().list();
+	 System.out.println(historicActivityInstances);
+	 historicActivityInstances = historyService.
+			  createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).
+			  orderByHistoricActivityInstanceStartTime().asc().list();
+		/*	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
+		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
+		System.out.println(taskb);*/
+		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
+		/*ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
+		 taskService.addCandidateUser(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(), "fbm");
+		 
+			List<Task> taskByProceeAndUser = taskService.createTaskQuery().processDefinitionKey("myProcess").taskCandidateUser("mwm")
+					.list();
+			List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
+			System.out.println(taskByProceeAndUser.size());
+			System.out.println(taskb.size());*/
+/*		System.out.println("BO" + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("jm"));
 
 		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
 

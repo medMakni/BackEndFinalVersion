@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Configuration("activit.cfg.xml")
 @Service("TestService")
 public class TestService {
-	ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
+	/*ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 	RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
 	String deploymentId = repositoryService.createDeployment().addClasspathResource("yz.bpmn").deploy().getId();
 	String deploymentId2 = repositoryService.createDeployment().addClasspathResource("yfz.bpmn").deploy().getId();
@@ -27,7 +27,7 @@ public class TestService {
 	ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("myProcess2");
 	TaskService taskService = processEngine.getTaskService();
 	List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list();
-	List<Task> taskyfz = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).list();
+	List<Task> taskyfz = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).list();*/
 	
 	//démarrer un workflow
 	public void startWorkflow(){
@@ -59,12 +59,12 @@ public class TestService {
 		// tasks.get(0).setOwner("fbm");
 		// tasks.get(0).setAssignee("mwm");
 		// tasks.get(0).delegate("mwm");
-		taskService.addCandidateGroup(tasks.get(0).getId(), "GROUP_Admin");
+		//taskService.addCandidateGroup(tasks.get(0).getId(), "GROUP_Admin");
 		// tasks.get(0).setDelegationState(DelegationState.RESOLVED);
 		// aprés les opération il faut faire save pour sauvegarder les
 		// changements
-		taskService.saveTask(tasks.get(0));
-		taskService.saveTask(taskyfz.get(0));
+		//taskService.saveTask(tasks.get(0));
+		//taskService.saveTask(taskyfz.get(0));
 
 		/*List<Task> taskc = taskService.createTaskQuery().taskCandidateGroup("GROUPE_ADMIN").list();
 		taskService.saveTask(tasks.get(0));
@@ -96,7 +96,7 @@ public class TestService {
 		}
 	
 	//retourner tous les taches 
-	public List<Task> getWorkflows(){
+	/*public List<Task> getWorkflows(){
 	      //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
 		System.out.println(taskb);
@@ -104,7 +104,7 @@ public class TestService {
 		taskService.saveTask(taskyfz.get(0));
 		return taskb;
 		
-	}
+	}*/
 	
 }
 

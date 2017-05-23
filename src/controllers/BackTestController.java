@@ -29,8 +29,8 @@ public class BackTestController {
 	@ResponseBody
 	public Map<String,Object> getWorkflows() {
 		Map<String, Object>data = new HashMap<String, Object>();
-		List<Task>l=(List<Task>) ts.getWorkflows();
-		data.put("workflows", l.toString());
+		//List<Task>l=(List<Task>) ts.getWorkflows();
+		//data.put("workflows", l.toString());
 		return data;
 
 	}
