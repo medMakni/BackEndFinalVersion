@@ -83,7 +83,7 @@ public class TestDao {
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 	 
 	 
-		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am"));
+		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListCourriersArrivées());
 		
 		 
 	/*	Map<String, Object> proprietés = new HashMap<String, Object>();

@@ -272,15 +272,18 @@ public class CourrierInterneImpl implements CourriersArrivésServices {
 	@Override
 	public void refuserCourrier(String idCourrier) {
 		// TODO Auto-generated method stub
+		ProcessInstance processInstance=runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
+				.singleResult();
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
 		proprietésCourrier.replace("isValidated", false);
 		this.taskService = processEngine.getTaskService();
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
-		this.taskService.addCandidateGroup(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"ROLE_Secrétaire Générale");
+ 
+				this.taskService.addCandidateUser (
+						this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), this.runtimeService.getVariable(processInstance.getId(), "starter").toString());
+ 
 	}
 
 	public RuntimeService getRuntimeService() {
