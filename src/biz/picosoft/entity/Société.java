@@ -1,12 +1,17 @@
 package biz.picosoft.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Société implements Serializable {
@@ -26,6 +31,9 @@ public class Société implements Serializable {
 	String télèphone;
 	@Column(name = "adress")
 	String adress;
+	@OneToMany (fetch = FetchType.EAGER,mappedBy = "société", cascade = CascadeType.ALL)
+	private List<Contacte> contacts;
+	
 	 public Société(String nom, String email, String télèphone, String adress) {
 		super();
 		this.nom = nom;
@@ -81,6 +89,18 @@ public class Société implements Serializable {
 	public void setAdress(String adress) {
 		this.adress = adress;
 	}
+
+	public List<Contacte> getContacts() {
+		return contacts;
+	}
+
+
+
+	public void setContacts(List<Contacte> contacts) {
+		this.contacts = contacts;
+	}
+
+
 
 	@Override
 	public int hashCode() {

@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import biz.picosoft.dao.GenericDao;
 
+ 
+
 @Transactional(readOnly = false)
 public class GenericDaoImp<T> implements GenericDao<T> {
 	@PersistenceContext

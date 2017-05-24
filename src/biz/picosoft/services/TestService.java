@@ -11,8 +11,8 @@ import org.activiti.engine.task.Task;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
-@Configuration("activit.cfg.xml")
-@Service("TestService")
+//@Configuration("activit.cfg.xml")
+//@Service("TestService")
 public class TestService {
 	/*ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 	RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
