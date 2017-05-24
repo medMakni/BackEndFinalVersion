@@ -103,8 +103,8 @@ public class CourrierSortieImpl implements CourriersArrivésServices {
 				proprietésCourrier);
 		
 		//TODO check this if it gives realy the name of the process owner 
-		this.taskService.addCandidateGroup(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), this.runtimeService.getVariable(processInstance.getId(), "starter").toString()  );
+		this.taskService.addCandidateUser (
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), this.runtimeService.getVariable(processInstance.getId(), "starter").toString());
 			 
 	}
 
@@ -172,7 +172,7 @@ public class CourrierSortieImpl implements CourriersArrivésServices {
 
 
 	@Override
-	public List<ProcessInstance> getListCourriersArrivées() {
+	public List<Map<String, Object> > getListCourriersArrivées() {
 		// TODO Auto-generated method stub
 		return null;
 	}

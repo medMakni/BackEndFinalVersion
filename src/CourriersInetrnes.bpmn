@@ -8,8 +8,9 @@
 	<collaboration id="Collaboration">
 		<participant id="pool1" name="Pool" processRef="CourriersInternes"></participant>
 	</collaboration>
-	<process id="CourriersInternes" name="CourriersInternes" isExecutable="true">
-		<laneSet id="laneSet_CourriersInternes">
+	<process id="CourriersInternes" name="CourriersInternes"
+		isExecutable="true">
+		<laneSet id="laneSet_courriersIntereService">
 			<lane id="lane2" name="Créateur du courrier">
 				<flowNodeRef>startevent1</flowNodeRef>
 				<flowNodeRef>usertask1</flowNodeRef>
@@ -44,18 +45,21 @@
 			targetRef="usertask3">
 			<conditionExpression xsi:type="tFormalExpression">${isValidated ==
 				true}
+			</conditionExpression>
 		</sequenceFlow>
 		<sequenceFlow id="flow5" sourceRef="usertask3" targetRef="parallelgateway2"></sequenceFlow>
 		<sequenceFlow id="flow8" name="nonValidé" sourceRef="parallelgateway1"
 			targetRef="usertask1">
 			<conditionExpression xsi:type="tFormalExpression">${isValidated ==
 				true}
+			</conditionExpression>
 		</sequenceFlow>
 		<parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
 		<sequenceFlow id="flow6" name="not finished" sourceRef="parallelgateway2"
 			targetRef="usertask4">
 			<conditionExpression xsi:type="tFormalExpression">${isFinished ==
 				false}
+			</conditionExpression>
 		</sequenceFlow>
 		<parallelGateway id="parallelgateway3" name="Parallel Gateway"></parallelGateway>
 		<sequenceFlow id="flow9" sourceRef="usertask4" targetRef="parallelgateway3"></sequenceFlow>
@@ -63,17 +67,20 @@
 			targetRef="endevent1">
 			<conditionExpression xsi:type="tFormalExpression">${isFinished ==
 				true}
+			</conditionExpression>
 		</sequenceFlow>
 		<sequenceFlow id="flow11" name="notfinished" sourceRef="parallelgateway3"
 			targetRef="usertask4">
 			<conditionExpression xsi:type="tFormalExpression">${isFinished ==
 				false}
+				</conditionExpression>
 		</sequenceFlow>
 		<endEvent id="endevent2" name="End"></endEvent>
 		<sequenceFlow id="flow12" name="finished" sourceRef="parallelgateway2"
-			targetRef="endevent2">
-			<conditionExpression xsi:type="tFormalExpression">${isFinished ==
-				true}
+	targetRef="endevent2">
+	<conditionExpression xsi:type="tFormalExpression">${isFinished ==
+		true}
+			</conditionExpression>
 		</sequenceFlow>
 	</process>
 	<bpmndi:BPMNDiagram id="BPMNDiagram_Collaboration">

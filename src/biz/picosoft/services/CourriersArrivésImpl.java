@@ -122,11 +122,34 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 	// this method return all instances of courriers arrivés Process
 	@Override
-	public List<ProcessInstance> getListCourriersArrivées() {
+	public List<Map<String, Object>> getListCourriersArrivées() {
+		String expéditeur;
+		String société;
+		String date;
+		String objet;
+		String idCourrier;
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		List<ProcessInstance> listAllCourrierArrivé = runtimeService.createProcessInstanceQuery()
 				.processDefinitionKey("courriersArrivés").list();
-		return listAllCourrierArrivé;
+		List<Map<String, Object>> listVarsOfAllCourriers = new ArrayList<Map<String, Object>>();
+		Map<String, Object> varsOfAnActiveProcess;
+		for (int i = 0; i < listAllCourrierArrivé.size(); i++) {
+			idCourrier = listAllCourrierArrivé.get(i).getProcessInstanceId();
+			varsOfAnActiveProcess = new HashMap<String, Object>();
+			expéditeur = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(),
+					"expéditeur");
+			société = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(),
+					"société");
+			date = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(), "date");
+			objet = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(), "objet");
+			varsOfAnActiveProcess.put("idCourrier", idCourrier);
+			varsOfAnActiveProcess.put("expéditeur", expéditeur);
+			varsOfAnActiveProcess.put("société", société);
+			varsOfAnActiveProcess.put("date", date);
+			varsOfAnActiveProcess.put("objet", objet);
+			listVarsOfAllCourriers.add(varsOfAnActiveProcess);
+		}
+		return listVarsOfAllCourriers;
 
 	}
 
@@ -212,16 +235,23 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		if (listTaskByProceeAndUser != null) {
 			// this will hold the vars of one task of the list of active process
 			// per user
-			Map<String, Object> varsOfAnActiveProcessPerUser = new HashMap<String, Object>();
+			String idCourrier;
+			String expéditeur;
+			String société;
+			String date;
+			String objet;
+			Map<String, Object> varsOfAnActiveProcessPerUser;
 			for (int i = 0; i < listTaskByProceeAndUser.size(); i++) {
-				String expéditeur = (String) runtimeService
-						.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(), "expéditeur");
-				String société = (String) runtimeService
-						.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(), "société");
-				String date = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
+				varsOfAnActiveProcessPerUser = new HashMap<String, Object>();
+				idCourrier = listTaskByProceeAndUser.get(i).getProcessInstanceId();
+				expéditeur = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
+						"expéditeur");
+				société = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
+						"société");
+				date = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
 						"date");
-				String objet = (String) runtimeService
-						.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(), "objet");
+				objet = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
+						"objet");
 
 				varsOfAnActiveProcessPerUser.put("expéditeur", expéditeur);
 				varsOfAnActiveProcessPerUser.put("société", société);
@@ -240,20 +270,20 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
 		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
-				.createHistoricProcessInstanceQuery().processDefinitionKey("courriéSortie").finished().list();
+				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished().list();
 
 		for (int j = 0; j < listFinishedCourriersArrivéInstances.size(); j++) {
 			listFinishedCourriersId.add(listFinishedCourriersArrivéInstances.get(j).getId());
 		}
 
-		System.out.println(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriéSortie")
+		System.out.println(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
 				.finished().list().size());
 		List<String> listFinishedCourriersInvolvedMrX = new ArrayList<>();
 		for (int i = 0; i < historyService.createHistoricTaskInstanceQuery().taskCandidateUser(userId)
-				.processDefinitionKey("courriéSortie").finished().list().size(); i++) {
+				.processDefinitionKey("courriersArrivés").finished().list().size(); i++) {
 			listFinishedCourriersInvolvedMrX
 					.add(historyService.createHistoricTaskInstanceQuery().taskCandidateUser(userId)
-							.processDefinitionKey("courriéSortie").finished().list().get(i).getProcessInstanceId());
+							.processDefinitionKey("courriersArrivés").finished().list().get(i).getProcessInstanceId());
 
 		}
 

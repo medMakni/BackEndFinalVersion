@@ -68,25 +68,12 @@ public class TestDao {
 		TaskService taskService = processEngine.getTaskService();
 		
 		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
-		//System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
-
-		List<ProcessInstance> listeCourrier = courriersArrivésImplLocal.getListCourriersArrivées();
+		System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
 		
-		List<Map<String, Object>> customTaskList = new ArrayList<>();
-		int i=0;
-		for (ProcessInstance task : listeCourrier) {
-			//System.out.println(i+"    "+listeCourrier.size());
-			i++;
-			//System.out.println(runtimeService.getVariables(task.getId()));
-			customTaskList.add(runtimeService.getVariables(task.getId()));
-		}
-		System.out.println(customTaskList);
 		/*Map<String, Object> proprietés = new HashMap<String, Object>();
 =======
-
 <<<<<<< HEAD
 	/*	CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
-
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 >>>>>>> branch 'master' of https://github.com/medMakni/BackEndFinalVersion.git
 =======
@@ -95,7 +82,7 @@ public class TestDao {
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");
 		proprietés.put("isValidated", true);
-		proprietés.put("expéditeur", "joseph");
+		proprietés.put("expéditeur", "noz");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "Steg");
 		proprietés.put("objet", "facture");
@@ -104,9 +91,9 @@ public class TestDao {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
 	 
-		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListActiveCourrierArrivéParDirection("chefsIT"));
+	 
+		System.out.println("active tasks for weld ankoud :p "+courriersArrivésImplLocal.getListCourriersArrivées());
 		
 		 
 	/*	Map<String, Object> proprietés = new HashMap<String, Object>();
@@ -138,7 +125,7 @@ public class TestDao {
 		/*	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
 		System.out.println(taskb);*/
-		//System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
+		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
 		/*ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		 taskService.addCandidateUser(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(), "fbm");
 		 
@@ -148,23 +135,18 @@ public class TestDao {
 			System.out.println(taskByProceeAndUser.size());
 			System.out.println(taskb.size());*/
 /*		System.out.println("BO" + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("jm"));
-
 		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
-
 		System.out.println("chef It" + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
-
 		proprietés.put("affectedTo", "secrétaireitù");
 		proprietés.put("isFinished", false);
 		courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);
 		System.out.println("siz oactive tasks "
 				+ taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().size());
 	 
-
 		proprietés.replace("isFinished", true);
 		courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);
 		System.out.println("siz oactive tasks lev 2 "
 				+ taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().size());
-
 		System.out.println(runtimeService.createProcessInstanceQuery().active().count());
 		HistoryService historyService = processEngine.getHistoryService();
 	System.out.println(courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("ha"));*/

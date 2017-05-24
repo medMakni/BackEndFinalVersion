@@ -34,30 +34,22 @@ import biz.picosoft.services.CourriersArrivésServices;
 public class CourriersArrivésController {
 	CourriersArrivésServices courriersArrivésServices = new CourriersArrivésImpl();
 
-	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET,produces = "application/json")
+	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getAllCourriers() {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
-		List<ProcessInstance> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
-		
-		List<Map<String, Object>> customTaskList = new ArrayList<>();
-		int i=0;
-		for (ProcessInstance task : listeCourrier) {
-			System.out.println(i+"    "+listeCourrier.size());
-			i++;
-			System.out.println(runtimeService.getVariables(task.getId()));
-			customTaskList.add(runtimeService.getVariables(task.getId()));
-		}
-		return customTaskList;
+		  List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
+	 
+		return listeCourrier;
 	}
 
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
 	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
-			@RequestParam("objet") String objet ,@RequestParam("isValidated")Boolean isValidated,@RequestParam("dateIn") String dateIn,@RequestParam("dateOut") String dateOut,@RequestParam("societe") String societe) {
+			@RequestParam("objet") String objet) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
@@ -75,11 +67,10 @@ public class CourriersArrivésController {
 			System.out.println(listePiécesJointes.get(i).getClass());
 
 		}
-		proprietésCourrier.put("expéditeur", "Steg");
-		proprietésCourrier.put("date", dateOut);
-		proprietésCourrier.put("societe", societe);
-		proprietésCourrier.put("objet", objet);
+		proprietésCourrier.put("date", "19-5-5");
+		proprietésCourrier.put("départmentId", "ROLE_ADMIN");
 		proprietésCourrier.put("isValidated", true);
+		proprietésCourrier.put("expéditeur", "Steg");
 		List<File> listeFile = new ArrayList<>();
 		for (int i = 0; i < listePiécesJointes.size(); i++) {
 			listeFile.add(courriersArrivésServices.multipartToFile(listePiécesJointes.get(i)));
@@ -87,7 +78,7 @@ public class CourriersArrivésController {
 
 		proprietésCourrier.put("listePiécesJointes", listeFile);
 
-		System.out.println("plkjnb"+proprietésCourrier);
+		System.out.println(proprietésCourrier);
 		courriersArrivésServices.créerCourrier(proprietésCourrier);
 
 	}
@@ -146,16 +137,17 @@ public class CourriersArrivésController {
 		return null;
 	}
 
-	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET,produces = "application/json")
+	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
-		 	System.out.println("je suis"+courriersArrivésServices.getListActiveCourriersArrivésParUser(userName));
+	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
+	
 		return 	courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
 	}
 
-	@RequestMapping(value = "/getListCourrierArrivéParDirection", method = RequestMethod.GET,produces = "application/json")
+	@RequestMapping(value = "/getListCourrierArrivéParDirection", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String direction) {
+		
 		return courriersArrivésServices.getListActiveCourrierArrivéParDirection(direction);
 	}
 }
