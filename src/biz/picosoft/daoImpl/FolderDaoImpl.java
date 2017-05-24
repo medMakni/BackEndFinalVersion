@@ -1,6 +1,8 @@
 package biz.picosoft.daoImpl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -16,10 +18,10 @@ import biz.picosoft.dao.FolderDao;
 public class FolderDaoImpl implements FolderDao {
 	Session session;
 
-	public ItemIterable<CmisObject> getAllChildrens(Folder folder) {
-
-		ItemIterable<CmisObject> children = folder.getChildren();
-		return children;
+	public List<CmisObject> getAllChildrens(Folder folder) {
+		List<CmisObject> listOfChildrens = new ArrayList<>();
+		folder.getChildren().iterator().forEachRemaining(listOfChildrens::add);
+		return listOfChildrens;
 	}
 
 	public CmisObject getFolderByPath(String path) {
@@ -56,8 +58,16 @@ public class FolderDaoImpl implements FolderDao {
 		this.session = session;
 	}
 
-	public CmisObject getFolderById(ObjectId id) {
-		CmisObject cmisObject = session.getObject(id);
+	public CmisObject getFolderById(String id) {
+		ObjectId objectId = new ObjectId() {
+
+			@Override
+			public String getId() {
+				// TODO Auto-generated method stub
+				return id;
+			}
+		};
+		CmisObject cmisObject = session.getObject(objectId);
 
 		return cmisObject;
 	}

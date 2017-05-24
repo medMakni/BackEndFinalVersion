@@ -1,4 +1,5 @@
 package biz.picosoft.services;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
@@ -47,9 +49,12 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
+				FolderDaoImpl folderDaoImpl = new FolderDaoImpl(session);
 				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
 						(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
+				List<CmisObject> lostOfFolderChildrens = folderDaoImpl.getAllChildrens((Folder) folderDaoImpl.getFolderById( idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
+				proprietésCourrier.replace ("listePiécesJointes", lostOfFolderChildrens);
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
 
 			}
@@ -231,7 +236,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		// get the list active tasks per user
 		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateUser(userName).list();
-		System.out.println("hhhh"+listTaskByProceeAndUser);
+		System.out.println("hhhh" + listTaskByProceeAndUser);
 
 		if (listTaskByProceeAndUser != null) {
 			// this will hold the vars of one task of the list of active process
@@ -253,13 +258,12 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 						"dateOut");
 				objet = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
 						"objet");
-				System.out.println("la soci"+société);
+				System.out.println("la soci" + société);
 				varsOfAnActiveProcessPerUser.put("expéditeur", expéditeur);
 				varsOfAnActiveProcessPerUser.put("date", date);
 				varsOfAnActiveProcessPerUser.put("objet", objet);
 				varsOfAnActiveProcessPerUser.put("société", société);
-				
-				
+
 				listVarsOfActiveProcesPerUser.add(varsOfAnActiveProcessPerUser);
 
 			}
@@ -361,7 +365,6 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		}
 		return convFile;
 	}
-
 
 	@Override
 	public Map<String, Object> getCourrierDetails(String idCourrier) {

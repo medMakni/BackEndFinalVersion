@@ -1,5 +1,6 @@
 package biz.picosoft.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -8,11 +9,11 @@ import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 
 public interface FolderDao {
-	public ItemIterable<CmisObject> getAllChildrens(Folder folder);
+	public List<CmisObject>  getAllChildrens(Folder folder);
 
 	public CmisObject getFolderByPath(String path);
 
-	public CmisObject getFolderById(ObjectId id);
+	public CmisObject getFolderById(String id);
 
 	public void updateFolder(Folder folder, Map<String, Object> updateProperties);
 
