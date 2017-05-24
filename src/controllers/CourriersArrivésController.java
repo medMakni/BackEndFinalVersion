@@ -49,7 +49,7 @@ public class CourriersArrivésController {
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
 	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
-			@RequestParam("objet") String objet) {
+			@RequestParam("objet") String objet ,@RequestParam("societe") String société,@RequestParam("dateOut")Object dateOut,@RequestParam("direction") String direction) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
@@ -67,8 +67,10 @@ public class CourriersArrivésController {
 			System.out.println(listePiécesJointes.get(i).getClass());
 
 		}
-		proprietésCourrier.put("date", "19-5-5");
-		proprietésCourrier.put("départmentId", "ROLE_ADMIN");
+		proprietésCourrier.put("objet", objet);
+		proprietésCourrier.put("société", société);
+		proprietésCourrier.put("dateOut", dateOut);
+		proprietésCourrier.put("départmentId", direction);
 		proprietésCourrier.put("isValidated", true);
 		proprietésCourrier.put("expéditeur", "Steg");
 		List<File> listeFile = new ArrayList<>();
@@ -139,7 +141,7 @@ public class CourriersArrivésController {
 
 	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
+	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username")String userName) {
 	
 		return 	courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
 	}

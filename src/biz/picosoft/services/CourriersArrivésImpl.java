@@ -140,7 +140,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 					"expéditeur");
 			société = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(),
 					"société");
-			date = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(), "date");
+			date = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(), "dateOut");
 			objet = (String) runtimeService.getVariable(listAllCourrierArrivé.get(i).getProcessInstanceId(), "objet");
 			varsOfAnActiveProcess.put("idCourrier", idCourrier);
 			varsOfAnActiveProcess.put("expéditeur", expéditeur);
@@ -231,6 +231,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		// get the list active tasks per user
 		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateUser(userName).list();
+		System.out.println("hhhh"+listTaskByProceeAndUser);
 
 		if (listTaskByProceeAndUser != null) {
 			// this will hold the vars of one task of the list of active process
@@ -249,14 +250,16 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 				société = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
 						"société");
 				date = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
-						"date");
+						"dateOut");
 				objet = (String) runtimeService.getVariable(listTaskByProceeAndUser.get(i).getProcessInstanceId(),
 						"objet");
-
+				System.out.println("la soci"+société);
 				varsOfAnActiveProcessPerUser.put("expéditeur", expéditeur);
-				varsOfAnActiveProcessPerUser.put("société", société);
 				varsOfAnActiveProcessPerUser.put("date", date);
 				varsOfAnActiveProcessPerUser.put("objet", objet);
+				varsOfAnActiveProcessPerUser.put("société", société);
+				
+				
 				listVarsOfActiveProcesPerUser.add(varsOfAnActiveProcessPerUser);
 
 			}
