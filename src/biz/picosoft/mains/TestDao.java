@@ -68,8 +68,19 @@ public class TestDao {
 		TaskService taskService = processEngine.getTaskService();
 		
 		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
-		System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+		//System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+
+		List<ProcessInstance> listeCourrier = courriersArrivésImplLocal.getListCourriersArrivées();
 		
+		List<Map<String, Object>> customTaskList = new ArrayList<>();
+		int i=0;
+		for (ProcessInstance task : listeCourrier) {
+			//System.out.println(i+"    "+listeCourrier.size());
+			i++;
+			//System.out.println(runtimeService.getVariables(task.getId()));
+			customTaskList.add(runtimeService.getVariables(task.getId()));
+		}
+		System.out.println(customTaskList);
 		/*Map<String, Object> proprietés = new HashMap<String, Object>();
 =======
 
@@ -127,7 +138,7 @@ public class TestDao {
 		/*	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
 		System.out.println(taskb);*/
-		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
+		//System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
 		/*ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		 taskService.addCandidateUser(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(), "fbm");
 		 

@@ -1,5 +1,4 @@
 package biz.picosoft.services;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,16 +7,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-
-import org.activiti.engine.impl.util.json.JSONArray;
-import org.activiti.engine.impl.util.json.JSONException;
-import org.activiti.engine.impl.util.json.JSONObject;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -28,7 +21,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
@@ -52,6 +44,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriersArrivés",
 				proprietésCourrier);
 		if ((boolean) proprietésCourrier.get("isValidated") != false) {
+			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
 				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
@@ -129,7 +122,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 	// this method return all instances of courriers arrivés Process
 	@Override
-	public List getListCourriersArrivées() {
+	public List<ProcessInstance> getListCourriersArrivées() {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		List<ProcessInstance> listAllCourrierArrivé = runtimeService.createProcessInstanceQuery()
 				.processDefinitionKey("courriersArrivés").list();
@@ -188,10 +181,12 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 
 	public CourriersArrivésImpl() {
 		super();
+		@SuppressWarnings("resource")
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		this.runtimeService = processEngine.getRuntimeService();
 		this.taskService = processEngine.getTaskService();
+		@SuppressWarnings("resource")
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
 

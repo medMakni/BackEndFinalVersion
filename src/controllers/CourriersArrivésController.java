@@ -48,7 +48,6 @@ public class CourriersArrivésController {
 		for (ProcessInstance task : listeCourrier) {
 			System.out.println(i+"    "+listeCourrier.size());
 			i++;
-			System.out.println("bla bla"+task.getId());
 			System.out.println(runtimeService.getVariables(task.getId()));
 			customTaskList.add(runtimeService.getVariables(task.getId()));
 		}
