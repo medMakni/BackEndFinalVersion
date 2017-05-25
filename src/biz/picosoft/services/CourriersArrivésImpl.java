@@ -380,7 +380,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 		listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
 		DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
 	 	for (int i = 0; i < listPiéceJointeId.size(); i++) {
-	 		listePiéceJointeObject.add(documentDaoImpl.getDocument(listPiéceJointeId.get(i)));
+	 		listePiéceJointeObject.add(documentDaoImpl.getDocument(listPiéceJointeId.get(i).substring(0, listPiéceJointeId.get(i).indexOf(";"))));
 		}
 		courriersDetails.put("listePiéceJointeObject", listePiéceJointeObject); 
 		return courriersDetails;
