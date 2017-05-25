@@ -9,7 +9,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface CourriersArrivésServices {
+public interface CourriersServices {
+ 
 ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier);
 void réviser(String idCourrier,boolean isValidated) ;
 public void validerCourrier(String idCourrier);

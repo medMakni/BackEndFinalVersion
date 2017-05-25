@@ -65,8 +65,16 @@ public class DocumentDaoImpl implements DocumentDao {
 		obj.delete(true);
 	}
 
-	public CmisObject getDocument(ObjectId id) {
-		return session.getObject(id);
+	public CmisObject getDocument(String id) {
+		ObjectId idStringToId=new ObjectId() {
+			
+			@Override
+			public String getId() {
+				// TODO Auto-generated method stub
+				return id;
+			}
+		};
+		return session.getObject(idStringToId);
 	}
 
 	public void update(Document document, Map<String, String> properties) {

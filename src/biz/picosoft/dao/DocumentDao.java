@@ -14,7 +14,7 @@ public interface DocumentDao {
 
 	void delete(CmisObject  document);
 
-	CmisObject getDocument(ObjectId id);
+	CmisObject getDocument(String id);
 
 	void update(Document document, Map<String, String> properties);
 }

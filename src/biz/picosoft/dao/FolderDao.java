@@ -9,7 +9,7 @@ import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 
 public interface FolderDao {
-	public List<CmisObject>  getAllChildrens(Folder folder);
+	public List<String>  getAllChildrens(Folder folder);
 
 	public CmisObject getFolderByPath(String path);
 

@@ -7,14 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -27,8 +24,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.services.CourriersArrivésImpl;
-import biz.picosoft.services.CourriersArrivésServices;
-
+import biz.picosoft.services.CourriersServices;
+ 
 @Configuration
 public class TestDao {
 	@Bean
@@ -60,15 +57,31 @@ public class TestDao {
 		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
 		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn")
 				.deploy().getId();
+		CourriersArrivésImpl courriersArrivésImplLocal=new CourriersArrivésImpl();
 		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
-		System.out.println("idddddd" + deploymentId);
-
+		Map<String, Object> proprietés = new HashMap<String, Object>();
+		proprietés.put("date", "19-5-5");
+		proprietés.put("départmentId", "chefsIT");
+		proprietés.put("isValidated", true);
+		proprietés.put("expéditeur", "noz");
+		proprietés.put("isFinished", false);
+		proprietés.put("société", "Steg");
+		proprietés.put("objet", "facture");
+	
+		File file = new File("D://cv/cover letter.docx");
+		List listePiécesJointes = new ArrayList<>();
+		listePiécesJointes.add(file);
+		proprietés.put("listePiécesJointes", listePiécesJointes);
+		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
+		 
+	 
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		TaskService taskService = processEngine.getTaskService();
-		
-		CourriersArrivésServices courriersArrivésImplLocal = new CourriersArrivésImpl();
-		System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+
+		//System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+	 
+		System.out.println(	courriersArrivésImplLocal.getCourrierDetails(processInstance.getId() ));
 		
 		/*Map<String, Object> proprietés = new HashMap<String, Object>();
 =======
@@ -125,7 +138,7 @@ public class TestDao {
 		/*	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		List<Task> taskb = taskService.createTaskQuery().taskCandidateUser("fbm").list();
 		System.out.println(taskb);*/
-		System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
+	//	System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
 		/*ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("myProcess");
 		 taskService.addCandidateUser(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list().get(0).getId(), "fbm");
 		 

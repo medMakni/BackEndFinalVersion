@@ -17,8 +17,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.services.CourrierInterneImpl;
-import biz.picosoft.services.CourrierSortieImpl;
-import biz.picosoft.services.CourriersArrivésServices;
+import biz.picosoft.services.CourriersServices;
 
 public class TestInterne {
 	
@@ -38,7 +37,7 @@ public class TestInterne {
 	RuntimeService runtimeService = processEngine.getRuntimeService();
 	TaskService taskService = processEngine.getTaskService();
 
-	CourriersArrivésServices courriersIntereService = new CourrierInterneImpl();
+	CourriersServices courriersIntereService = new CourrierInterneImpl();
 	Map<String, Object> proprietés = new HashMap<String, Object>();
 	proprietés.put("date", "19-5-5");
 	proprietés.put("départmentId", "chefsIT");
