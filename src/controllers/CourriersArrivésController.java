@@ -101,24 +101,13 @@ public class CourriersArrivésController {
 		return a;
 	}
 
-	@RequestMapping(value = "/réviser", method = RequestMethod.GET)
+	@RequestMapping(value = "/réviser", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public void réviser(String idCourrier, boolean isValidated) {
+	public void réviser(@RequestParam("idCourrier")String idCourrier, @RequestParam("isValidated")boolean isValidated) {
 		courriersArrivésServices.réviser(idCourrier, isValidated);
 	}
 
-	@RequestMapping(value = "/validerCourrier", method = RequestMethod.GET)
-	@ResponseBody
-	public void validerCourrier(String idCourrier) {
-		courriersArrivésServices.validerCourrier(idCourrier);
-	}
-
-	@RequestMapping(value = "/refuserCourrier", method = RequestMethod.GET)
-	@ResponseBody
-	public void refuserCourrier(String idCourrier) {
-		courriersArrivésServices.refuserCourrier(idCourrier);
-	}
-
+	
 	@RequestMapping(value = "/traiterCourrier", method = RequestMethod.GET)
 	@ResponseBody
 	public void traiterCourrier(String idCourrier, Map<String, Object> proprietésCourrier) {
@@ -151,5 +140,11 @@ public class CourriersArrivésController {
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String direction) {
 		
 		return courriersArrivésServices.getListActiveCourrierArrivéParDirection(direction);
+	}
+	@RequestMapping(value = "/getCourrierDetails", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getCourrierDetails(@RequestParam("id")String id) {
+		
+		return courriersArrivésServices.getCourrierDetails(id);
 	}
 }

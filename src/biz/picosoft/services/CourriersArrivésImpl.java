@@ -369,6 +369,7 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	@Override
 	public Map<String, Object> getCourrierDetails(String idCourrier) {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
+		courriersDetails.put("idCourrier", idCourrier);
 		return courriersDetails;
 	}
 
