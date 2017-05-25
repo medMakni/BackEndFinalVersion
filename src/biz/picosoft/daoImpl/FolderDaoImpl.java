@@ -18,10 +18,14 @@ import biz.picosoft.dao.FolderDao;
 public class FolderDaoImpl implements FolderDao {
 	Session session;
 
-	public List<CmisObject> getAllChildrens(Folder folder) {
+	public List<String> getAllChildrens(Folder folder) {
 		List<CmisObject> listOfChildrens = new ArrayList<>();
 		folder.getChildren().iterator().forEachRemaining(listOfChildrens::add);
-		return listOfChildrens;
+		List<String> idOfFoldChildrenList=new ArrayList<>(); 
+		for(int i=0;i<listOfChildrens.size();i++){
+			idOfFoldChildrenList.add(listOfChildrens.get(i).getId());
+		}
+		return idOfFoldChildrenList;
 	}
 
 	public CmisObject getFolderByPath(String path) {

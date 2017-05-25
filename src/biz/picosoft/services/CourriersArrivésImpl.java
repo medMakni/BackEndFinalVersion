@@ -18,6 +18,7 @@ import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -26,10 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
+import javassist.expr.NewArray;
 
 @Service
-public class CourriersArrivésImpl implements CourriersArrivésServices {
-
+public class CourriersArrivésImpl implements CourriersServices {
+	@Autowired
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
@@ -52,11 +54,14 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 				FolderDaoImpl folderDaoImpl = new FolderDaoImpl(session);
 				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
 						(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
-				List<CmisObject> lostOfFolderChildrens = folderDaoImpl.getAllChildrens((Folder) folderDaoImpl.getFolderById( idCourrierArrivéFolder));
+				List<String> listOfFolderChildrens = folderDaoImpl
+						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
-				proprietésCourrier.replace ("listePiécesJointes", lostOfFolderChildrens);
-				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
 
+				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
+				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
+
+				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
 			}
 		} else {
 			traiterCourrier(processInstance.getId(), proprietésCourrier);
@@ -369,6 +374,15 @@ public class CourriersArrivésImpl implements CourriersArrivésServices {
 	@Override
 	public Map<String, Object> getCourrierDetails(String idCourrier) {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
+		courriersDetails.put("idCourrier", idCourrier);
+		List<CmisObject> listePiéceJointeObject = new ArrayList<>();
+		List<String> listPiéceJointeId = new ArrayList<>();
+		listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
+		DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
+	 	for (int i = 0; i < listPiéceJointeId.size(); i++) {
+	 		listePiéceJointeObject.add(documentDaoImpl.getDocument(listPiéceJointeId.get(i)));
+		}
+		courriersDetails.put("listePiéceJointeObject", listePiéceJointeObject); 
 		return courriersDetails;
 	}
 

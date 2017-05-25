@@ -17,8 +17,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.services.CourrierSortieImpl;
-import biz.picosoft.services.CourriersArrivésImpl;
-import biz.picosoft.services.CourriersArrivésServices;
+import biz.picosoft.services.CourriersServices;
 
 public class TestSortie {
 
@@ -36,7 +35,7 @@ public class TestSortie {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		TaskService taskService = processEngine.getTaskService();
 
-		CourriersArrivésServices courriersSortieService = new CourrierSortieImpl();
+		CourriersServices courriersSortieService = new CourrierSortieImpl();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");

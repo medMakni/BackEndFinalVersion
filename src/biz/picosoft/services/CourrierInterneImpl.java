@@ -26,7 +26,7 @@ import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
 
-public class CourrierInterneImpl implements CourriersArrivésServices {
+public class CourrierInterneImpl implements CourriersServices {
 
 	ProcessEngine processEngine;
 	Session session;

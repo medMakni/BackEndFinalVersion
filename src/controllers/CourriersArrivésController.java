@@ -10,8 +10,6 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -24,15 +22,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.mains.TestDao;
 import biz.picosoft.services.CourriersArrivésImpl;
-import biz.picosoft.services.CourriersArrivésServices;
+import biz.picosoft.services.CourriersServices;
 
 @RestController
 public class CourriersArrivésController {
-	CourriersArrivésServices courriersArrivésServices = new CourriersArrivésImpl();
+
+	CourriersServices courriersArrivésServices = new CourriersArrivésImpl();
 
 	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET)
 	@ResponseBody
@@ -41,15 +39,16 @@ public class CourriersArrivésController {
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
-		  List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
-	 
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
+
 		return listeCourrier;
 	}
 
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
 	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
-			@RequestParam("objet") String objet ,@RequestParam("societe") String société,@RequestParam("dateOut")Object dateOut,@RequestParam("direction") String direction) {
+			@RequestParam("objet") String objet, @RequestParam("societe") String société,
+			@RequestParam("dateOut") Object dateOut, @RequestParam("direction") String direction) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
@@ -89,15 +88,7 @@ public class CourriersArrivésController {
 	@ResponseBody
 	public CmisObject getDoc() {
 		DocumentDaoImpl daoDocOmpl = new DocumentDaoImpl();
-		ObjectId id = new ObjectId() {
-
-			@Override
-			public String getId() {
-				// TODO Auto-generated method stub
-				return "workspace://SpacesStore/6fc7bf67-e057-4b30-ae37-0d6734b48ddf";
-			}
-		};
-		CmisObject a = daoDocOmpl.getDocument(id);
+		CmisObject a = daoDocOmpl.getDocument("workspace://SpacesStore/6fc7bf67-e057-4b30-ae37-0d6734b48ddf");
 		return a;
 	}
 
@@ -141,15 +132,15 @@ public class CourriersArrivésController {
 
 	@RequestMapping(value = "/getListCourriersArrivésParUser", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username")String userName) {
-	
-		return 	courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
+	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
+
+		return courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
 	}
 
 	@RequestMapping(value = "/getListCourrierArrivéParDirection", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String direction) {
-		
+
 		return courriersArrivésServices.getListActiveCourrierArrivéParDirection(direction);
 	}
 }
