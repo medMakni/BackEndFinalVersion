@@ -375,14 +375,19 @@ public class CourriersArrivésImpl implements CourriersServices {
 	public Map<String, Object> getCourrierDetails(String idCourrier) {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
 		courriersDetails.put("idCourrier", idCourrier);
-		List<CmisObject> listePiéceJointeObject = new ArrayList<>();
-		List<String> listPiéceJointeId = new ArrayList<>();   
-		listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
+		//List<CmisObject> listePiéceJointeObject = new ArrayList<>();
+		//List<String> listPiéceJointeId = new ArrayList<>();   
+		/*listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
 		DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
 	 	for (int i = 0; i < listPiéceJointeId.size(); i++) {
 	 		listePiéceJointeObject.add(documentDaoImpl.getDocument(listPiéceJointeId.get(i).substring(0, listPiéceJointeId.get(i).indexOf(";"))));
 		}
-		courriersDetails.put("listePiéceJointeObject", listePiéceJointeObject); 
+		courriersDetails.put("listePiéceJointeObject", listePiéceJointeObject); */
+		
+	/*	DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
+		CmisObject doc = documentDaoImpl.getDocument("workspace://SpacesStore/bda6fb3c-b19c-45c6-a1f2-0d70b2492ff5");
+		courriersDetails.put("doc", doc);
+		System.out.println(doc.getProperties());*/
 		return courriersDetails;
 	}
 

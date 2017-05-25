@@ -68,7 +68,7 @@ public class TestDao {
 		proprietés.put("société", "Steg");
 		proprietés.put("objet", "facture");
 	
-		File file = new File("D://cv/cover letter.docx");
+		File file = new File("C:/Users/Wassim/Desktop/Capture.PNG");
 		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
