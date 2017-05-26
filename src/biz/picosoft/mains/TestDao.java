@@ -1,8 +1,10 @@
 package biz.picosoft.mains;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +13,8 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -23,8 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import biz.picosoft.services.CourriersArrivésImpl;
-import biz.picosoft.services.CourriersServices;
+import biz.picosoft.daoImpl.DocumentDaoImpl;
  
 @Configuration
 public class TestDao {
@@ -48,8 +50,23 @@ public class TestDao {
 		Session session = factory.getRepositories(parameter).get(0).createSession();
 		return session;
 	}
+	
+	
+	protected static byte[] readContent(InputStream stream  ) throws Exception {
+	 
+	    
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-	public static void main(String[] args) throws FileNotFoundException {
+	    byte[] buffer = new byte[4096];
+	    int b;
+	    while ((b = stream.read(buffer)) > -1) {
+	        baos.write(buffer, 0, b);
+	    }
+
+	    return baos.toByteArray();
+	}
+
+	public static void main(String[] args) throws Exception {
 
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
@@ -57,9 +74,35 @@ public class TestDao {
 		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
 		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersArrivés.bpmn")
 				.deploy().getId();
-		CourriersArrivésImpl courriersArrivésImplLocal=new CourriersArrivésImpl();
+		DocumentDaoImpl dao=new DocumentDaoImpl();
+		 
+		CmisObject docCmis = dao.getDocument("workspace://SpacesStore/6050a95f-788a-4f4e-bc99-129a728d81be");
+ 
+		System.out.println(docCmis );
+		
+	/*	InputStream stream = null;
+		List<Rendition> renditions = docCmis.getRenditions();
+		if (renditions != null) {
+		for (Rendition rendition: renditions) {
+		if (rendition.getHeight() == 16) {
+		String streamId = rendition.getStreamId();
+		stream = rendition.getContentStream().getStream();
+		break;
+		}
+		}
+		}
+		byte[] myByteArray=  readContent(  stream  ) ;
+	 
+		Path path = Paths.get("C:/myfile");
+		Files.write(path, myByteArray);
+		
+		
+		*/
+	 
+	 
+	//	CourriersArrivésImpl courriersArrivésImplLocal=new CourriersArrivésImpl();
 		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
-		Map<String, Object> proprietés = new HashMap<String, Object>();
+	/*	Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");
 		proprietés.put("isValidated", true);
@@ -73,7 +116,7 @@ public class TestDao {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-		 
+		 */
 	 
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -81,7 +124,7 @@ public class TestDao {
 
 		//System.out.println("robert is active tasks" +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
 	 
-		System.out.println(	courriersArrivésImplLocal.getCourrierDetails(processInstance.getId() ));
+		//System.out.println(	courriersArrivésImplLocal.getCourrierDetails(processInstance.getId() ));
 		
 		/*Map<String, Object> proprietés = new HashMap<String, Object>();
 =======

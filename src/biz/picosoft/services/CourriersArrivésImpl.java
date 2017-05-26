@@ -31,7 +31,7 @@ import javassist.expr.NewArray;
 
 @Service
 public class CourriersArrivésImpl implements CourriersServices {
-	@Autowired
+
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
@@ -60,7 +60,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
-
+				proprietésCourrier.put("idCourrier", processInstance.getId());
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
 			}
 		} else {
@@ -374,15 +374,23 @@ public class CourriersArrivésImpl implements CourriersServices {
 	@Override
 	public Map<String, Object> getCourrierDetails(String idCourrier) {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
-		courriersDetails.put("idCourrier", idCourrier);
-		List<CmisObject> listePiéceJointeObject = new ArrayList<>();
-		List<String> listPiéceJointeId = new ArrayList<>();
-		listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
-		DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-	 	for (int i = 0; i < listPiéceJointeId.size(); i++) {
-	 		listePiéceJointeObject.add(documentDaoImpl.getDocument(listPiéceJointeId.get(i).substring(0, listPiéceJointeId.get(i).indexOf(";"))));
-		}
-		courriersDetails.put("listePiéceJointeObject", listePiéceJointeObject); 
+ 
+		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
+		// List<String> listPiéceJointeId = new ArrayList<>();
+		// listPiéceJointeId = (List<String>)
+		// courriersDetails.get("listePiécesJointes");
+		/*
+		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); for (int i =
+		 * 0; i < listPiéceJointeId.size(); i++) {
+		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
+		 * listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";"))));
+		 * 
+		 * System.out.println("idddddd"+listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";")));}
+		 * courriersDetails.put("listePiéceJointeObject",
+		 * listePiéceJointeObject);
+		 */
 		return courriersDetails;
 	}
 
