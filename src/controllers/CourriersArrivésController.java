@@ -16,6 +16,7 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -94,8 +95,9 @@ public class CourriersArrivésController {
 
 	@RequestMapping(value = "/réviser", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public void réviser(@RequestParam("idCourrier")String idCourrier, @RequestParam("isValidated")boolean isValidated) {
-		courriersArrivésServices.réviser(idCourrier, isValidated);
+	public void réviser(@RequestBody Map<String, Object> data) {
+		System.out.println("rrr"+data.get("idCourrier"));
+		courriersArrivésServices.réviser((String)data.get("idCourrier"), (boolean)data.get("isValidated"));
 	}
 
 	
