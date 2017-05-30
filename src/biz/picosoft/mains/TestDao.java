@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
- 
+
 @Configuration
 public class TestDao {
 	@Bean
@@ -50,20 +50,18 @@ public class TestDao {
 		Session session = factory.getRepositories(parameter).get(0).createSession();
 		return session;
 	}
-	
-	
-	protected static byte[] readContent(InputStream stream  ) throws Exception {
-	 
-	    
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-	    byte[] buffer = new byte[4096];
-	    int b;
-	    while ((b = stream.read(buffer)) > -1) {
-	        baos.write(buffer, 0, b);
-	    }
+	protected static byte[] readContent(InputStream stream) throws Exception {
 
-	    return baos.toByteArray();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+		byte[] buffer = new byte[4096];
+		int b;
+		while ((b = stream.read(buffer)) > -1) {
+			baos.write(buffer, 0, b);
+		}
+
+		return baos.toByteArray();
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -217,6 +215,152 @@ public class TestDao {
 	System.out.println(courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("ha"));*/
  
 			//	 ena taw 3malt ili finished w process which include mr x
+
+		/*Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/18a09e1b-cb0b-42c8-b0a8-16e53dff75a8");
+
+		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+
+		Path path = Paths.get("C:/" + docCmis.getContentStreamFileName());
+		File outputFile = new File("D:/"+ docCmis.getContentStreamFileName());
+		FileOutputStream fileOuputStream = null;
+		try {
+			fileOuputStream = new FileOutputStream(outputFile);
+			fileOuputStream.write(myByteArray);
+		    } catch (Exception e) {
+	        e.printStackTrace();
+	    }*/
+
+		// CourriersArrivésImpl courriersArrivésImplLocal=new
+		// CourriersArrivésImpl();
+		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
+		/*
+		 * Map<String, Object> proprietés = new HashMap<String, Object>();
+		 * proprietés.put("date", "19-5-5"); proprietés.put("départmentId",
+		 * "chefsIT"); proprietés.put("isValidated", true);
+		 * proprietés.put("expéditeur", "noz"); proprietés.put("isFinished",
+		 * false); proprietés.put("société", "Steg"); proprietés.put("objet",
+		 * "facture");
+		 * 
+		 * File file = new File("D://cv/cover letter.docx"); List
+		 * listePiécesJointes = new ArrayList<>(); listePiécesJointes.add(file);
+		 * proprietés.put("listePiécesJointes", listePiécesJointes);
+		 * ProcessInstance processInstance =
+		 * courriersArrivésImplLocal.créerCourrier(proprietés);
+		 */
+
+		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		TaskService taskService = processEngine.getTaskService();
+
+		// System.out.println("robert is active tasks"
+		// +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+
+		// System.out.println(
+		// courriersArrivésImplLocal.getCourrierDetails(processInstance.getId()
+		// ));
+
+		/*
+		 * Map<String, Object> proprietés = new HashMap<String, Object>();
+		 * ======= <<<<<<< HEAD /* CourriersArrivésServices
+		 * courriersArrivésImplLocal = new CourriersArrivésImpl(); Map<String,
+		 * Object> proprietés = new HashMap<String, Object>(); >>>>>>> branch
+		 * 'master' of https://github.com/medMakni/BackEndFinalVersion.git
+		 * ======= CourriersArrivésServices courriersArrivésImplLocal = new
+		 * CourriersArrivésImpl(); Map<String, Object> proprietés = new
+		 * HashMap<String, Object>(); proprietés.put("date", "19-5-5");
+		 * proprietés.put("départmentId", "chefsIT");
+		 * proprietés.put("isValidated", true); proprietés.put("expéditeur",
+		 * "noz"); proprietés.put("isFinished", false);
+		 * proprietés.put("société", "Steg"); proprietés.put("objet",
+		 * "facture"); File file = new File("D://cv/cover letter.docx"); List
+		 * listePiécesJointes = new ArrayList<>(); listePiécesJointes.add(file);
+		 * proprietés.put("listePiécesJointes", listePiécesJointes);
+		 * ProcessInstance processInstance =
+		 * courriersArrivésImplLocal.créerCourrier(proprietés);
+		 * 
+		 * 
+		 * System.out.println("active tasks for weld ankoud :p "
+		 * +courriersArrivésImplLocal.getListCourriersArrivées());
+		 * 
+		 * 
+		 * /* Map<String, Object> proprietés = new HashMap<String, Object>();
+		 * >>>>>>> branch 'master' of
+		 * https://github.com/medMakni/BackEndFinalVersion.git
+		 * proprietés.put("date", "19-5-5"); proprietés.put("départmentId",
+		 * "chefsIT"); proprietés.put("isValidated", true);
+		 * proprietés.put("expéditeur", "Steg"); proprietés.put("isFinished",
+		 * false); File file = new File("D://cv/cover letter.docx"); List
+		 * listePiécesJointes = new ArrayList<>(); listePiécesJointes.add(file);
+		 * proprietés.put("listePiécesJointes", listePiécesJointes);
+		 * ProcessInstance processInstance =
+		 * courriersArrivésImplLocal.créerCourrier(proprietés); <<<<<<< HEAD
+		 * System.out.println("BO"+courriersArrivésImplLocal.
+		 * getListCourriersArrivésParUser("rb"));
+		 * courriersArrivésImplLocal.réviser(processInstance.getId(), false);
+		 * System.out.println("secrét"+courriersArrivésImplLocal.
+		 * getListCourriersArrivésParUser("ac"));
+		 * 
+		 * //System.out.println(courriersArrivésImplLocal.
+		 * getListCourriersArrivésParUser("fbm")); HistoryService
+		 * historyService=((CourriersArrivésImpl)
+		 * courriersArrivésImplLocal).getProcessEngine().getHistoryService();
+		 * List<HistoricActivityInstance> historicActivityInstances =
+		 * historyService.
+		 * createHistoricActivityInstanceQuery().processInstanceId(
+		 * processInstance.getId()).
+		 * orderByHistoricActivityInstanceStartTime().asc().list();
+		 * System.out.println(historicActivityInstances);
+		 * historicActivityInstances = historyService.
+		 * createHistoricActivityInstanceQuery().processInstanceId(
+		 * processInstance.getId()).
+		 * orderByHistoricActivityInstanceStartTime().asc().list(); /*
+		 * ProcessInstance processInstance1 =
+		 * runtimeService.startProcessInstanceByKey("myProcess"); List<Task>
+		 * taskb =
+		 * taskService.createTaskQuery().taskCandidateUser("fbm").list();
+		 * System.out.println(taskb);
+		 */
+		// System.out.println(courriersArrivésImplLocal.getListCourriersArrivées());
+		/*
+		 * ProcessInstance processInstance1 =
+		 * runtimeService.startProcessInstanceByKey("myProcess");
+		 * taskService.addCandidateUser(taskService.createTaskQuery().
+		 * processInstanceId(processInstance1.getId()).list().get(0).getId(),
+		 * "fbm");
+		 * 
+		 * List<Task> taskByProceeAndUser =
+		 * taskService.createTaskQuery().processDefinitionKey("myProcess").
+		 * taskCandidateUser("mwm") .list(); List<Task> taskb =
+		 * taskService.createTaskQuery().taskCandidateUser("fbm").list();
+		 * System.out.println(taskByProceeAndUser.size());
+		 * System.out.println(taskb.size());
+		 */
+		/*
+		 * System.out.println("BO" +
+		 * courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("jm"))
+		 * ; courriersArrivésImplLocal.réviser(processInstance.getId(), true);
+		 * System.out.println("chef It" +
+		 * courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"))
+		 * ; proprietés.put("affectedTo", "secrétaireitù");
+		 * proprietés.put("isFinished", false);
+		 * courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
+		 * proprietés); System.out.println("siz oactive tasks " +
+		 * taskService.createTaskQuery().processInstanceId(processInstance.getId
+		 * ()).list().size());
+		 * 
+		 * proprietés.replace("isFinished", true);
+		 * courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
+		 * proprietés); System.out.println("siz oactive tasks lev 2 " +
+		 * taskService.createTaskQuery().processInstanceId(processInstance.getId
+		 * ()).list().size());
+		 * System.out.println(runtimeService.createProcessInstanceQuery().active
+		 * ().count()); HistoryService historyService =
+		 * processEngine.getHistoryService();
+		 * System.out.println(courriersArrivésImplLocal.
+		 * getListFinishedCourrierArrivéPerUser("ha"));
+		 */
+
+		// ena taw 3malt ili finished w process which include mr x
 		// courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
 		// proprietés);
 		/*
