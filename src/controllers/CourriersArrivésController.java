@@ -136,7 +136,7 @@ public class CourriersArrivésController {
 	}
 	@RequestMapping(value = "/getCourrierDetails", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> getCourrierDetails(@RequestParam("id")String id) {
+	public Map<String, Object> getCourrierDetails(@RequestParam("id")String id) throws Exception {
 		
 		return courriersArrivésServices.getCourrierDetails(id);
 	}

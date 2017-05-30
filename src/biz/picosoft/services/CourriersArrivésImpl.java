@@ -1,8 +1,11 @@
 package biz.picosoft.services;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -16,6 +19,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +35,7 @@ import javassist.expr.NewArray;
 
 @Service
 public class CourriersArrivésImpl implements CourriersServices {
-	@Autowired
+
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
@@ -60,7 +64,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
-
+				proprietésCourrier.put("idCourrier", processInstance.getId());
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
 			}
 		} else {
@@ -268,7 +272,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 				varsOfAnActiveProcessPerUser.put("date", date);
 				varsOfAnActiveProcessPerUser.put("objet", objet);
 				varsOfAnActiveProcessPerUser.put("société", société);
-
+				varsOfAnActiveProcessPerUser.put("idCourrier", idCourrier);
 				listVarsOfActiveProcesPerUser.add(varsOfAnActiveProcessPerUser);
 
 			}
@@ -372,9 +376,9 @@ public class CourriersArrivésImpl implements CourriersServices {
 	}
 
 	@Override
-	public Map<String, Object> getCourrierDetails(String idCourrier) {
+	public Map<String, Object> getCourrierDetails(String idCourrier) throws Exception {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
-		courriersDetails.put("idCourrier", idCourrier);
+courriersDetails.put("idCourrier", idCourrier);
 		//List<CmisObject> listePiéceJointeObject = new ArrayList<>();
 		//List<String> listPiéceJointeId = new ArrayList<>();   
 		/*listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
@@ -388,7 +392,57 @@ public class CourriersArrivésImpl implements CourriersServices {
 		CmisObject doc = documentDaoImpl.getDocument("workspace://SpacesStore/bda6fb3c-b19c-45c6-a1f2-0d70b2492ff5");
 		courriersDetails.put("doc", doc);
 		System.out.println(doc.getProperties());*/
+
+ 
+		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
+		// List<String> listPiéceJointeId = new ArrayList<>();
+		// listPiéceJointeId = (List<String>)
+		// courriersDetails.get("listePiécesJointes");
+		/*
+		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); for (int i =
+		 * 0; i < listPiéceJointeId.size(); i++) {
+		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
+		 * listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";"))));
+		 * 
+		 * System.out.println("idddddd"+listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";")));}
+		 * courriersDetails.put("listePiéceJointeObject",
+		 * listePiéceJointeObject);
+		 */
+		
+		
+	/*	DocumentDaoImpl dao=new DocumentDaoImpl();
+		 
+		 
+  		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/261f9f8f-a75e-43d0-a58d-5ac14013f91");
+  
+  		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+  		File outputFile = new File("D:/"+ docCmis.getContentStreamFileName());
+  		FileOutputStream fileOuputStream = null;
+  		try {
+  			fileOuputStream = new FileOutputStream(outputFile);
+  			fileOuputStream.write(myByteArray);
+  		    } catch (Exception e) {
+  	        e.printStackTrace();
+      }
+  		
+  		courriersDetails.put("idCourrier", myByteArray);*/
 		return courriersDetails;
+	}
+
+	protected static byte[] readContent(InputStream stream  ) throws Exception {
+	 
+	    
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+	    byte[] buffer = new byte[4096];
+	    int b;
+	    while ((b = stream.read(buffer)) > -1) {
+	        baos.write(buffer, 0, b);
+	    }
+
+	    return baos.toByteArray();
 	}
 
 }
