@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import biz.picosoft.daoImpl.DocumentDaoImpl;
@@ -412,22 +413,22 @@ courriersDetails.put("idCourrier", idCourrier);
 		 */
 		
 		
-	/*	DocumentDaoImpl dao=new DocumentDaoImpl();
+		DocumentDaoImpl dao=new DocumentDaoImpl();
 		 
 		 
-  		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/261f9f8f-a75e-43d0-a58d-5ac14013f91");
+  		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/73871a36-9a6c-42c6-b3e3-7d68362fe9c0");
   
   		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
-  		File outputFile = new File("D:/"+ docCmis.getContentStreamFileName());
-  		FileOutputStream fileOuputStream = null;
-  		try {
-  			fileOuputStream = new FileOutputStream(outputFile);
-  			fileOuputStream.write(myByteArray);
-  		    } catch (Exception e) {
-  	        e.printStackTrace();
-      }
+
   		
-  		courriersDetails.put("idCourrier", myByteArray);*/
+  		ByteArrayResource resource = new ByteArrayResource(myByteArray) {
+			@Override
+			public String getFilename() {
+				return docCmis.getContentStreamFileName();
+			}
+		};
+  		courriersDetails.put("resources", resource);
+  		System.out.println(courriersDetails.get("resources")+" rrrr");
 		return courriersDetails;
 	}
 
