@@ -22,7 +22,7 @@ List<Map<String, Object> > getListCourriersArrivées();
 List<Map<String, Object> > getListActiveCourriersArrivésParUser(String userName);
 List<Map<String, Object> > getListActiveCourrierArrivéParDirection(String direction);
 public File multipartToFile(MultipartFile multipart);
-
+public int getNbrOfFinishedCourrierArrivéParDirection(String directionName);
 List<String> getListFinishedCourrierArrivéPerUser(String userId);
 Map<String, Object> getCourrierDetails(String idCourrier) throws Exception;
 }

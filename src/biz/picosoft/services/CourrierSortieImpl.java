@@ -310,4 +310,10 @@ public class CourrierSortieImpl implements CourriersServices {
 		return courriersDetails;
 	}
 
+	@Override
+	public int getNbrOfFinishedCourrierArrivéParDirection(String directionName) {
+		// TODO Auto-generated method stub
+		return (Integer) null;
+	}
+
 }

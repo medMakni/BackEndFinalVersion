@@ -75,9 +75,11 @@ public class TestDao {
 		DocumentDaoImpl dao=new DocumentDaoImpl();
 		 
  
-		  		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/18a09e1b-cb0b-42c8-b0a8-16e53dff75a8");
+		  		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/c7ff0e49-f2f6-44ed-9857-8e9fbcd21423");
 		  
-		  		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+		  	System.out.println(docCmis.getPaths());;
+		  		
+		  	/*	byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
 		  		File outputFile = new File("D:/"+ docCmis.getContentStreamFileName());
 		  		FileOutputStream fileOuputStream = null;
 		  		try {
@@ -86,7 +88,7 @@ public class TestDao {
 		  		    } catch (Exception e) {
 		  	        e.printStackTrace();
 		      }
-
+*/
 		
 	/*	InputStream stream = null;
 		List<Rendition> renditions = docCmis.getRenditions();

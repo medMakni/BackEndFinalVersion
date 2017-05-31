@@ -319,11 +319,11 @@ public class CourriersArrivésImpl implements CourriersServices {
 		if (listOfActiveTasksByDirection != null) {
 			// this will hold the vars of one task of the list of active process
 			// per direction
-			Map<String, Object> varsOfAnActiveProcessPerUser;
+			Map<String, Object> varsOfAnActiveProcessPerDirection;
 			for (int i = 0; i < listOfActiveTasksByDirection.size(); i++) {
-				varsOfAnActiveProcessPerUser = runtimeService
+				varsOfAnActiveProcessPerDirection = runtimeService
 						.getVariables(listOfActiveTasksByDirection.get(i).getProcessInstanceId());
-				listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
+				listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerDirection);
 			}
 		}
 		return listVarsOfActiveProcesPerDirection;
@@ -378,22 +378,29 @@ public class CourriersArrivésImpl implements CourriersServices {
 	@Override
 	public Map<String, Object> getCourrierDetails(String idCourrier) throws Exception {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
-courriersDetails.put("idCourrier", idCourrier);
-		//List<CmisObject> listePiéceJointeObject = new ArrayList<>();
-		//List<String> listPiéceJointeId = new ArrayList<>();   
-		/*listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
-		DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-	 	for (int i = 0; i < listPiéceJointeId.size(); i++) {
-	 		listePiéceJointeObject.add(documentDaoImpl.getDocument(listPiéceJointeId.get(i).substring(0, listPiéceJointeId.get(i).indexOf(";"))));
-		}
-		courriersDetails.put("listePiéceJointeObject", listePiéceJointeObject); */
-		
-	/*	DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-		CmisObject doc = documentDaoImpl.getDocument("workspace://SpacesStore/bda6fb3c-b19c-45c6-a1f2-0d70b2492ff5");
-		courriersDetails.put("doc", doc);
-		System.out.println(doc.getProperties());*/
+		courriersDetails.put("idCourrier", idCourrier);
+		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
+		// List<String> listPiéceJointeId = new ArrayList<>();
+		/*
+		 * listPiéceJointeId = (List<String>)
+		 * courriersDetails.get("listePiécesJointes"); DocumentDaoImpl
+		 * documentDaoImpl = new DocumentDaoImpl(); for (int i = 0; i <
+		 * listPiéceJointeId.size(); i++) {
+		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
+		 * listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";")))); }
+		 * courriersDetails.put("listePiéceJointeObject",
+		 * listePiéceJointeObject);
+		 */
 
- 
+		/*
+		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); CmisObject
+		 * doc = documentDaoImpl.getDocument(
+		 * "workspace://SpacesStore/bda6fb3c-b19c-45c6-a1f2-0d70b2492ff5");
+		 * courriersDetails.put("doc", doc);
+		 * System.out.println(doc.getProperties());
+		 */
+
 		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
 		// List<String> listPiéceJointeId = new ArrayList<>();
 		// listPiéceJointeId = (List<String>)
@@ -410,39 +417,50 @@ courriersDetails.put("idCourrier", idCourrier);
 		 * courriersDetails.put("listePiéceJointeObject",
 		 * listePiéceJointeObject);
 		 */
-		
-		
-	/*	DocumentDaoImpl dao=new DocumentDaoImpl();
-		 
-		 
-  		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/261f9f8f-a75e-43d0-a58d-5ac14013f91");
-  
-  		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
-  		File outputFile = new File("D:/"+ docCmis.getContentStreamFileName());
-  		FileOutputStream fileOuputStream = null;
-  		try {
-  			fileOuputStream = new FileOutputStream(outputFile);
-  			fileOuputStream.write(myByteArray);
-  		    } catch (Exception e) {
-  	        e.printStackTrace();
-      }
-  		
-  		courriersDetails.put("idCourrier", myByteArray);*/
+
+		DocumentDaoImpl dao = new DocumentDaoImpl();
+
+		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/18a09e1b-cb0b-42c8-b0a8-16e53dff75a8");
+
+		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+		File outputFile = new File("D:/" + docCmis.getContentStreamFileName());
+		FileOutputStream fileOuputStream = null;
+		try {
+			fileOuputStream = new FileOutputStream(outputFile);
+			fileOuputStream.write(myByteArray);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		courriersDetails.put("byteFile", myByteArray);
 		return courriersDetails;
 	}
 
-	protected static byte[] readContent(InputStream stream  ) throws Exception {
-	 
-	    
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	protected static byte[] readContent(InputStream stream) throws Exception {
 
-	    byte[] buffer = new byte[4096];
-	    int b;
-	    while ((b = stream.read(buffer)) > -1) {
-	        baos.write(buffer, 0, b);
-	    }
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-	    return baos.toByteArray();
+		byte[] buffer = new byte[4096];
+		int b;
+		while ((b = stream.read(buffer)) > -1) {
+			baos.write(buffer, 0, b);
+		}
+
+		return baos.toByteArray();
 	}
+
+	@Override
+	public int getNbrOfFinishedCourrierArrivéParDirection(String directionName) {
+
+		HistoryService historyService = processEngine.getHistoryService();
+
+		List<HistoricProcessInstance> listOfFnishedProcesPerDirection = historyService
+				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished()
+				.variableValueEquals("départmentId", directionName).list();
+
+		return listOfFnishedProcesPerDirection.size();
+
+	}
+ 
 
 }
