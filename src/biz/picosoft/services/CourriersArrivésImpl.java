@@ -418,6 +418,62 @@ public class CourriersArrivésImpl implements CourriersServices {
 		 * listePiéceJointeObject);
 		 */
 
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		DocumentDaoImpl dao = new DocumentDaoImpl();
 
 		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/18a09e1b-cb0b-42c8-b0a8-16e53dff75a8");
@@ -435,6 +491,41 @@ public class CourriersArrivésImpl implements CourriersServices {
 		courriersDetails.put("byteFile", myByteArray);
 		return courriersDetails;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	protected static byte[] readContent(InputStream stream) throws Exception {
 
