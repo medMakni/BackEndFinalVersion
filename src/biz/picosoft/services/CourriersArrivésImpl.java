@@ -476,15 +476,28 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 		System.out.println(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
 				.finished().list().size());
-		List<Map<String, Object>> listFinishedCourriersInvolvedMrX = new ArrayList<>();
-		for (int i = 0; i < historyService.createHistoricProcessInstanceQuery()
-				.processDefinitionKey("courriersArrivés").finished().list().size(); i++) {
-			listFinishedCourriersInvolvedMrX
-					.add((Map<String, Object>) historyService.createHistoricVariableInstanceQuery().processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()));
-
+		List<Map<String, Object>> listVarsOfFinshedCourrier= new ArrayList<>();
+		Map<String, Object> parameter;
+		String varName;
+		Object varValue;
+		for (int i = 0; i < historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
+				.finished().list().size(); i++) {
+			parameter = new HashMap<String, Object>();
+			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName().desc()
+					.list().size(); j++) {
+				varName = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
+						.desc().list().get(i).getVariableName();
+				varValue = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
+						.desc().list().get(i).getValue();
+				parameter.put(varName, varValue);
+			}
+			listVarsOfFinshedCourrier.add(parameter);
 		}
 
-		return listFinishedCourriersInvolvedMrX;
+		return listVarsOfFinshedCourrier;
 	}
 
 }

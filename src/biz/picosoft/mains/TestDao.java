@@ -108,7 +108,7 @@ public class TestDao {
 		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "DirectionRH");
+		proprietés.put("départmentId", "DirectionIT");
 		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "noz");
 		proprietés.put("isFinished", false);
@@ -124,15 +124,15 @@ public class TestDao {
 		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
 
 		StatisticsService statisticsService = new StatisticServiceImpl();
-		System.out.println(statisticsService.getNbrActiveCourrierArrivéPerDirection("DirectionRH"));
+		System.out.println(statisticsService.getNbrActiveCourrierArrivéPerDirection("DirectionIT"));
 		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
 		System.out.println("siz oactive tasks " + courriersArrivésImplLocal.getTaskService().createTaskQuery()
 				.processInstanceId(processInstance.getId()).list().size());
-	/*	 proprietés.replace("isFinished", true);
+		 proprietés.replace("isFinished", true);
 		courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);
 		System.out.println("siz oactive tasks " + courriersArrivésImplLocal.getTaskService().createTaskQuery()
-				.processInstanceId(processInstance.getId()).list().size());*/ 
-		System.out.println("finished proc per dire "+statisticsService.getNbrFinishedCourrierArrivéPerDirection("DirectionRH")+"active proc are "+statisticsService.getNbrActiveCourrierArrivéPerDirection("DirectionRH")+"active in total "+courriersArrivésImplLocal.getListCourriersArrivées().size()+"   total finished "+ statisticsService.getNumberOfFinishedCourrier() );
+				.processInstanceId(processInstance.getId()).list().size());
+		System.out.println("finished proc per dire "+statisticsService.getNbrFinishedCourrierArrivéPerDirection("DirectionIT")+"active proc are "+statisticsService.getNbrActiveCourrierArrivéPerDirection("DirectionRH")+"active in total "+courriersArrivésImplLocal.getListCourriersArrivées().size()+"   total finished "+ statisticsService.getNumberOfFinishedCourrier());
 
 		// System.out.println("robert is active tasks"
 		// +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
