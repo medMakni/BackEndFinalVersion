@@ -7,6 +7,7 @@ import java.util.Map;
 import org.activiti.engine.impl.util.json.JSONArray;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface CourriersServices {

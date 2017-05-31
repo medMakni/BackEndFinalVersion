@@ -380,42 +380,8 @@ public class CourriersArrivésImpl implements CourriersServices {
 	public Map<String, Object> getCourrierDetails(String idCourrier) throws Exception {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
 courriersDetails.put("idCourrier", idCourrier);
-		//List<CmisObject> listePiéceJointeObject = new ArrayList<>();
-		//List<String> listPiéceJointeId = new ArrayList<>();   
-		/*listPiéceJointeId = (List<String>) courriersDetails.get("listePiécesJointes");
-		DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-	 	for (int i = 0; i < listPiéceJointeId.size(); i++) {
-	 		listePiéceJointeObject.add(documentDaoImpl.getDocument(listPiéceJointeId.get(i).substring(0, listPiéceJointeId.get(i).indexOf(";"))));
-		}
-		courriersDetails.put("listePiéceJointeObject", listePiéceJointeObject); */
-		
-	/*	DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-		CmisObject doc = documentDaoImpl.getDocument("workspace://SpacesStore/bda6fb3c-b19c-45c6-a1f2-0d70b2492ff5");
-		courriersDetails.put("doc", doc);
-		System.out.println(doc.getProperties());*/
-
- 
-		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
-		// List<String> listPiéceJointeId = new ArrayList<>();
-		// listPiéceJointeId = (List<String>)
-		// courriersDetails.get("listePiécesJointes");
-		/*
-		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); for (int i =
-		 * 0; i < listPiéceJointeId.size(); i++) {
-		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
-		 * listPiéceJointeId.get(i).substring(0,
-		 * listPiéceJointeId.get(i).indexOf(";"))));
-		 * 
-		 * System.out.println("idddddd"+listPiéceJointeId.get(i).substring(0,
-		 * listPiéceJointeId.get(i).indexOf(";")));}
-		 * courriersDetails.put("listePiéceJointeObject",
-		 * listePiéceJointeObject);
-		 */
-		
-		
 		DocumentDaoImpl dao=new DocumentDaoImpl();
-		 
-		 
+		 	 
   		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/73871a36-9a6c-42c6-b3e3-7d68362fe9c0");
   
   		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
@@ -427,6 +393,7 @@ courriersDetails.put("idCourrier", idCourrier);
 				return docCmis.getContentStreamFileName();
 			}
 		};
+		System.out.println(resource.getFilename());
   		courriersDetails.put("resources", resource);
   		System.out.println(courriersDetails.get("resources")+" rrrr");
 		return courriersDetails;
