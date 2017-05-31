@@ -316,4 +316,10 @@ public class CourrierSortieImpl implements CourriersServices {
 		return (Integer) null;
 	}
 
+	@Override
+	public List<Map<String, Object>>  getFinishedCourrier() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

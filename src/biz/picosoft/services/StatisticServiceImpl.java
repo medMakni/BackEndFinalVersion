@@ -22,15 +22,14 @@ public class StatisticServiceImpl implements StatisticsService{
 
 	@Override
 	public int getNumberOfActiveCourrier() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return courriersArrivésImpl.getListCourriersArrivées().size();
 	}
 
 
 	@Override
 	public int getNumberOfFinishedCourrier() {
-		// TODO Auto-generated method stub
-		return 0;
+		  	return courriersArrivésImpl.getFinishedCourrier().size();
 	}
 
 
@@ -38,7 +37,7 @@ public class StatisticServiceImpl implements StatisticsService{
 	public int getNbrActiveCourrierArrivéPerDirection(String idDirection) {
 		// TODO Auto-generated method stub
 		 
-		return courriersArrivésImpl.getNbrOfFinishedCourrierArrivéParDirection(idDirection);
+		return courriersArrivésImpl.getListActiveCourrierArrivéParDirection(idDirection).size();
 	}
 
 

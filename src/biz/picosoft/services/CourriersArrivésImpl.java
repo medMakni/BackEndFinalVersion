@@ -314,7 +314,8 @@ public class CourriersArrivésImpl implements CourriersServices {
 		List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
 		List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery()
-				.processDefinitionKey("courriersArrivés").taskCandidateGroup(directionName).list();
+				.processDefinitionKey("courriersArrivés").processVariableValueEquals("départmentId", directionName)
+				.list();
 
 		if (listOfActiveTasksByDirection != null) {
 			// this will hold the vars of one task of the list of active process
@@ -418,62 +419,6 @@ public class CourriersArrivésImpl implements CourriersServices {
 		 * listePiéceJointeObject);
 		 */
 
-	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		DocumentDaoImpl dao = new DocumentDaoImpl();
 
 		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/18a09e1b-cb0b-42c8-b0a8-16e53dff75a8");
@@ -491,41 +436,6 @@ public class CourriersArrivésImpl implements CourriersServices {
 		courriersDetails.put("byteFile", myByteArray);
 		return courriersDetails;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	protected static byte[] readContent(InputStream stream) throws Exception {
 
@@ -552,6 +462,29 @@ public class CourriersArrivésImpl implements CourriersServices {
 		return listOfFnishedProcesPerDirection.size();
 
 	}
- 
+
+	@Override
+	public List<Map<String, Object>> getFinishedCourrier() {
+		HistoryService historyService = this.processEngine.getHistoryService();
+		List<String> listFinishedCourriersId = new ArrayList<>();
+		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
+				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished().list();
+
+		for (int j = 0; j < listFinishedCourriersArrivéInstances.size(); j++) {
+			listFinishedCourriersId.add(listFinishedCourriersArrivéInstances.get(j).getId());
+		}
+
+		System.out.println(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
+				.finished().list().size());
+		List<Map<String, Object>> listFinishedCourriersInvolvedMrX = new ArrayList<>();
+		for (int i = 0; i < historyService.createHistoricProcessInstanceQuery()
+				.processDefinitionKey("courriersArrivés").finished().list().size(); i++) {
+			listFinishedCourriersInvolvedMrX
+					.add((Map<String, Object>) historyService.createHistoricVariableInstanceQuery().processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()));
+
+		}
+
+		return listFinishedCourriersInvolvedMrX;
+	}
 
 }
