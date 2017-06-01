@@ -488,10 +488,10 @@ public class CourriersArrivésImpl implements CourriersServices {
 					.list().size(); j++) {
 				varName = historyService.createHistoricVariableInstanceQuery()
 						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
-						.desc().list().get(i).getVariableName();
+						.desc().list().get(j).getVariableName();
 				varValue = historyService.createHistoricVariableInstanceQuery()
 						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
-						.desc().list().get(i).getValue();
+						.desc().list().get(j).getValue();
 				parameter.put(varName, varValue);
 			}
 			listVarsOfFinshedCourrier.add(parameter);

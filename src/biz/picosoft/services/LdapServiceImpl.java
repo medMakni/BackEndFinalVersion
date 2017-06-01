@@ -31,7 +31,7 @@ public class LdapServiceImpl implements LdapService{
 		for(int i=0;i<groupList.size();i++){
 			if(groupList.get(i).contains("ROLE"))
 				groupList.remove(i);
-			groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("Direction")+9,groupList.get(i).length()));
+			groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("=")+1,groupList.get(i).length()));
 			System.out.println(courriersArrivésImpl.getListActiveCourrierArrivéParDirection("chefsIT").size());
 	
 		}
