@@ -2,6 +2,9 @@ package biz.picosoft.services;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import biz.picosoft.dao.SociétéDao;
 import biz.picosoft.daoImpl.SociétéDaoImpl;
 import biz.picosoft.entity.Contacte;
@@ -12,7 +15,9 @@ SociétéDao sociétéDao;
 
 public SociétéServiceImpl() {
 	super();
-	this.sociétéDao=new  SociétéDaoImpl();
+	
+	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+	this.sociétéDao=(SociétéDaoImpl) context.getBean("sociétéDaoImpl");
 }
 
 @Override

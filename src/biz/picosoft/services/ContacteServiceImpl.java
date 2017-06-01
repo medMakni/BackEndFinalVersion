@@ -2,6 +2,9 @@ package biz.picosoft.services;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import biz.picosoft.dao.ContacteDao;
 import biz.picosoft.daoImpl.ContacteDaoImpl;
 import biz.picosoft.entity.Contacte;
@@ -11,7 +14,8 @@ public class ContacteServiceImpl implements ContactService {
 
 	public ContacteServiceImpl() {
 		super();
-		this.contacteDao = new ContacteDaoImpl();
+		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		this.contacteDao = (ContacteDaoImpl) context.getBean("contactDaoImpl");
 	}
 
 	@Override

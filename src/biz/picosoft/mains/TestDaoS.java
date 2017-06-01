@@ -19,16 +19,17 @@ public class TestDaoS {
 		
 		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 		SociétéDaoImpl sociétéDao=(SociétéDaoImpl) context.getBean("sociétéDaoImpl");
-		//ContacteDaoImpl contacteDaoImpl = (ContacteDaoImpl) context.getBean("contactDaoImpl");
+		  ContacteDaoImpl contacteDaoImpl = (ContacteDaoImpl) context.getBean("contactDaoImpl");
 		sociétéDao.insert(société);
-		Contacte contacte=new Contacte("imed", "imed@pico.biz", "7424554", "ghazella", société);
-		Contacte contacte2=new Contacte("med", "med@pico.biz", "7424554", "ghazella", société);
-		ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
+		 Contacte contacte=new Contacte("imed", "imed@pico.biz", "7424554", "ghazella", société);
+		 Contacte contacte2=new Contacte("med", "med@pico.biz", "7424554", "ghazella", société);
+		// contacteDaoImpl.insert(contacte);
+		 ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
 		 
-		contacteServiceImpl.insert(contacte);
-		contacteServiceImpl.insert(contacte2);
+		 contacteServiceImpl.insert(contacte);
+		//contacteServiceImpl.insert(contacte2);
 		
-		System.out.println("list contacts"+sociétéDao.findAll().get(0).getContacts().get(0).getAdresse());
+	//	System.out.println("list contacts"+sociétéDao.findAll().get(0).getContacts().get(0).getAdresse());
 				}
 
 }
