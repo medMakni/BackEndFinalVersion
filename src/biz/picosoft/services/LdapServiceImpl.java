@@ -1,13 +1,7 @@
-package biz.picosoft.mains;
+package biz.picosoft.services;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-
-import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -15,10 +9,10 @@ import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
 
-import biz.picosoft.services.CourriersArrivésImpl;
+public class LdapServiceImpl implements LdapService{
 
-public class TestLdap {
-	public static String getAllLdapGroups(){
+	@Override
+	public List<String> getAllDirection() {
 		List<String> groupList = null;
 		LdapQuery query = LdapQueryBuilder.query().base("ou=groups,o=mojo").searchScope(SearchScope.SUBTREE)
 				.timeLimit(200).countLimit(221).where("objectclass").is("groupOfUniqueNames");
@@ -41,12 +35,7 @@ public class TestLdap {
 			System.out.println(courriersArrivésImpl.getListActiveCourrierArrivéParDirection("chefsIT").size());
 	
 		}
-		return groupList.toString();
-				
+		return groupList;
 	}
-	
 
-	public static void main(String[] args) {
-		System.out.println(getAllLdapGroups()); 
-	}
 }
