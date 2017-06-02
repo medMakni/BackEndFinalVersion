@@ -60,7 +60,7 @@ public class GenericDaoImp<T> implements GenericDao<T> {
 		em.remove(managed);
 	}
 
-	public T findById(Class<T> t, String id) {
+	public T findById(Class<T> t, int id) {
 		// TODO Auto-generated method stub
 		return em.find(daoType, id);
 	}

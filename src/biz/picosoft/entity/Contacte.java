@@ -31,30 +31,29 @@ public class Contacte implements Serializable {
 	@Column(name = "adresse")
 	String adresse;
 	@ManyToOne
-	@JoinColumn(name="société_id")
-	   private Société société;
+	@JoinColumn(name = "société_id")
+	private Société société;
+
 	public Contacte() {
 		super();
 	}
 
-	/*public Contacte(String nom, String mail, String téléphone, String adresse) {
-		super();
-
-		this.nom = nom;
-		this.mail = mail;
-		this.téléphone = téléphone;
-		this.adresse = adresse;
-	}
-*/
-	
 	public long getIdContact() {
 		return idContact;
 	}
 
-	 
-
 	public Contacte(String nom, String mail, String téléphone, String adresse, Société société) {
 		super();
+		this.nom = nom;
+		this.mail = mail;
+		this.téléphone = téléphone;
+		this.adresse = adresse;
+		this.société = société;
+	}
+
+	public Contacte(int idContact, String nom, String mail, String téléphone, String adresse, Société société) {
+		super();
+		this.idContact = idContact;
 		this.nom = nom;
 		this.mail = mail;
 		this.téléphone = téléphone;
@@ -118,6 +117,14 @@ public class Contacte implements Serializable {
 		if (idContact != other.idContact)
 			return false;
 		return true;
+	}
+
+	public Société getSociété() {
+		return société;
+	}
+
+	public void setSociété(Société société) {
+		this.société = société;
 	}
 
 }

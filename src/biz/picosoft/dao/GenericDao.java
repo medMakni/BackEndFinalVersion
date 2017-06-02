@@ -9,7 +9,7 @@ public interface GenericDao<T> {
 
 	void delete(T t);
 
-	public T findById(Class<T> clazz, String id);
+	public T findById(Class<T> clazz, int id);
 
 	public List<T> findAll();
 }

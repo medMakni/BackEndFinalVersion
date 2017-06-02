@@ -27,6 +27,7 @@ public class TestDaoS {
 		 ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
 		 
 		 contacteServiceImpl.insert(contacte);
+		 System.out.println(contacteServiceImpl.findAll());
 		//contacteServiceImpl.insert(contacte2);
 		
 	//	System.out.println("list contacts"+sociétéDao.findAll().get(0).getContacts().get(0).getAdresse());
