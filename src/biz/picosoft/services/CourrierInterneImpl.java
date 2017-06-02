@@ -20,7 +20,11 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.sun.mail.iap.Response;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
@@ -321,6 +325,25 @@ public class CourrierInterneImpl implements CourriersServices {
 	public Map<String, Object> getCourrierDetails(String idCourrier) {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
 		return courriersDetails;
+	}
+
+	@Override
+	public int getNbrOfFinishedCourrierArrivéParDirection(String directionName) {
+		// TODO Auto-generated method stub
+		return (Integer) null;
+	}
+
+	@Override
+	public List<Map<String, Object>>  getFinishedCourrier() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public ResponseEntity<InputStreamResource> postFile() throws IOException, Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

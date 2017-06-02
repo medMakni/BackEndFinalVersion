@@ -18,21 +18,25 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.sun.mail.iap.Response;
+
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
-import javassist.expr.NewArray;
 
 @Service
 public class CourriersArrivésImpl implements CourriersServices {
@@ -315,16 +319,17 @@ public class CourriersArrivésImpl implements CourriersServices {
 		List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
 		List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery()
-				.processDefinitionKey("courriersArrivés").taskCandidateGroup(directionName).list();
+				.processDefinitionKey("courriersArrivés").processVariableValueEquals("départmentId", directionName)
+				.list();
 
 		if (listOfActiveTasksByDirection != null) {
 			// this will hold the vars of one task of the list of active process
 			// per direction
-			Map<String, Object> varsOfAnActiveProcessPerUser;
+			Map<String, Object> varsOfAnActiveProcessPerDirection;
 			for (int i = 0; i < listOfActiveTasksByDirection.size(); i++) {
-				varsOfAnActiveProcessPerUser = runtimeService
+				varsOfAnActiveProcessPerDirection = runtimeService
 						.getVariables(listOfActiveTasksByDirection.get(i).getProcessInstanceId());
-				listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerUser);
+				listVarsOfActiveProcesPerDirection.add(varsOfAnActiveProcessPerDirection);
 			}
 		}
 		return listVarsOfActiveProcesPerDirection;
@@ -379,38 +384,142 @@ public class CourriersArrivésImpl implements CourriersServices {
 	@Override
 	public Map<String, Object> getCourrierDetails(String idCourrier) throws Exception {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
-courriersDetails.put("idCourrier", idCourrier);
-		DocumentDaoImpl dao=new DocumentDaoImpl();
-		 	 
-  		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/73871a36-9a6c-42c6-b3e3-7d68362fe9c0");
-  
-  		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+		courriersDetails.put("idCourrier", idCourrier);
+		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
+		// List<String> listPiéceJointeId = new ArrayList<>();
+		/*
+		 * listPiéceJointeId = (List<String>)
+		 * courriersDetails.get("listePiécesJointes"); DocumentDaoImpl
+		 * documentDaoImpl = new DocumentDaoImpl(); for (int i = 0; i <
+		 * listPiéceJointeId.size(); i++) {
+		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
+		 * listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";")))); }
+		 * courriersDetails.put("listePiéceJointeObject",
+		 * listePiéceJointeObject);
+		 */
 
-  		
-  		ByteArrayResource resource = new ByteArrayResource(myByteArray) {
-			@Override
-			public String getFilename() {
-				return docCmis.getContentStreamFileName();
-			}
-		};
-		System.out.println(resource.getFilename());
-  		courriersDetails.put("resources", resource);
-  		System.out.println(courriersDetails.get("resources")+" rrrr");
+		/*
+		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); CmisObject
+		 * doc = documentDaoImpl.getDocument(
+		 * "workspace://SpacesStore/bda6fb3c-b19c-45c6-a1f2-0d70b2492ff5");
+		 * courriersDetails.put("doc", doc);
+		 * System.out.println(doc.getProperties());
+		 */
+
+		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
+		// List<String> listPiéceJointeId = new ArrayList<>();
+		// listPiéceJointeId = (List<String>)
+		// courriersDetails.get("listePiécesJointes");
+		/*
+		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); for (int i =
+		 * 0; i < listPiéceJointeId.size(); i++) {
+		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
+		 * listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";"))));
+		 * 
+		 * System.out.println("idddddd"+listPiéceJointeId.get(i).substring(0,
+		 * listPiéceJointeId.get(i).indexOf(";")));}
+		 * courriersDetails.put("listePiéceJointeObject",
+		 * listePiéceJointeObject);
+		 */
+
 		return courriersDetails;
 	}
 
-	protected static byte[] readContent(InputStream stream  ) throws Exception {
-	 
-	    
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	@Override
+	public ResponseEntity<InputStreamResource> postFile() throws Exception {
 
-	    byte[] buffer = new byte[4096];
-	    int b;
-	    while ((b = stream.read(buffer)) > -1) {
-	        baos.write(buffer, 0, b);
-	    }
 
-	    return baos.toByteArray();
+		DocumentDaoImpl dao = new DocumentDaoImpl();
+
+		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/ae6d1722-0f08-49ab-a73b-c07036001318");
+		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+		
+
+		ClassPathResource myFile = new ClassPathResource(docCmis.getContentStreamFileName());
+		//System.out.println("eeeee"+pdfFile);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+	    headers.add("Pragma", "no-cache");
+	    headers.add("Expires", "0");
+	    return ResponseEntity
+	            .ok()
+	            .headers(headers)
+	            .contentLength(myByteArray.length)
+	            .contentType(MediaType.parseMediaType("application/octet-stream"))
+	            .body(new InputStreamResource(docCmis.getContentStream().getStream()));
+
+	
 	}
+	
+	protected static byte[] readContent(InputStream stream) throws Exception {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+		byte[] buffer = new byte[4096];
+		int b;
+		while ((b = stream.read(buffer)) > -1) {
+			baos.write(buffer, 0, b);
+		}
+
+		return baos.toByteArray();
+	}
+
+	@Override
+	public int getNbrOfFinishedCourrierArrivéParDirection(String directionName) {
+
+		HistoryService historyService = processEngine.getHistoryService();
+
+		List<HistoricProcessInstance> listOfFnishedProcesPerDirection = historyService
+				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished()
+				.variableValueEquals("départmentId", directionName).list();
+
+		return listOfFnishedProcesPerDirection.size();
+
+	}
+
+	@Override
+	public List<Map<String, Object>> getFinishedCourrier() {
+		HistoryService historyService = this.processEngine.getHistoryService();
+		List<String> listFinishedCourriersId = new ArrayList<>();
+		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
+				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished().list();
+
+		for (int j = 0; j < listFinishedCourriersArrivéInstances.size(); j++) {
+			listFinishedCourriersId.add(listFinishedCourriersArrivéInstances.get(j).getId());
+		}
+
+		System.out.println(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
+				.finished().list().size());
+		List<Map<String, Object>> listVarsOfFinshedCourrier= new ArrayList<>();
+		Map<String, Object> parameter;
+		String varName;
+		Object varValue;
+		for (int i = 0; i < historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
+				.finished().list().size(); i++) {
+			parameter = new HashMap<String, Object>();
+			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName().desc()
+					.list().size(); j++) {
+				varName = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
+						.desc().list().get(i).getVariableName();
+				varValue = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
+						.desc().list().get(i).getValue();
+				parameter.put(varName, varValue);
+			}
+			listVarsOfFinshedCourrier.add(parameter);
+		}
+
+		return listVarsOfFinshedCourrier;
+	}
+
+
+
+
+
 
 }

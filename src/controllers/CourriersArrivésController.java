@@ -16,7 +16,8 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.util.MultiValueMap;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -135,10 +136,17 @@ public class CourriersArrivésController {
 
 		return courriersArrivésServices.getListActiveCourrierArrivéParDirection(direction);
 	}
-	@RequestMapping(value = "/getCourrierDetails", method = RequestMethod.GET,produces = "application/json" )
+	@RequestMapping(value = "/getCourrierDetails", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> getCourrierDetails(@RequestParam("id")String id) throws Exception {
 		
 		return courriersArrivésServices.getCourrierDetails(id);
 	}
+	@RequestMapping(value = "/downloadPDFFile",produces = { "application/json" }, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<InputStreamResource> downloadPDFFile() throws Exception {
+		return courriersArrivésServices.postFile();
+		
+	}
+
 }

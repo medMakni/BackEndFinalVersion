@@ -1,13 +1,13 @@
 package biz.picosoft.services;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.util.json.JSONArray;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
-import org.springframework.util.MultiValueMap;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface CourriersServices {
@@ -23,7 +23,10 @@ List<Map<String, Object> > getListCourriersArrivées();
 List<Map<String, Object> > getListActiveCourriersArrivésParUser(String userName);
 List<Map<String, Object> > getListActiveCourrierArrivéParDirection(String direction);
 public File multipartToFile(MultipartFile multipart);
-
+public int getNbrOfFinishedCourrierArrivéParDirection(String directionName);
 List<String> getListFinishedCourrierArrivéPerUser(String userId);
 Map<String, Object> getCourrierDetails(String idCourrier) throws Exception;
+List<Map<String, Object>> getFinishedCourrier();
+ResponseEntity<InputStreamResource> postFile() throws IOException, Exception;
+
 }
