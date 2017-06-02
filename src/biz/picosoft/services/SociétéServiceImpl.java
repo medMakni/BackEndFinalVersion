@@ -24,8 +24,8 @@ public class SociétéServiceImpl implements SociétéService {
 	}
 
 	@Override
-	public void insert(Société société) {
-		// TODO Auto-generated method stub
+	public void insert(String nom, String email, String télèphone, String adress) {
+		Société société=new Société(nom, email, télèphone, adress);
 		sociétéDao.insert(société);
 	}
 
@@ -45,9 +45,15 @@ public class SociétéServiceImpl implements SociétéService {
 	}
 
 	@Override
-	public Société findById(int id) {
+	public Map<String, Object> findById(int id) {
+		Société société=sociétéDao.findById(Société.class, id);
+		Map<String, Object> mapOfSociété=new HashMap<String, Object> ();
+		mapOfSociété.put("nom", société.getNom());
+		mapOfSociété.put("email", société.getNom());
+		mapOfSociété.put("télèphone", société.getTélèphone());
+		mapOfSociété.put("adress", société.getAdress());
 		// TODO Auto-generated method stub
-		return sociétéDao.findById(Société.class, id);
+		return mapOfSociété;
 	}
 
 	@Override
@@ -68,8 +74,8 @@ public class SociétéServiceImpl implements SociétéService {
 	}
 
 	@Override
-	public List<Contacte> findAllContacts(Société société) {
-		// TODO Auto-generated method stub
+	public List<Contacte> findAllContacts(int idSociété) {
+		Société société=sociétéDao.findById(Société.class, idSociété);
 		return sociétéDao.findAllContacts(société);
 
 	}

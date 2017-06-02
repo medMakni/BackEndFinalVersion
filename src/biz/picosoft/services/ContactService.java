@@ -7,7 +7,7 @@ import biz.picosoft.entity.Contacte;
 import biz.picosoft.entity.Société;
 
 public interface ContactService {
-	void insert(Contacte contacte);
+	void insert( String nom, String mail, String téléphone, String adresse, int idSociété);
 
 	void update(int id,String nom, String mail, String téléphone, String adresse, Société société);
 

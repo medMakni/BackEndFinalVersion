@@ -8,15 +8,15 @@ import biz.picosoft.entity.Société;
 
 public interface SociétéService {
 
-	void insert(Société société);
+	void insert(String nom, String email, String télèphone, String adress);
 
 	void update(int id,String nom, String email, String télèphone, String adress);
 
 	void delete(int id);
 
-	public Société findById(int id);
+	public Map<String, Object> findById(int id);
 
 	public List<Map<String, Object>> findAll();
 
-	public List<Contacte> findAllContacts(Société société);
+	public List<Contacte> findAllContacts(int  idSociété);
 }

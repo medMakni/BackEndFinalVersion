@@ -26,7 +26,7 @@ public class TestDaoS {
 		// contacteDaoImpl.insert(contacte);
 		 ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
 		 
-		 contacteServiceImpl.insert(contacte);
+		 contacteServiceImpl.insert("imed", "imed@pico.biz", "7424554", "ghazella", 1);
 		 System.out.println(contacteServiceImpl.findAll());
 		//contacteServiceImpl.insert(contacte2);
 		
