@@ -5,12 +5,20 @@ import java.util.Map;
 public interface StatisticsService {
 
 	Map<String, Integer> getNbrCourrierPerCompany();
-	int getNumberOfActiveCourrier();
-	int getNumberOfFinishedCourrier();
-	int  getNbrActiveCourrierArrivéPerDirection(String idDirection);
-	int getNbrFinishedCourrierArrivéPerDirection(String idDirection);
-	int  getNbrActiveCourrierSortiesPerDirection(String idDirection);
-	int getNbrFinishedCourrierSortiesPerDirection(String idDirection);
-	int getNbrActiveCourrierInternesPerDirection(String idDirection);
-	int getNbrFinishedCourrierInternesPerDirection(String idDirection);
+
+	Map<String, Integer> getNumberOfActiveCourrier();
+
+	Map<String, Integer> getNumberOfFinishedCourrier();
+
+	Map<String, Integer> getNbrActiveCourrierArrivéPerDirection( );
+
+	Map<String, Integer> getNbrFinishedCourrierArrivéPerDirection( );
+
+	Map<String, Integer> getNbrActiveCourrierSortiesPerDirection( );
+
+	Map<String, Integer> getNbrFinishedCourrierSortiesPerDirection( );
+
+	Map<String, Integer> getNbrActiveCourrierInternesPerDirection( );
+
+	Map<String, Integer> getNbrFinishedCourrierInternesPerDirection( );
 }

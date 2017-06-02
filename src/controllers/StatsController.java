@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,7 +14,7 @@ public class StatsController {
 	StatisticsService ss=new StatisticServiceImpl();
 	@RequestMapping(value = "/nbreactif", method = RequestMethod.GET)
 	@ResponseBody
-public int getNumberOfActiveCourrier() {
+Map<String,Integer> getNumberOfActiveCourrier() {
 		
 		return ss.getNumberOfActiveCourrier();
 	}
@@ -20,7 +22,7 @@ public int getNumberOfActiveCourrier() {
 
 	@RequestMapping(value = "/nbrefini", method = RequestMethod.GET)
 	@ResponseBody
-public int getNumberOfFinishedCourrier() {
+public Map<String,Integer> getNumberOfFinishedCourrier() {
 		
 		return ss.getNumberOfFinishedCourrier();
 	}

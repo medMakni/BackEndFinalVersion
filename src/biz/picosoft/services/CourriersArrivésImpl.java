@@ -433,11 +433,11 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 		DocumentDaoImpl dao = new DocumentDaoImpl();
 
-		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/ae6d1722-0f08-49ab-a73b-c07036001318");
+		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/d33081a5-c862-46d7-8852-2c73b502a16b");
 		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
 		
 
-		ClassPathResource myFile = new ClassPathResource(docCmis.getContentStreamFileName());
+		//ClassPathResource myFile = new ClassPathResource(docCmis.getContentStreamFileName());
 		//System.out.println("eeeee"+pdfFile);
 
 	    HttpHeaders headers = new HttpHeaders();
@@ -451,7 +451,6 @@ public class CourriersArrivésImpl implements CourriersServices {
 	            .contentType(MediaType.parseMediaType("application/octet-stream"))
 	            .body(new InputStreamResource(docCmis.getContentStream().getStream()));
 
-	
 	}
 	
 	protected static byte[] readContent(InputStream stream) throws Exception {
@@ -505,10 +504,10 @@ public class CourriersArrivésImpl implements CourriersServices {
 					.list().size(); j++) {
 				varName = historyService.createHistoricVariableInstanceQuery()
 						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
-						.desc().list().get(i).getVariableName();
+						.desc().list().get(j).getVariableName();
 				varValue = historyService.createHistoricVariableInstanceQuery()
 						.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName()
-						.desc().list().get(i).getValue();
+						.desc().list().get(j).getValue();
 				parameter.put(varName, varValue);
 			}
 			listVarsOfFinshedCourrier.add(parameter);

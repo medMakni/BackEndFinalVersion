@@ -1,17 +1,18 @@
 package biz.picosoft.services;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class StatisticServiceImpl implements StatisticsService{
-	
-	CourriersArrivésImpl courriersArrivésImpl;
+public class StatisticServiceImpl implements StatisticsService {
 
-	 
+	CourriersArrivésImpl courriersArrivésImpl;
+	LdapServiceImpl ldapServiceImpl;
+
 	public StatisticServiceImpl() {
 		super();
-		this.courriersArrivésImpl=new CourriersArrivésImpl();
+		this.courriersArrivésImpl = new CourriersArrivésImpl();
+		this.ldapServiceImpl = new LdapServiceImpl();
 	}
-
 
 	@Override
 	public Map<String, Integer> getNbrCourrierPerCompany() {
@@ -19,59 +20,76 @@ public class StatisticServiceImpl implements StatisticsService{
 		return null;
 	}
 
-
 	@Override
-	public int getNumberOfActiveCourrier() {
-		
-		return courriersArrivésImpl.getListCourriersArrivées().size();
+	public Map<String, Integer> getNumberOfActiveCourrier() {
+
+		Map<String, Integer> mapNumberOActiveCourrier = new HashMap<>();
+		mapNumberOActiveCourrier.put("courriersArrivés", courriersArrivésImpl.getListCourriersArrivées().size());
+		mapNumberOActiveCourrier.put("courriersSorties", 0);
+		mapNumberOActiveCourrier.put("courriersInternes", 0);
+
+		return mapNumberOActiveCourrier;
 	}
 
-
 	@Override
-	public int getNumberOfFinishedCourrier() {
-		  	return courriersArrivésImpl.getFinishedCourrier().size();
+	public Map<String, Integer> getNumberOfFinishedCourrier() {
+		Map<String, Integer> mapNumberOfFinishedCourrier = new HashMap<>();
+		mapNumberOfFinishedCourrier.put("courriersArrivés", courriersArrivésImpl.getFinishedCourrier().size());
+		mapNumberOfFinishedCourrier.put("courriersSorties", 0);
+		mapNumberOfFinishedCourrier.put("courriersInternes", 0);
+
+		return mapNumberOfFinishedCourrier;
 	}
 
+	@Override
+	public Map<String, Integer> getNbrActiveCourrierArrivéPerDirection() {
+		// TODO Auto-generated method stub
+		Map<String, Integer> mapNbrActiveCourrierArrivéPerDirection = new HashMap<>();
+		String nomDirection;
+		for (int i = 0; i < ldapServiceImpl.getAllDirection().size(); i++) {
+			nomDirection = ldapServiceImpl.getAllDirection().get(i);
+			mapNbrActiveCourrierArrivéPerDirection.put(nomDirection,
+					courriersArrivésImpl.getListActiveCourrierArrivéParDirection(nomDirection).size());
+		}
+		return mapNbrActiveCourrierArrivéPerDirection;
+	}
 
 	@Override
-	public int getNbrActiveCourrierArrivéPerDirection(String idDirection) {
+	public Map<String, Integer> getNbrFinishedCourrierArrivéPerDirection() {
+		// TODO Auto-generated method stub
+		Map<String, Integer> mapNbrFinishedCourrierArrivéPerDirection = new HashMap<>();
+		String nomDirection;
+		for (int i = 0; i < ldapServiceImpl.getAllDirection().size(); i++) {
+			nomDirection = ldapServiceImpl.getAllDirection().get(i);
+			mapNbrFinishedCourrierArrivéPerDirection.put(nomDirection,
+					courriersArrivésImpl.getNbrOfFinishedCourrierArrivéParDirection(nomDirection));
+		}
+		return mapNbrFinishedCourrierArrivéPerDirection;
 		 
-		return courriersArrivésImpl.getListActiveCourrierArrivéParDirection(idDirection).size();
 	}
 
-
 	@Override
-	public int getNbrFinishedCourrierArrivéPerDirection(String idDirection) {
-	 
-		return 	courriersArrivésImpl.getNbrOfFinishedCourrierArrivéParDirection(idDirection);
-	}
-
-
-	@Override
-	public int getNbrActiveCourrierSortiesPerDirection(String idDirection) {
+	public Map<String, Integer> getNbrActiveCourrierSortiesPerDirection() {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
-
 
 	@Override
-	public int getNbrFinishedCourrierSortiesPerDirection(String idDirection) {
+	public Map<String, Integer> getNbrFinishedCourrierSortiesPerDirection() {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
-
 
 	@Override
-	public int getNbrActiveCourrierInternesPerDirection(String idDirection) {
+	public Map<String, Integer> getNbrActiveCourrierInternesPerDirection() {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
-
 
 	@Override
-	public int getNbrFinishedCourrierInternesPerDirection(String idDirection) {
+	public Map<String, Integer> getNbrFinishedCourrierInternesPerDirection() {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
- 
+
 }
