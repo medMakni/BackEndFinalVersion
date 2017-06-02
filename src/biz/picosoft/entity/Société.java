@@ -44,6 +44,18 @@ public class Société implements Serializable {
 
 	 
 
+	public Société(int idSociété, String nom, String email, String télèphone, String adress) {
+		super();
+		this.idSociété = idSociété;
+		this.nom = nom;
+		this.email = email;
+		this.télèphone = télèphone;
+		this.adress = adress;
+		this.contacts = contacts;
+	}
+
+
+
 	public Société() {
 		super();
 	}

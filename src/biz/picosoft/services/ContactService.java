@@ -1,17 +1,19 @@
 package biz.picosoft.services;
 
 import java.util.List;
+import java.util.Map;
 
 import biz.picosoft.entity.Contacte;
+import biz.picosoft.entity.Société;
 
 public interface ContactService {
-	void insert(Contacte contacte);
+	void insert( String nom, String mail, String téléphone, String adresse, int idSociété);
 
-	void update(Contacte contacte);
+	void update(int id,String nom, String mail, String téléphone, String adresse, Société société);
 
-	void delete(Contacte contacte);
+	void delete(int id);
 
-	public Contacte findById(String id);
+	public Contacte findById(int id);
 
-	public List<Contacte> findAll();
+	public List<Map<String, Object>> findAll();
 }
