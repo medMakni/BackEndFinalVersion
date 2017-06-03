@@ -9,6 +9,7 @@ import biz.picosoft.daoImpl.SociétéDaoImpl;
 import biz.picosoft.entity.Contacte;
 import biz.picosoft.entity.Société;
 import biz.picosoft.services.ContacteServiceImpl;
+import biz.picosoft.services.SociétéServiceImpl;
 
 public class TestDaoS {
 
@@ -25,9 +26,9 @@ public class TestDaoS {
 		 Contacte contacte2=new Contacte("med", "med@pico.biz", "7424554", "ghazella", société);
 		// contacteDaoImpl.insert(contacte);
 		 ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
-		 
+		 SociétéServiceImpl sociétéServiceImpl=new SociétéServiceImpl();
 		 contacteServiceImpl.insert("imed", "imed@pico.biz", "7424554", "ghazella", 1);
-		 System.out.println(contacteServiceImpl.findAll());
+		 sociétéServiceImpl.delete(1);
 		//contacteServiceImpl.insert(contacte2);
 		
 	//	System.out.println("list contacts"+sociétéDao.findAll().get(0).getContacts().get(0).getAdresse());

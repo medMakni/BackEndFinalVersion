@@ -1,5 +1,6 @@
 package biz.picosoft.mains;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,14 +35,15 @@ public class TestLdap {
 		CourriersArrivésImpl courriersArrivésImpl=new CourriersArrivésImpl();
 		
 		groupList = ldapTemplate.list("cn=DirectionGénérale,ou=groups,o=mojo");
-		for(int i=0;i<groupList.size();i++){
-			if(groupList.get(i).contains("ROLE"))
-				groupList.remove(i);
-			groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("=")+1,groupList.get(i).length()));
-			System.out.println(courriersArrivésImpl.getListActiveCourrierArrivéParDirection("chefsIT").size());
-	
-		}
-		return groupList.toString();
+		List groupListeWithoutRole=new ArrayList<String>();
+		  for(int i=0;i<groupList.size();i++){
+			  groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("=")+1,groupList.get(i).length()));
+			  
+			if(!groupList.get(i).contains("ROLE"))
+				groupListeWithoutRole.add(groupList.get(i));
+			 
+		}  
+		return groupListeWithoutRole.toString();
 				
 	}
 	
