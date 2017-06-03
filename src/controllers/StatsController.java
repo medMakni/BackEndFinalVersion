@@ -27,4 +27,17 @@ public Map<String,Integer> getNumberOfFinishedCourrier() {
 		return ss.getNumberOfFinishedCourrier();
 	}
 	
+	@RequestMapping(value = "/nbreFiniParDir", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Integer> getNbrFinishedCourrierArrivéPerDirection() {
+		return ss.getNbrFinishedCourrierArrivéPerDirection();
+		
+	}
+	@RequestMapping(value = "/nbreActiveParDir", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Integer> getNbrActiveCourrierArrivéPerDirection() {
+		return ss.getNbrActiveCourrierArrivéPerDirection();
+		
+	}
+	
 }
