@@ -1,5 +1,6 @@
 package biz.picosoft.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.ldap.core.LdapTemplate;
@@ -12,7 +13,7 @@ import org.springframework.ldap.query.SearchScope;
 public class LdapServiceImpl implements LdapService{
 
 	@Override
-	public List<String> getAllDirection() {
+	public List<String> getAllDirection(){
 		List<String> groupList = null;
 		LdapQuery query = LdapQueryBuilder.query().base("ou=groups,o=mojo").searchScope(SearchScope.SUBTREE)
 				.timeLimit(200).countLimit(221).where("objectclass").is("groupOfUniqueNames");
@@ -27,15 +28,16 @@ public class LdapServiceImpl implements LdapService{
 		// Attribute attr = attributes.get("cn");
 		CourriersArrivésImpl courriersArrivésImpl=new CourriersArrivésImpl();
 		
-		groupList = ldapTemplate.list("cn=DirectionGénérale,ou=groups,o=mojo");
-		for(int i=0;i<groupList.size();i++){
-			if(groupList.get(i).contains("ROLE"))
-				groupList.remove(i);
-			groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("=")+1,groupList.get(i).length()));
-			System.out.println(courriersArrivésImpl.getListActiveCourrierArrivéParDirection("chefsIT").size());
-	
-		}
-		return groupList;
+		groupList = ldapTemplate.list("ou=groups,o=mojo");
+		List groupListeWithoutRole=new ArrayList<String>();
+		  for(int i=0;i<groupList.size();i++){
+			  groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("=")+1,groupList.get(i).length()));
+			  
+			if(groupList.get(i).contains("Direction"))
+				groupListeWithoutRole.add(groupList.get(i));
+			groupListeWithoutRole.add("DirectionGénérale");
+		}  
+		return groupListeWithoutRole ;
+				
 	}
-
 }

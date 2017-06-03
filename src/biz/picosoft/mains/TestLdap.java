@@ -39,7 +39,7 @@ public class TestLdap {
 		  for(int i=0;i<groupList.size();i++){
 			  groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("=")+1,groupList.get(i).length()));
 			  
-			if(!groupList.get(i).contains("ROLE"))
+			if( groupList.get(i).contains("Direction"))
 				groupListeWithoutRole.add(groupList.get(i));
 			 
 		}  
