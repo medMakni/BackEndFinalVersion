@@ -18,20 +18,25 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.sun.mail.iap.Response;
+
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
-import javassist.expr.NewArray;
 
 @Service
 public class CourriersArrivésImpl implements CourriersServices {
@@ -419,24 +424,35 @@ public class CourriersArrivésImpl implements CourriersServices {
 		 * listePiéceJointeObject);
 		 */
 
-		DocumentDaoImpl dao = new DocumentDaoImpl();
-
-		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/18a09e1b-cb0b-42c8-b0a8-16e53dff75a8");
-
-		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
-		File outputFile = new File("D:/" + docCmis.getContentStreamFileName());
-		FileOutputStream fileOuputStream = null;
-		try {
-			fileOuputStream = new FileOutputStream(outputFile);
-			fileOuputStream.write(myByteArray);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		courriersDetails.put("byteFile", myByteArray);
 		return courriersDetails;
 	}
 
+	@Override
+	public ResponseEntity<InputStreamResource> postFile() throws Exception {
+
+
+		DocumentDaoImpl dao = new DocumentDaoImpl();
+
+		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/d33081a5-c862-46d7-8852-2c73b502a16b");
+		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+		
+
+		//ClassPathResource myFile = new ClassPathResource(docCmis.getContentStreamFileName());
+		//System.out.println("eeeee"+pdfFile);
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+	    headers.add("Pragma", "no-cache");
+	    headers.add("Expires", "0");
+	    return ResponseEntity
+	            .ok()
+	            .headers(headers)
+	            .contentLength(myByteArray.length)
+	            .contentType(MediaType.parseMediaType("application/octet-stream"))
+	            .body(new InputStreamResource(docCmis.getContentStream().getStream()));
+
+	}
+	
 	protected static byte[] readContent(InputStream stream) throws Exception {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -499,5 +515,10 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 		return listVarsOfFinshedCourrier;
 	}
+
+
+
+
+
 
 }
