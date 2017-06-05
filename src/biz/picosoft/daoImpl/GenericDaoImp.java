@@ -58,6 +58,7 @@ public class GenericDaoImp<T> implements GenericDao<T> {
 		// TODO Auto-generated method stub
 		Object managed = em.merge(t);
 		em.remove(managed);
+	 
 	}
 
 	public T findById(Class<T> t, int id) {

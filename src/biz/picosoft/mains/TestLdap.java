@@ -43,6 +43,7 @@ public class TestLdap {
 				groupListeWithoutRole.add(groupList.get(i));
 			 
 		}  
+		  groupListeWithoutRole.add("DirectionGénérale");
 		return groupListeWithoutRole.toString();
 				
 	}
