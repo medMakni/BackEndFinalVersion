@@ -28,10 +28,11 @@ public class ContactsController {
 	void update(int id, String nom, String mail, String téléphone, String adresse, int idSociété) {
 		contacteServiceImpl.update(id, nom, mail, téléphone, adresse, idSociété);
 	}
-	@RequestMapping(value = "/deleteContact", method = RequestMethod.GET)
+	@RequestMapping(value = "/deleteContact", method = RequestMethod.POST)
 	@ResponseBody
-	void delete(int id) {
-		contacteServiceImpl.delete(id);
+	void delete(@RequestBody Map<String, Object> data) {
+		System.out.println("zzz"+(int)data.get("idContact"));
+		contacteServiceImpl.delete((int)data.get("idContact"));
 	}
 	@RequestMapping(value = "/findContactById", method = RequestMethod.GET)
 	@ResponseBody

@@ -30,12 +30,14 @@ public Map<String,Integer> getNumberOfFinishedCourrier() {
 	@RequestMapping(value = "/nbreFiniParDir", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Integer> getNbrFinishedCourrierArrivéPerDirection() {
+		System.out.println("eee"+ss.getNbrFinishedCourrierArrivéPerDirection());
 		return ss.getNbrFinishedCourrierArrivéPerDirection();
 		
 	}
 	@RequestMapping(value = "/nbreActiveParDir", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Integer> getNbrActiveCourrierArrivéPerDirection() {
+		System.out.println("zzz"+ss.getNbrActiveCourrierArrivéPerDirection());
 		return ss.getNbrActiveCourrierArrivéPerDirection();
 		
 	}

@@ -45,6 +45,7 @@ public class ContacteServiceImpl implements ContactService {
 	@Override
 	public void delete(int id) {
 		Contacte contacte = contacteDao.findById(Contacte.class, id);
+		System.out.println(contacte.getNom());
 		System.out.println(contacte.getIdContact()+"adress "+contacte.getAdresse());
 		contacteDao.delete(contacte);
 	}
