@@ -25,8 +25,8 @@ public class ContactsController {
 	}
 	@RequestMapping(value = "/updateContact", method = RequestMethod.GET)
 	@ResponseBody
-	void update(int id, String nom, String mail, String téléphone, String adresse, Société société) {
-		contacteServiceImpl.update(id, nom, mail, téléphone, adresse, société);
+	void update(int id, String nom, String mail, String téléphone, String adresse, int idSociété) {
+		contacteServiceImpl.update(id, nom, mail, téléphone, adresse, idSociété);
 	}
 	@RequestMapping(value = "/deleteContact", method = RequestMethod.GET)
 	@ResponseBody

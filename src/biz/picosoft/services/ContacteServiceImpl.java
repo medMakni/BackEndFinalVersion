@@ -35,7 +35,8 @@ public class ContacteServiceImpl implements ContactService {
 	}
 
 	@Override
-	public void update(int id, String nom, String mail, String téléphone, String adresse, Société société) {
+	public void update(int id, String nom, String mail, String téléphone, String adresse, int idSociété) {
+		Société société=sociétéDao.findById(Société.class, idSociété);
 		Contacte contacte = new Contacte(id, nom, mail, téléphone, adresse, société);
 		contacte.setIdContact(id);
 		contacteDao.update(contacte);

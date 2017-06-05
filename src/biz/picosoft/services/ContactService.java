@@ -9,7 +9,7 @@ import biz.picosoft.entity.Société;
 public interface ContactService {
 	void insert( String nom, String mail, String téléphone, String adresse, int idSociété);
 
-	void update(int id,String nom, String mail, String téléphone, String adresse, Société société);
+	void update(int id,String nom, String mail, String téléphone, String adresse, int idSociété);
 
 	void delete(int id);
 
