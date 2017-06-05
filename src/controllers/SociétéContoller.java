@@ -17,13 +17,16 @@ public class SociétéContoller {
 	SociétéService sociétéService ;
 	@RequestMapping(value = "/insertCompany", method = RequestMethod.POST)
 	@ResponseBody
-	void insert(  String nom, String email, String télèphone, String adress) {
-		sociétéService.insert(nom, email, télèphone, adress);
+	void insert(  @RequestBody Map<String, Object> data) {
+		System.out.println("trtr"+data);
+
+		sociétéService.insert( (String)data.get("nom"), (String)data.get("email"), (String)data.get("telephone"), (String)data.get("adresse"));
 	}
-	@RequestMapping(value = "/updateCompany", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateCompany", method = RequestMethod.POST)
 	@ResponseBody
-	void update(int id,String nom, String email, String télèphone, String adress) {
-		sociétéService.update(id, nom, email, télèphone, adress);
+	void update(@RequestBody Map<String, Object> data) {
+		System.out.println(data);
+		sociétéService.update((int)data.get("idCompany"), (String)data.get("nomCompany"), (String)data.get("emailCompany"), (String)data.get("telephoneCompany"), (String)data.get("adresseCompany"));
 	}
 	@RequestMapping(value = "/deleteCompany", method = RequestMethod.POST)
 	@ResponseBody

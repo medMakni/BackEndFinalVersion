@@ -23,15 +23,16 @@ public class ContactsController {
 		System.out.println(data.get("nom"));
 		contacteServiceImpl.insert((String)data.get("nom"),(String)data.get("email"), (String)data.get("telephone"), (String)data.get("adresse"), (int)data.get("idSociété"));
 	}
-	@RequestMapping(value = "/updateContact", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateContact", method = RequestMethod.POST)
 	@ResponseBody
-	void update(int id, String nom, String mail, String téléphone, String adresse, int idSociété) {
-		contacteServiceImpl.update(id, nom, mail, téléphone, adresse, idSociété);
+	void update(@RequestBody Map<String, Object> data) {
+		System.out.println("vvv"+(String)data.get("nomContact"));
+
+		contacteServiceImpl.update((int)data.get("idContact"), (String)data.get("nomContact"), (String)data.get("emailContact"), (String)data.get("telephoneContact"), (String)data.get("adresseContact"), (int)data.get("idSociété"));
 	}
 	@RequestMapping(value = "/deleteContact", method = RequestMethod.POST)
 	@ResponseBody
 	void delete(@RequestBody Map<String, Object> data) {
-		System.out.println("zzz"+(int)data.get("idContact"));
 		contacteServiceImpl.delete((int)data.get("idContact"));
 	}
 	@RequestMapping(value = "/findContactById", method = RequestMethod.GET)
