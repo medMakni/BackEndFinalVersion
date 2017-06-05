@@ -29,8 +29,8 @@ public class TestDaoS {
 		 //Contacte c=contacteDaoImpl.findById(Contacte.class,14);
 		 //contacteDaoImpl.delete(c);
 		//  ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
-		// SociétéServiceImpl sociétéServiceImpl=new SociétéServiceImpl();
-		System.out.println( sociétéDao.getSociétéFromNom("pico").getAdress());
+		  SociétéServiceImpl sociétéServiceImpl=new SociétéServiceImpl();
+		System.out.println( sociétéServiceImpl.getSociétéFromNom("picoS").getAdress());
 		// contacteServiceImpl.insert("imed", "imed@pico.biz", "7424554", "ghazella", 26);
 		// contacteServiceImpl.delete(23); 
 		//contacteServiceImpl.insert(contacte2);
