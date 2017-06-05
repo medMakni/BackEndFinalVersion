@@ -1,7 +1,6 @@
 package biz.picosoft.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,9 +10,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-@Entity
+@Entity(name = "société")
+@Table(name="société")
 public class Société implements Serializable {
 	/**
 	 * 
@@ -23,7 +25,7 @@ public class Société implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idSociété")
 	int idSociété;
-	@Column(name = "nom")
+	@Column(name =  "nom")
 	String nom;
 	@Column(name = "email")
 	String email;
@@ -69,7 +71,7 @@ public class Société implements Serializable {
 	public void setIdSociété(int idSociété) {
 		this.idSociété = idSociété;
 	}
-
+	@Column(name =  "nom")
 	public String getNom() {
 		return nom;
 	}

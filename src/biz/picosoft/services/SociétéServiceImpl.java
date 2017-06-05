@@ -80,4 +80,10 @@ public class SociétéServiceImpl implements SociétéService {
 
 	}
 
+	@Override
+	public Société getSociétéFromNom(String nomSociété) {
+		// TODO Auto-generated method stub
+		return sociétéDao.getSociétéFromNom(nomSociété);
+	}
+
 }

@@ -19,4 +19,6 @@ public interface SociétéService {
 	public List<Map<String, Object>> findAll();
 
 	public List<Contacte> findAllContacts(int  idSociété);
+	
+	Société getSociétéFromNom(String nomSociété);
 }

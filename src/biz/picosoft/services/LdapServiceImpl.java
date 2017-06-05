@@ -1,8 +1,13 @@
 package biz.picosoft.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.identity.Group;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -36,9 +41,14 @@ public class LdapServiceImpl implements LdapService{
 			if( groupList.get(i).contains("Direction"))
 				groupListeWithoutRole.add(groupList.get(i));
 			 
-		}
+		}  
 		  groupListeWithoutRole.add("DirectionGénérale");
-		return groupListeWithoutRole; 
+		return groupListeWithoutRole ;
 				
 	}
+
+	 
+	
+	
+	
 }
