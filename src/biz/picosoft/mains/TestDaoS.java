@@ -30,7 +30,8 @@ public class TestDaoS {
 		 //contacteDaoImpl.delete(c);
 		//  ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
 		  SociétéServiceImpl sociétéServiceImpl=new SociétéServiceImpl();
-		System.out.println( sociétéServiceImpl.getSociétéFromNom("picoS").getAdress());
+		System.out.println( sociétéServiceImpl.findAll());
+		
 		// contacteServiceImpl.insert("imed", "imed@pico.biz", "7424554", "ghazella", 26);
 		// contacteServiceImpl.delete(23); 
 		//contacteServiceImpl.insert(contacte2);
