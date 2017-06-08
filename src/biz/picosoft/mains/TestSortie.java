@@ -38,13 +38,14 @@ public class TestSortie {
 		CourriersServices courriersSortieService = new CourrierSortieImpl();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "chefsIT");
+		proprietés.put("départmentId", "DirectionRH");
+		proprietés.put("expéditeur", "DirectionCommerciale");
+		proprietés.put("déstinataire", "DirectionCommerciale");
 		proprietés.put("isValidated", true);
-		proprietés.put("expéditeur", "noz");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "Steg");
-		proprietés.put("objet", "facture");
-		proprietés.put("starter", "fbm");
+		proprietés.put("objet", "facturaa2");
+		proprietés.put("starter", "rb");
 		File file = new File("D://cv/cover letter.docx");
 		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);
@@ -52,14 +53,16 @@ public class TestSortie {
 		ProcessInstance processInstance = courriersSortieService.créerCourrier(proprietés);
 
 		System.out.println(
-				"active tasks for weld ankoud :p " + courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
-		System.out.println("Strateeer" + runtimeService.getVariable(processInstance.getId(), "starter"));
-		courriersSortieService.réviser(processInstance.getId(), true);
-		System.out.println("active tasks for weld ankoud :p "
-				+ courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
-		System.out.println("active tasks for weld ankoud :p "
-				+ courriersSortieService.getListActiveCourriersArrivésParUser("am"));
-
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("mz"));
+		//System.out.println("Strateeer" + runtimeService.getVariable(processInstance.getId(), "starter"));
+		 courriersSortieService.réviser(processInstance.getId(), true);
+		 
+		System.out.println("active tasks for BO "
+				+ courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
+		 courriersSortieService.traiterCourrier(processInstance.getId(), proprietés );
+		 
+		System.out.println("active tasks for BO "
+				+ courriersSortieService.getFinishedCourrier().size());
 	}
 
 }
