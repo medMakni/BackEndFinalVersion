@@ -50,10 +50,11 @@ public class CourrierSortieImpl implements CourriersServices {
 
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 		System.out.println("prop here" + proprietésCourrier);
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriéSortie",
-				proprietésCourrier);
-		if ((boolean) proprietésCourrier.get("isValidated") != false) {
+			if ((boolean) proprietésCourrier.get("isValidated") != false) {
+				RuntimeService runtimeService = processEngine.getRuntimeService();
+				ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriéSortie",
+						proprietésCourrier);
+			
 			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
@@ -93,21 +94,24 @@ public class CourrierSortieImpl implements CourriersServices {
 							"chefs"+expéditeur.substring("Direction".length()));
 				 
 				}
+				return processInstance;
 			}
 		} else {
-			traiterCourrier(processInstance.getId(), proprietésCourrier);
-			// TODO Do not forget redirection with dispatcher
-			this.taskService.complete(
-					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-			// add the groups to ldap and affect réviserCourrier to BO
-			String expéditeur=runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
+			proprietésCourrier.replace("isValidated", true);
+			traiterCourrier((String)proprietésCourrier.get("idCourrier"), proprietésCourrier);
+	
+			 		// add the groups to ldap and affect réviserCourrier to BO
+			String expéditeur=runtimeService.getVariable((String)proprietésCourrier.get("idCourrier"), "expéditeur").toString();
+			 System.out.println("id expéditeur"+expéditeur);
 			taskService.addCandidateGroup(
-					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					"chefs"+expéditeur.substring(expéditeur.indexOf("Direction"),expéditeur.length()));
+					taskService.createTaskQuery().processInstanceId((String)proprietésCourrier.get("idCourrier")).list().get(0).getId(),
+					"chefs"+expéditeur.substring("Direction".length()));
+			 
 		}
+			return null;
 
 
-		return processInstance;
+		
 	}
 
 	@Override
@@ -150,7 +154,12 @@ public class CourrierSortieImpl implements CourriersServices {
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 				nouvellesProprietésCourrier);
-		 
+		if((boolean)nouvellesProprietésCourrier.get("isValidated")==false)
+		{
+			this.taskService.addCandidateUser (
+					this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+					(String) nouvellesProprietésCourrier.get("starter") );
+		}
 	}
 
 	@Override
