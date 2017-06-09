@@ -40,26 +40,32 @@ public class TestInterne {
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "chefsIT");
-		proprietés.put("expéditeur", "DirectionRH");
-		proprietés.put("déstinataire", "DirectionCommerciale");
+		proprietés.put("expéditeur", "DirectionCommerciale");
+		proprietés.put("déstinataire", "DirectionIT");
 		proprietés.put("isValidated", true);
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "Steg");
-		proprietés.put("objet", "facturessss");
-		proprietés.put("starter", "rb");
+		proprietés.put("objet", "facturessss100");
+		proprietés.put("starter", "fbm");
 		File file = new File("D://cv/cover letter.docx");
 		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersIntereService.créerCourrier(proprietés);
-  
 		System.out.println(
-				"à réviser  " + courriersIntereService.getListActiveCourriersArrivésParUser("am"));
+				"à réviser  " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
  
-		courriersIntereService.réviser(processInstance.getId(), false);
+		courriersIntereService.réviser(processInstance.getId(), true);
 		System.out.println("active for starter  "
-				+ courriersIntereService.getListActiveCourriersArrivésParUser("rb"));
-
+				+ courriersIntereService.getListActiveCourriersArrivésParUser("fbm"));
+	 
+	//	proprietés.put("idCourrier", processInstance.getId());
+		//courriersIntereService.traiterCourrier(processInstance.getId(), proprietés);
+		System.out.println(
+				"à réviser  " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
+	 
+		System.out.println(
+				"l autre chef département " + courriersIntereService.getListActiveCourriersArrivésParUser("rb"));
 		/*System.out.println(
 				"active tasks for commerciale :p " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
 		proprietés.put("affectedTo", "secrétairesC");

@@ -50,10 +50,11 @@ public class CourrierInterneImpl implements CourriersServices {
 
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 		System.out.println("prop here" + proprietésCourrier);
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CourriersInternes",
-				proprietésCourrier);
+
 		if ((boolean) proprietésCourrier.get("isValidated") != false) {
+			RuntimeService runtimeService = processEngine.getRuntimeService();
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CourriersInternes",
+					proprietésCourrier);
 			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
@@ -68,50 +69,52 @@ public class CourrierInterneImpl implements CourriersServices {
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
-				//check if the starter is a cheff to know if will validate or not
-				if(isCheff(runtimeService.getVariable(processInstance.getId(), "starter").toString())){
-					//to know where to go in the exclusive gateway
+				// check if the starter is a cheff to know if will validate or
+				// not
+				if (isCheff(runtimeService.getVariable(processInstance.getId(), "starter").toString())) {
+					// to know where to go in the exclusive gateway
 					runtimeService.setVariable(processInstance.getId(), "isStarterChef", true);
-							
-					//complete the creation step
-					this.taskService.complete(
-							this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-					System.out.println("HOLA  "+runtimeService.getVariable(processInstance.getId(), "starter"));
-					
-					String déstinataire=runtimeService.getVariable(processInstance.getId(), "déstinataire").toString();
-					taskService.addCandidateGroup(
-							taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-							"chefs"+déstinataire.substring("Direction".length()));
-				}
-				else {
-					//to know where to go in the exclusive gateway
+
+					// complete the creation step
+					this.taskService.complete(this.taskService.createTaskQuery()
+							.processInstanceId(processInstance.getId()).list().get(0).getId());
+					System.out.println("HOLA  " + runtimeService.getVariable(processInstance.getId(), "starter"));
+
+					String déstinataire = runtimeService.getVariable(processInstance.getId(), "déstinataire")
+							.toString();
+					taskService.addCandidateGroup(taskService.createTaskQuery()
+							.processInstanceId(processInstance.getId()).list().get(0).getId(),
+							"chefs" + déstinataire.substring("Direction".length()));
+				} else {
+					// to know where to go in the exclusive gateway
 					runtimeService.setVariable(processInstance.getId(), "isStarterChef", false);
 					this.taskService.complete(
-						
-							this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
+
+							this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0)
+									.getId());
 					// add the groups to ldap and affect réviserCourrier to BO
-					String expéditeur=runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
-					taskService.addCandidateGroup(
-							taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-							"chefs"+expéditeur.substring("Direction".length()));
-					
+					String expéditeur = runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
+					taskService.addCandidateGroup(taskService.createTaskQuery()
+							.processInstanceId(processInstance.getId()).list().get(0).getId(),
+							"chefs" + expéditeur.substring("Direction".length()));
+
 				}
+				return processInstance;
 			}
 		} else {
-			traiterCourrier(processInstance.getId(), proprietésCourrier);
-			// TODO Do not forget redirection with dispatcher
-			this.taskService.complete(
-					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
+			
+			traiterCourrier((String) proprietésCourrier.get("idCourrier"), proprietésCourrier);
+			proprietésCourrier.replace("isValidated", true);
 			// add the groups to ldap and affect réviserCourrier to BO
-			String expéditeur=runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
-			taskService.addCandidateGroup(
-					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					"chefs"+expéditeur.substring("Direction".length()));
-			System.out.println(	"Coucou Chefs2"+expéditeur.substring("Direction".length()));
+			String expéditeur = runtimeService.getVariable((String) proprietésCourrier.get("idCourrier"), "expéditeur")
+					.toString();
+			taskService.addCandidateGroup(taskService.createTaskQuery()
+					.processInstanceId((String) proprietésCourrier.get("idCourrier")).list().get(0).getId(),
+					"chefs" + expéditeur.substring("Direction".length()));
+			System.out.println("Coucou Chefs2" + expéditeur.substring("Direction".length()));
 		}
 
-
-		return processInstance;
+		return null;
 	}
 
 	@Override
@@ -141,7 +144,7 @@ public class CourrierInterneImpl implements CourriersServices {
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"chefs"+ proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
+				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
 	}
 
 	@Override
@@ -151,13 +154,17 @@ public class CourrierInterneImpl implements CourriersServices {
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
 				.singleResult();
 		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
- 		this.taskService.complete(
+		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 				nouvellesProprietésCourrier);
 		if ((boolean) nouvellesProprietésCourrier.get("isFinished") != true) {
-			taskService.addCandidateGroup(
-					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					nouvellesProprietésCourrier.get("affectedTo").toString());
+			if ((boolean) nouvellesProprietésCourrier.get("isValidated") ==true) {
+			 
+				taskService.addCandidateGroup(
+						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+
+						nouvellesProprietésCourrier.get("affectedTo").toString());
+			}
 		}
 	}
 
@@ -275,10 +282,10 @@ public class CourrierInterneImpl implements CourriersServices {
 		// list of vars of active process per user
 		List<Map<String, Object>> listVarsOfActiveProcesPerUser = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
-		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("CourriersInternes")
-				.taskCandidateUser(userName).list();
+		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery()
+				.processDefinitionKey("CourriersInternes").taskCandidateUser(userName).list();
 		System.out.println("hhhh" + listTaskByProceeAndUser);
-System.out.println("Coucou cheff"+listTaskByProceeAndUser);
+		System.out.println("Coucou cheff" + listTaskByProceeAndUser);
 		if (listTaskByProceeAndUser != null) {
 			// this will hold the vars of one task of the list of active process
 			// per user
@@ -372,7 +379,7 @@ System.out.println("Coucou cheff"+listTaskByProceeAndUser);
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
-		this.taskService.addCandidateUser (
+		this.taskService.addCandidateUser(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				runtimeService.getVariable(idCourrier, "starter").toString());
 	}
@@ -519,8 +526,8 @@ System.out.println("Coucou cheff"+listTaskByProceeAndUser);
 		Map<String, Object> parameter;
 		String varName;
 		Object varValue;
-		for (int i = 0; i < historyService.createHistoricProcessInstanceQuery().processDefinitionKey("CourriersInternes")
-				.finished().list().size(); i++) {
+		for (int i = 0; i < historyService.createHistoricProcessInstanceQuery()
+				.processDefinitionKey("CourriersInternes").finished().list().size(); i++) {
 			parameter = new HashMap<String, Object>();
 			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
 					.processInstanceId(listFinishedCourriersArrivéInstances.get(i).getId()).orderByVariableName().desc()
@@ -542,7 +549,7 @@ System.out.println("Coucou cheff"+listTaskByProceeAndUser);
 	public boolean isCheff(String uid) {
 
 		boolean isChef = false;
-		List<Group> groupList= processEngine.getIdentityService().createGroupQuery().groupMember(uid).list();
+		List<Group> groupList = processEngine.getIdentityService().createGroupQuery().groupMember(uid).list();
 		for (Group group : groupList) {
 			String groupName = group.getName();
 			if (groupName.contains("Chef")) {
