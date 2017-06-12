@@ -81,7 +81,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 			}
 		} else {
 			proprietésCourrier.replace("isValidated", true);
-			traiterCourrier(processInstance.getId(), proprietésCourrier);
+			mettreAjour(processInstance.getId(), proprietésCourrier);
 		}
 		return processInstance;
 	}
@@ -117,31 +117,22 @@ public class CourriersArrivésImpl implements CourriersServices {
 	}
 
 	@Override
-	public void traiterCourrier(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
+	public void traiterCourrier(String idCourrier, String user, String assignedTo, String commentaire) {
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
 				.singleResult();
-		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
+		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable(idCourrier,
+				"commentHistory");
+		commentHistory.put(user, commentaire);
+		runtimeService.setVariable(idCourrier, "commentHistory", commentHistory);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
+		if ((boolean) runtimeService.getVariable(idCourrier, "isFinished") != true) {
 
-		if ((boolean) nouvellesProprietésCourrier.get("isFinished") != true) {
-			this.taskService.complete(
-					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					nouvellesProprietésCourrier);
-			if ((boolean) nouvellesProprietésCourrier.get("isValidated") == true) {
 			taskService.addCandidateGroup(
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					nouvellesProprietésCourrier.get("affectedTo").toString());
-			}
-			if ((boolean) nouvellesProprietésCourrier.get("isValidated") == false) {
-				this.taskService.addCandidateGroup(
-						this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-						"Bureau d'ordre");
-			}
-		} else {
-			this.taskService.complete(
-					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					nouvellesProprietésCourrier);
+					assignedTo);
 		}
 
 	}
@@ -522,6 +513,23 @@ public class CourriersArrivésImpl implements CourriersServices {
 		}
 
 		return listVarsOfFinshedCourrier;
+	}
+
+	@Override
+	public void mettreAjour(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
+		// TODO Auto-generated method stub
+
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
+				.singleResult();
+		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				nouvellesProprietésCourrier);
+		this.taskService.addCandidateGroup(
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+				"Bureau d'ordre");
+
 	}
 
 }
