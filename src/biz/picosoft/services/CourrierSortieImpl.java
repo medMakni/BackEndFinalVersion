@@ -144,23 +144,7 @@ public class CourrierSortieImpl implements CourriersServices {
 				"chefsbo");
 	}
 
-	@Override
-	public void traiterCourrier(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
-
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
-				.singleResult();
-		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-				nouvellesProprietésCourrier);
-		if((boolean)nouvellesProprietésCourrier.get("isValidated")==false)
-		{
-			this.taskService.addCandidateUser (
-					this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-					(String) nouvellesProprietésCourrier.get("starter") );
-		}
-	}
+ 
 
 	@Override
 	public void archiverCourrier(String idCourrier) {
@@ -554,6 +538,40 @@ public class CourrierSortieImpl implements CourriersServices {
 		}
 
 		return isChef;
+	}
+
+	@Override
+	public void traiterCourrier(String idCourrier, String user, String assignedTo, String commentaire) {
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
+				.singleResult();
+		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				nouvellesProprietésCourrier);
+		if((boolean)nouvellesProprietésCourrier.get("isValidated")==false)
+		{
+			this.taskService.addCandidateUser (
+					this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+					(String) nouvellesProprietésCourrier.get("starter") );
+		}
+		
+	}
+
+	@Override
+	public void mettreAjour(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
+ 
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
+				.singleResult();
+		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				nouvellesProprietésCourrier);
+		this.taskService.addCandidateUser (
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+				(String) nouvellesProprietésCourrier.get("starter") );
+
 	}
 
 
