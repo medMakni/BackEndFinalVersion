@@ -71,19 +71,18 @@ public class CourriersArrivésImpl implements CourriersServices {
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
+				this.taskService.complete(this.taskService.createTaskQuery().processInstanceId(processInstance.getId())
+						.list().get(0).getId());
+				// add the groups to ldap and affect réviserCourrier to BO
+
+				taskService.addCandidateGroup(
+						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+						"Bureau d'ordre");
 			}
 		} else {
+			proprietésCourrier.replace("isValidated", true);
 			traiterCourrier(processInstance.getId(), proprietésCourrier);
 		}
-		// TODO Do not forget redirection with dispatcher
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-		// add the groups to ldap and affect réviserCourrier to BO
-
-		taskService.addCandidateGroup(
-				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-				"Bureau d'ordre");
-
 		return processInstance;
 	}
 
@@ -114,7 +113,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				proprietésCourrier.get("départmentId").toString());
+				"chefs" + proprietésCourrier.get("déstinataire").toString());
 	}
 
 	@Override
@@ -124,14 +123,27 @@ public class CourriersArrivésImpl implements CourriersServices {
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
 				.singleResult();
 		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-				nouvellesProprietésCourrier);
+
 		if ((boolean) nouvellesProprietésCourrier.get("isFinished") != true) {
+			this.taskService.complete(
+					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+					nouvellesProprietésCourrier);
+			if ((boolean) nouvellesProprietésCourrier.get("isValidated") == true) {
 			taskService.addCandidateGroup(
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 					nouvellesProprietésCourrier.get("affectedTo").toString());
+			}
+			if ((boolean) nouvellesProprietésCourrier.get("isValidated") == false) {
+				this.taskService.addCandidateGroup(
+						this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+						"Bureau d'ordre");
+			}
+		} else {
+			this.taskService.complete(
+					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+					nouvellesProprietésCourrier);
 		}
+
 	}
 
 	@Override
@@ -319,7 +331,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 		List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
 		List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery()
-				.processDefinitionKey("courriersArrivés").processVariableValueEquals("départmentId", directionName)
+				.processDefinitionKey("courriersArrivés").processVariableValueEquals("déstinataire", directionName)
 				.list();
 
 		if (listOfActiveTasksByDirection != null) {
@@ -430,29 +442,25 @@ public class CourriersArrivésImpl implements CourriersServices {
 	@Override
 	public ResponseEntity<InputStreamResource> postFile() throws Exception {
 
-
 		DocumentDaoImpl dao = new DocumentDaoImpl();
 
 		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/d33081a5-c862-46d7-8852-2c73b502a16b");
 		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
-		
 
-		//ClassPathResource myFile = new ClassPathResource(docCmis.getContentStreamFileName());
-		//System.out.println("eeeee"+pdfFile);
+		// ClassPathResource myFile = new
+		// ClassPathResource(docCmis.getContentStreamFileName());
+		// System.out.println("eeeee"+pdfFile);
 
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-	    headers.add("Pragma", "no-cache");
-	    headers.add("Expires", "0");
-	    return ResponseEntity
-	            .ok()
-	            .headers(headers)
-	            .contentLength(myByteArray.length)
-	            .contentType(MediaType.parseMediaType("application/octet-stream"))
-	            .body(new InputStreamResource(docCmis.getContentStream().getStream()));
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
+		return ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
+				.contentType(MediaType.parseMediaType("application/octet-stream"))
+				.body(new InputStreamResource(docCmis.getContentStream().getStream()));
 
 	}
-	
+
 	protected static byte[] readContent(InputStream stream) throws Exception {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -473,7 +481,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 		List<HistoricProcessInstance> listOfFnishedProcesPerDirection = historyService
 				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished()
-				.variableValueEquals("départmentId", directionName).list();
+				.variableValueEquals("déstinataire", directionName).list();
 
 		return listOfFnishedProcesPerDirection.size();
 
@@ -492,7 +500,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 		System.out.println(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
 				.finished().list().size());
-		List<Map<String, Object>> listVarsOfFinshedCourrier= new ArrayList<>();
+		List<Map<String, Object>> listVarsOfFinshedCourrier = new ArrayList<>();
 		Map<String, Object> parameter;
 		String varName;
 		Object varValue;
@@ -515,10 +523,5 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 		return listVarsOfFinshedCourrier;
 	}
-
-
-
-
-
 
 }

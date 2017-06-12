@@ -66,7 +66,7 @@ public class TestSortie {
 		System.out.println("nbr of finished " +courriersSortieService.getFinishedCourrier().size());
 		System.out.println("nbr of finished par direction" +courriersSortieService.getNbrOfFinishedCourrierArrivéParDirection( "DirectionCommerciale"));
 		System.out.println("active courrier" +courriersSortieService.getListCourriersArrivées());
-		
+		 
 		/*proprietés.replace("isValidated", false);
 		courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);
 		System.out.println(
