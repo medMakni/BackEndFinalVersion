@@ -38,12 +38,13 @@ public class TestSortie {
 		CourriersServices courriersSortieService = new CourrierSortieImpl();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "chefsIT");
+		proprietés.put("départmentId", "DirectionRH");
+		proprietés.put("expéditeur", "DirectionCommerciale");
+		proprietés.put("déstinataire", "DirectionCommerciale");
 		proprietés.put("isValidated", true);
-		proprietés.put("expéditeur", "noz");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "Steg");
-		proprietés.put("objet", "facture");
+		proprietés.put("objet", "facturaa404");
 		proprietés.put("starter", "fbm");
 		File file = new File("D://cv/cover letter.docx");
 		List listePiécesJointes = new ArrayList<>();
@@ -52,14 +53,35 @@ public class TestSortie {
 		ProcessInstance processInstance = courriersSortieService.créerCourrier(proprietés);
 
 		System.out.println(
-				"active tasks for weld ankoud :p " + courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
-		System.out.println("Strateeer" + runtimeService.getVariable(processInstance.getId(), "starter"));
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("mz"));
+		// System.out.println("Strateeer" +
+		// runtimeService.getVariable(processInstance.getId(), "starter"));
 		courriersSortieService.réviser(processInstance.getId(), true);
-		System.out.println("active tasks for weld ankoud :p "
-				+ courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
-		System.out.println("active tasks for weld ankoud :p "
-				+ courriersSortieService.getListActiveCourriersArrivésParUser("am"));
+		System.out.println(
+				"active tasks for starter " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
+		System.out.println("active tasks for BO " + courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
+		System.out.println(
+				"active tasks for starter " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
+		courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);
+		System.out.println("nbr of finished " +courriersSortieService.getFinishedCourrier().size());
+		System.out.println("nbr of finished par direction" +courriersSortieService.getNbrOfFinishedCourrierArrivéParDirection( "DirectionCommerciale"));
+		System.out.println("active courrier" +courriersSortieService.getListCourriersArrivées());
+		 
+		/*proprietés.replace("isValidated", false);
+		courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);
+		System.out.println(
+				"active tasks for starter " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
+		
+		//restart schema in cas of refuse 
+		proprietés.put("idCourrier", processInstance.getId());
+		courriersSortieService.créerCourrier(proprietés);
+		System.out.println(
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("mz"));
 
+		courriersSortieService.réviser(processInstance.getId(), true);
+		System.out.println(
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("mz"));
+*/
 	}
 
 }

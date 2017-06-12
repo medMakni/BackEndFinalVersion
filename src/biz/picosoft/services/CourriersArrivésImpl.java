@@ -3,7 +3,6 @@ package biz.picosoft.services;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -24,15 +24,12 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.sun.mail.iap.Response;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
@@ -71,19 +68,18 @@ public class CourriersArrivésImpl implements CourriersServices {
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
+				this.taskService.complete(this.taskService.createTaskQuery().processInstanceId(processInstance.getId())
+						.list().get(0).getId());
+				// add the groups to ldap and affect réviserCourrier to BO
+
+				taskService.addCandidateGroup(
+						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+						"Bureau d'ordre");
 			}
 		} else {
+			proprietésCourrier.replace("isValidated", true);
 			traiterCourrier(processInstance.getId(), proprietésCourrier);
 		}
-		// TODO Do not forget redirection with dispatcher
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-		// add the groups to ldap and affect réviserCourrier to BO
-
-		taskService.addCandidateGroup(
-				taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-				"Bureau d'ordre");
-
 		return processInstance;
 	}
 
@@ -114,7 +110,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				proprietésCourrier.get("départmentId").toString());
+				"chefs" + proprietésCourrier.get("déstinataire").toString());
 	}
 
 	@Override
@@ -124,14 +120,27 @@ public class CourriersArrivésImpl implements CourriersServices {
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
 				.singleResult();
 		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-				nouvellesProprietésCourrier);
+
 		if ((boolean) nouvellesProprietésCourrier.get("isFinished") != true) {
+			this.taskService.complete(
+					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+					nouvellesProprietésCourrier);
+			if ((boolean) nouvellesProprietésCourrier.get("isValidated") == true) {
 			taskService.addCandidateGroup(
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 					nouvellesProprietésCourrier.get("affectedTo").toString());
+			}
+			if ((boolean) nouvellesProprietésCourrier.get("isValidated") == false) {
+				this.taskService.addCandidateGroup(
+						this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
+						"Bureau d'ordre");
+			}
+		} else {
+			this.taskService.complete(
+					this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+					nouvellesProprietésCourrier);
 		}
+
 	}
 
 	@Override
@@ -319,7 +328,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 		List<Map<String, Object>> listVarsOfActiveProcesPerDirection = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
 		List<Task> listOfActiveTasksByDirection = this.taskService.createTaskQuery()
-				.processDefinitionKey("courriersArrivés").processVariableValueEquals("départmentId", directionName)
+				.processDefinitionKey("courriersArrivés").processVariableValueEquals("déstinataire", directionName)
 				.list();
 
 		if (listOfActiveTasksByDirection != null) {
@@ -428,7 +437,10 @@ public class CourriersArrivésImpl implements CourriersServices {
 	}
 
 	@Override
+
 	public ResponseEntity<InputStreamResource>  postFile(String id, String nbreCourrier) throws Exception {
+		
+	
 		Map<String, Object> courriersDetails = runtimeService.getVariables(id);
 		@SuppressWarnings("unchecked")
 		List<String> pg= (List<String>) courriersDetails.get("listePiécesJointes");
@@ -446,8 +458,9 @@ System.out.println("aaaa"+nbreCourrier);
 		 myByteArray = readContent(docCmis.getContentStream().getStream());
 		
 
-		//ClassPathResource myFile = new ClassPathResource(docCmis.getContentStreamFileName());
-		//System.out.println("eeeee"+pdfFile);
+		// ClassPathResource myFile = new
+		// ClassPathResource(docCmis.getContentStreamFileName());
+		// System.out.println("eeeee"+pdfFile);
 
 	
 	    headers.add("filename"+Integer.parseInt(nbreCourrier) ,docCmis.getName());
@@ -458,8 +471,9 @@ System.out.println("aaaa"+nbreCourrier);
 		        .contentLength(myByteArray.length) 
 		        .contentType(MediaType.parseMediaType("application/octet-stream"))
 		        .body(new InputStreamResource(docCmis.getContentStream().getStream()));
+
 	}
-	
+
 	protected static byte[] readContent(InputStream stream) throws Exception {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -480,7 +494,7 @@ System.out.println("aaaa"+nbreCourrier);
 
 		List<HistoricProcessInstance> listOfFnishedProcesPerDirection = historyService
 				.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés").finished()
-				.variableValueEquals("départmentId", directionName).list();
+				.variableValueEquals("déstinataire", directionName).list();
 
 		return listOfFnishedProcesPerDirection.size();
 
@@ -499,7 +513,7 @@ System.out.println("aaaa"+nbreCourrier);
 
 		System.out.println(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("courriersArrivés")
 				.finished().list().size());
-		List<Map<String, Object>> listVarsOfFinshedCourrier= new ArrayList<>();
+		List<Map<String, Object>> listVarsOfFinshedCourrier = new ArrayList<>();
 		Map<String, Object> parameter;
 		String varName;
 		Object varValue;
@@ -522,10 +536,5 @@ System.out.println("aaaa"+nbreCourrier);
 
 		return listVarsOfFinshedCourrier;
 	}
-
-
-
-
-
 
 }

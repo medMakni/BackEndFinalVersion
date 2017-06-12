@@ -92,4 +92,10 @@ public class StatisticServiceImpl implements StatisticsService {
 		return null;
 	}
 
+	@Override
+	public float getRateOfCourrierArrivéPerUser(String uid) {
+		 
+		return( courriersArrivésImpl.getListActiveCourriersArrivésParUser(uid).size()/( courriersArrivésImpl.getListActiveCourriersArrivésParUser(uid).size()+courriersArrivésImpl.getListFinishedCourrierArrivéPerUser(uid).size()))*100;
+	}
+
 }

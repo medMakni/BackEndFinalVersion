@@ -12,7 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Contacte")
 public class Contacte implements Serializable {
 	/**
 	 * 

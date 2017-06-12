@@ -17,6 +17,8 @@ import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
 
 import biz.picosoft.services.CourriersArrivésImpl;
+import biz.picosoft.services.LdapService;
+import biz.picosoft.services.LdapServiceImpl;
 
 public class TestLdap {
 	public static String getAllLdapGroups(){
@@ -49,7 +51,8 @@ public class TestLdap {
 	}
 	
 
-	public static void main(String[] args) {
-		System.out.println(getAllLdapGroups()); 
+	public static void main(String[] args) throws Exception {
+		LdapServiceImpl ldapService=new LdapServiceImpl();
+		System.out.println(ldapService.getSousGroup("DirectionGénérale")); 
 	}
 }

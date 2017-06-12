@@ -14,32 +14,33 @@ public class TestHibernate {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-		 Société société=new Société("pico","test","2121","dsf");
-		 
-		Contacte contacte = new Contacte("fatma", "test222222", "test", "test" ,société);
-	 
-		Courrier courrier = new Courrier(17, 8,contacte);
-		CourrierDaoImpl courrierDaoImpl =  (CourrierDaoImpl) context.getBean("courrierDaoImpl");
-		courrierDaoImpl.insert(courrier);
- 
-		
- 
+		Société société=new Société("pico", "pico@gmail.com", "74255546", "el ghazella");
+		SociétéDaoImpl sociétéDaoImpl = (SociétéDaoImpl) context.getBean("sociétéDaoImpl");
+
+		sociétéDaoImpl.insert(société);
+		 Contacte contacte = new Contacte("fatma", "test222222", "test", "test", société);
+		 ContacteDaoImpl contacteDaoImpl=(ContacteDaoImpl) context.getBean("contactDaoImpl");
+		contacteDaoImpl.insert(contacte);
+	//	Courrier courrier = new Courrier(17, 8, contacte);
+	//	CourrierDaoImpl courrierDaoImpl = (CourrierDaoImpl) context.getBean("courrierDaoImpl");
+		//courrierDaoImpl.insert(courrier);
+			sociétéDaoImpl.delete(société);
+
 		// contacteDaoImpl.insert(contacte);
 
-	/*	List<Société> lst = sociétéDaoImpl.findAll();
-		for (Société société2 : lst) {
-			 
-			 société2.getContacteListe().add(contacte);
-			// contacteDaoImpl.delete(contacte2);
-			sociétéDaoImpl.update(société2);
-
-		}
-
-		
-	*/	
+		/*
+		 * List<Société> lst = sociétéDaoImpl.findAll(); for (Société société2 :
+		 * lst) {
+		 * 
+		 * société2.getContacteListe().add(contacte); //
+		 * contacteDaoImpl.delete(contacte2); sociétéDaoImpl.update(société2);
+		 * 
+		 * }
+		 * 
+		 * 
+		 */
 
 	}
 
