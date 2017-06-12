@@ -16,7 +16,7 @@ ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier);
 void réviser(String idCourrier,boolean isValidated) ;
 public void validerCourrier(String idCourrier);
 public void refuserCourrier(String idCourrier);
-void traiterCourrier(String idCourrier,	Map<String, Object> proprietésCourrier );
+void traiterCourrier (String idCourrier,String user, String assignedTo,String commentaire);
 void archiverCourrier(String idCourrier);
 String attachFiles(List<File> listePiécesJointes, String expéditeur, String id);
 List<Map<String, Object> > getListCourriersArrivées();
@@ -27,6 +27,11 @@ public int getNbrOfFinishedCourrierArrivéParDirection(String directionName);
 List<String> getListFinishedCourrierArrivéPerUser(String userId);
 Map<String, Object> getCourrierDetails(String idCourrier) throws Exception;
 List<Map<String, Object>> getFinishedCourrier();
+<<<<<<< HEAD
+ResponseEntity<InputStreamResource> postFile() throws IOException, Exception;
+void mettreAjour( String idCourrier, Map<String, Object> nouvellesProprietésCourrier);
+=======
 ResponseEntity<InputStreamResource> postFile(String id,String nbreCourrier) throws IOException, Exception;
+>>>>>>> 27646323b726e07943d90dbf5b3c606ff3d251d0
 
 }

@@ -35,7 +35,7 @@ public class TestSortie {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		TaskService taskService = processEngine.getTaskService();
 
-		CourriersServices courriersSortieService = new CourrierSortieImpl();
+		CourrierSortieImpl courriersSortieService = new CourrierSortieImpl();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "DirectionRH");
@@ -62,7 +62,7 @@ public class TestSortie {
 		System.out.println("active tasks for BO " + courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
 		System.out.println(
 				"active tasks for starter " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
-		courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);
+		//courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);
 		System.out.println("nbr of finished " +courriersSortieService.getFinishedCourrier().size());
 		System.out.println("nbr of finished par direction" +courriersSortieService.getNbrOfFinishedCourrierArrivéParDirection( "DirectionCommerciale"));
 		System.out.println("active courrier" +courriersSortieService.getListCourriersArrivées());
