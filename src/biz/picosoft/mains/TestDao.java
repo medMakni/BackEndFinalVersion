@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
@@ -26,7 +23,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.services.CourriersArrivésImpl;
 import biz.picosoft.services.StatisticServiceImpl;
-import biz.picosoft.services.StatisticsService;
 
 @Configuration
 public class TestDao {
