@@ -115,9 +115,13 @@ public class TestDao {
 		proprietés.put("société", "Steg");
 		proprietés.put("objet", "facture");
 
-		File file = new File("C:/Users/Wassim/Desktop/Capture.PNG");
+		File file = new File("C:/Users/Wassim/Desktop/compte.txt");
+		File file2 = new File("C:/Users/Wassim/Desktop/Mon CV.pdf");
+
 		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);
+		listePiécesJointes.add(file2);
+
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 

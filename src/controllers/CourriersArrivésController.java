@@ -144,9 +144,8 @@ public class CourriersArrivésController {
 	}
 	@RequestMapping(value = "/downloadPDFFile",produces = { "application/json" }, method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<InputStreamResource> downloadPDFFile() throws Exception {
-		return courriersArrivésServices.postFile();
-		
+	public ResponseEntity<InputStreamResource> downloadPDFFile(@RequestParam("idCourrier")String id,@RequestParam("nbreCourrier")String nbreCourrier) throws Exception {
+		return courriersArrivésServices.postFile(id,nbreCourrier);
 	}
 
 }

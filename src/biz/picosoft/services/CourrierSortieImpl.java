@@ -454,7 +454,7 @@ public class CourrierSortieImpl implements CourriersServices {
 	}
 
 	@Override
-	public ResponseEntity<InputStreamResource> postFile() throws Exception {
+	public ResponseEntity<InputStreamResource> postFile(String id, String nbreCourrier) throws Exception {
 
 		DocumentDaoImpl dao = new DocumentDaoImpl();
 
@@ -469,9 +469,9 @@ public class CourrierSortieImpl implements CourriersServices {
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 		headers.add("Pragma", "no-cache");
 		headers.add("Expires", "0");
-		return ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
+		return null;/*ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
 				.contentType(MediaType.parseMediaType("application/octet-stream"))
-				.body(new InputStreamResource(docCmis.getContentStream().getStream()));
+				.body(new InputStreamResource(docCmis.getContentStream().getStream()));*/
 
 	}
 

@@ -23,7 +23,7 @@ public class FolderDaoImpl implements FolderDao {
 		folder.getChildren().iterator().forEachRemaining(listOfChildrens::add);
 		List<String> idOfFoldChildrenList=new ArrayList<>(); 
 		for(int i=0;i<listOfChildrens.size();i++){
-			idOfFoldChildrenList.add(listOfChildrens.get(i).getId());
+			idOfFoldChildrenList.add(listOfChildrens.get(i).getId().substring(0,listOfChildrens.get(i).getId().indexOf(";")));
 		}
 		return idOfFoldChildrenList;
 	}

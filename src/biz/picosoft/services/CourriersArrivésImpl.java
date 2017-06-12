@@ -428,29 +428,36 @@ public class CourriersArrivésImpl implements CourriersServices {
 	}
 
 	@Override
-	public ResponseEntity<InputStreamResource> postFile() throws Exception {
-
-
+	public ResponseEntity<InputStreamResource>  postFile(String id, String nbreCourrier) throws Exception {
+		Map<String, Object> courriersDetails = runtimeService.getVariables(id);
+		@SuppressWarnings("unchecked")
+		List<String> pg= (List<String>) courriersDetails.get("listePiécesJointes");
+		System.out.println("azerty"+pg);
 		DocumentDaoImpl dao = new DocumentDaoImpl();
+	    HttpHeaders headers = new HttpHeaders();
+	    byte[] myByteArray = null ;
+	    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+	    headers.add("Pragma", "no-cache");
+	    headers.add("Expires", "0");
+System.out.println("aaaa"+nbreCourrier); 
+		
+	    Document docCmis =((Document) dao.getDocument(pg.get(Integer.parseInt(nbreCourrier)))) ;
 
-		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/d33081a5-c862-46d7-8852-2c73b502a16b");
-		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+		 myByteArray = readContent(docCmis.getContentStream().getStream());
 		
 
 		//ClassPathResource myFile = new ClassPathResource(docCmis.getContentStreamFileName());
 		//System.out.println("eeeee"+pdfFile);
 
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-	    headers.add("Pragma", "no-cache");
-	    headers.add("Expires", "0");
+	
+	    headers.add("filename"+Integer.parseInt(nbreCourrier) ,docCmis.getName());
+		
 	    return ResponseEntity
-	            .ok()
-	            .headers(headers)
-	            .contentLength(myByteArray.length)
-	            .contentType(MediaType.parseMediaType("application/octet-stream"))
-	            .body(new InputStreamResource(docCmis.getContentStream().getStream()));
-
+		        .ok()
+		        .headers(headers)
+		        .contentLength(myByteArray.length) 
+		        .contentType(MediaType.parseMediaType("application/octet-stream"))
+		        .body(new InputStreamResource(docCmis.getContentStream().getStream()));
 	}
 	
 	protected static byte[] readContent(InputStream stream) throws Exception {
