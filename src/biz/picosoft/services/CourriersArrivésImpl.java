@@ -3,7 +3,6 @@ package biz.picosoft.services;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -24,15 +24,12 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.sun.mail.iap.Response;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
@@ -431,24 +428,40 @@ public class CourriersArrivésImpl implements CourriersServices {
 	}
 
 	@Override
-	public ResponseEntity<InputStreamResource> postFile() throws Exception {
 
+	public ResponseEntity<InputStreamResource>  postFile(String id, String nbreCourrier) throws Exception {
+		
+	
+		Map<String, Object> courriersDetails = runtimeService.getVariables(id);
+		@SuppressWarnings("unchecked")
+		List<String> pg= (List<String>) courriersDetails.get("listePiécesJointes");
+		System.out.println("azerty"+pg);
 		DocumentDaoImpl dao = new DocumentDaoImpl();
+	    HttpHeaders headers = new HttpHeaders();
+	    byte[] myByteArray = null ;
+	    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+	    headers.add("Pragma", "no-cache");
+	    headers.add("Expires", "0");
+System.out.println("aaaa"+nbreCourrier); 
+		
+	    Document docCmis =((Document) dao.getDocument(pg.get(Integer.parseInt(nbreCourrier)))) ;
 
-		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/d33081a5-c862-46d7-8852-2c73b502a16b");
-		byte[] myByteArray = readContent(docCmis.getContentStream().getStream());
+		 myByteArray = readContent(docCmis.getContentStream().getStream());
+		
 
 		// ClassPathResource myFile = new
 		// ClassPathResource(docCmis.getContentStreamFileName());
 		// System.out.println("eeeee"+pdfFile);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-		headers.add("Pragma", "no-cache");
-		headers.add("Expires", "0");
-		return ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
-				.contentType(MediaType.parseMediaType("application/octet-stream"))
-				.body(new InputStreamResource(docCmis.getContentStream().getStream()));
+	
+	    headers.add("filename"+Integer.parseInt(nbreCourrier) ,docCmis.getName());
+		
+	    return ResponseEntity
+		        .ok()
+		        .headers(headers)
+		        .contentLength(myByteArray.length) 
+		        .contentType(MediaType.parseMediaType("application/octet-stream"))
+		        .body(new InputStreamResource(docCmis.getContentStream().getStream()));
 
 	}
 

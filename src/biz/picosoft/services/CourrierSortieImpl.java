@@ -439,9 +439,10 @@ public class CourrierSortieImpl  {
 		return courriersDetails;
 	}
 
+ 
 	
 	public ResponseEntity<InputStreamResource> postFile() throws Exception {
-
+ 
 		DocumentDaoImpl dao = new DocumentDaoImpl();
 
 		Document docCmis = (Document) dao.getDocument("workspace://SpacesStore/d33081a5-c862-46d7-8852-2c73b502a16b");
@@ -455,9 +456,9 @@ public class CourrierSortieImpl  {
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 		headers.add("Pragma", "no-cache");
 		headers.add("Expires", "0");
-		return ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
+		return null;/*ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
 				.contentType(MediaType.parseMediaType("application/octet-stream"))
-				.body(new InputStreamResource(docCmis.getContentStream().getStream()));
+				.body(new InputStreamResource(docCmis.getContentStream().getStream()));*/
 
 	}
 
