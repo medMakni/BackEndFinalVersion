@@ -124,7 +124,7 @@ public class TestDao {
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 
 		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
-		 courriersArrivésImplLocal.réviser(processInstance.getId(), false);
+		 courriersArrivésImplLocal.réviser(processInstance.getId(), true);
 		 
  	// proprietés.put("affectedTo", "DirectionCommerciale");
 
@@ -139,7 +139,7 @@ public class TestDao {
 		System.out.println("finished"+courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("am").size());
 		StatisticServiceImpl statisticServiceImpl=new StatisticServiceImpl();
 		
-		System.out.println((courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()/( courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()+courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("am").size()))) ;
+		System.out.println( "actif pro"+courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()+ "   "+( courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()+ courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("am").size()) ) ;
 		/*System.out.println("ended by dire "+ courriersArrivésImplLocal.getNbrOfFinishedCourrierArrivéParDirection("DirectionGénérale"));
 		System.out.println("is it ended ?  "+courriersArrivésImplLocal.getFinishedCourrier().size());
 	 	System.out.println("siz oactive tasks " + courriersArrivésImplLocal.getTaskService().createTaskQuery()

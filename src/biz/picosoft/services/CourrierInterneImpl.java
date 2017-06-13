@@ -37,7 +37,7 @@ import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
 
-public class CourrierInterneImpl   {
+public class CourrierInterneImpl  implements CourriersServices {
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
@@ -47,7 +47,7 @@ public class CourrierInterneImpl   {
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
 	// and then attach the folder of the mail
-
+	@Override
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 		System.out.println("prop here" + proprietésCourrier);
 
@@ -117,7 +117,7 @@ public class CourrierInterneImpl   {
 		return null;
 	}
 
-	
+	@Override
 	public void réviser(String idCourrier, boolean isValidated) {
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -134,7 +134,7 @@ public class CourrierInterneImpl   {
 
 	}
 
-	
+	@Override
 	public void validerCourrier(String idCourrier) {
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
 		proprietésCourrier.replace("isValidated", true);
@@ -147,34 +147,19 @@ public class CourrierInterneImpl   {
 				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
 	}
 
-	
+	@Override
 	public void traiterCourrier(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
 
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
-				.singleResult();
-		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-				nouvellesProprietésCourrier);
-		if ((boolean) nouvellesProprietésCourrier.get("isFinished") != true) {
-			if ((boolean) nouvellesProprietésCourrier.get("isValidated") ==true) {
-			 
-				taskService.addCandidateGroup(
-						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-
-						nouvellesProprietésCourrier.get("affectedTo").toString());
-			}
-		}
+		
 	}
 
-	
+	@Override
 	public void archiverCourrier(String idCourrier) {
 
 	}
 
 	// this method return all instances of courriers arrivés Process
-	
+	@Override
 	public List<Map<String, Object>> getListCourriersArrivées() {
 		String expéditeur;
 		String société;
@@ -209,7 +194,7 @@ public class CourrierInterneImpl   {
 	// this method attach files to a process and return the folder id
 	// it checks also if necessary folder are already created or not if not it
 	// will create it
-	
+	@Override
 	public String attachFiles(List<File> listePiécesJointes, String expéditeur, String id) {
 		Folder folderCourrier = null;
 		if (listePiécesJointes != null) {
@@ -246,7 +231,7 @@ public class CourrierInterneImpl   {
 
 		return folderCourrier.getId();
 	}
-
+	 
 	public ProcessEngine getProcessEngine() {
 		return processEngine;
 	}
@@ -276,7 +261,7 @@ public class CourrierInterneImpl   {
 		this.session = session;
 	}
 
-	
+	@Override
 	// this method will return vars of active process per user
 	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
 		// list of vars of active process per user
@@ -320,7 +305,7 @@ public class CourrierInterneImpl   {
 	}
 
 	
-
+	@Override
 	public List<String> getListFinishedCourrierArrivéPerUser(String userId) {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
@@ -345,7 +330,7 @@ public class CourrierInterneImpl   {
 		return listFinishedCourriersInvolvedMrX;
 	}
 
-	
+	@Override
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String directionName) {
 		// TODO Auto-generated method stub
 
@@ -370,7 +355,7 @@ public class CourrierInterneImpl   {
 
 	}
 
-	
+	@Override
 	public void refuserCourrier(String idCourrier) {
 		// TODO Auto-generated method stub
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
@@ -415,7 +400,7 @@ public class CourrierInterneImpl   {
 		return convFile;
 	}
 
-	
+	@Override
 	public Map<String, Object> getCourrierDetails(String idCourrier) throws Exception {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
 		courriersDetails.put("idCourrier", idCourrier);
@@ -462,7 +447,7 @@ public class CourrierInterneImpl   {
 	}
 
  
-	
+	@Override
 	public ResponseEntity<InputStreamResource> postFile() throws Exception {
  
 	 
@@ -485,7 +470,7 @@ public class CourrierInterneImpl   {
 				.body(new InputStreamResource(docCmis.getContentStream().getStream()));*/
 
 	}
-
+	 
 	protected static byte[] readContent(InputStream stream) throws Exception {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -499,7 +484,7 @@ public class CourrierInterneImpl   {
 		return baos.toByteArray();
 	}
 
-	
+	@Override
 	public int getNbrOfFinishedCourrierArrivéParDirection(String directionName) {
 
 		HistoryService historyService = processEngine.getHistoryService();
@@ -512,7 +497,7 @@ public class CourrierInterneImpl   {
 
 	}
 
-	
+	@Override
 	public List<Map<String, Object>> getFinishedCourrier() {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
@@ -564,5 +549,34 @@ public class CourrierInterneImpl   {
 
 		return isChef;
 	}
+
+	@Override
+	public void traiterCourrier(String idCourrier, String user, String assignedTo, String commentaire) {
+		// TODO Auto-generated method stub
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
+				.singleResult();
+		runtimeService.setVariables(processInstance.getId(), nouvellesProprietésCourrier);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				nouvellesProprietésCourrier);
+		if ((boolean) nouvellesProprietésCourrier.get("isFinished") != true) {
+			if ((boolean) nouvellesProprietésCourrier.get("isValidated") ==true) {
+			 
+				taskService.addCandidateGroup(
+						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+
+						nouvellesProprietésCourrier.get("affectedTo").toString());
+			}
+		}
+	}
+
+	@Override
+	public void mettreAjour(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 }

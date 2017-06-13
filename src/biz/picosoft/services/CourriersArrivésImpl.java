@@ -110,7 +110,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"chefs" + proprietésCourrier.get("déstinataire").toString());
+				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
 	}
 
 	@Override
@@ -543,6 +543,12 @@ System.out.println("aaaa"+nbreCourrier);
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"Bureau d'ordre");
 
+	}
+
+	@Override
+	public ResponseEntity<InputStreamResource> postFile() throws IOException, Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
