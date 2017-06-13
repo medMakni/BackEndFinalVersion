@@ -114,22 +114,22 @@ public class CourriersArrivésImpl implements CourriersServices {
 	}
 
 	@Override
-	public void traiterCourrier(String idCourrier, String user, String assignedTo, String commentaire) {
+	public void traiterCourrier(Map<String,Object> map) {
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
 				.singleResult();
-		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable(idCourrier,
+		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable((String)map.get("idCourrier"),
 				"commentHistory");
-		commentHistory.put(user, commentaire);
-		runtimeService.setVariable(idCourrier, "commentHistory", commentHistory);
+		commentHistory.put((String)map.get("username"),(String) map.get("annotation"));
+		runtimeService.setVariable((String)map.get("idCourrier"), "commentHistory", commentHistory);
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-		if ((boolean) runtimeService.getVariable(idCourrier, "isFinished") != true) {
+		if ((boolean) runtimeService.getVariable((String)map.get("idCourrier"), "isFinished") != true) {
 
 			taskService.addCandidateGroup(
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					assignedTo);
+					(String)map.get("idDepartement"));
 		}
 
 	}
