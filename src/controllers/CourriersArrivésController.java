@@ -106,10 +106,10 @@ public class CourriersArrivésController {
 	}
 
 	
-	@RequestMapping(value = "/traiterCourrier", method = RequestMethod.GET)
+	@RequestMapping(value = "/traiterCourrier", method = RequestMethod.POST)
 	@ResponseBody
 	public void traiterCourrier(@RequestBody Map<String, Object> map) {
-		courriersArrivésServices.traiterCourrier( map);
+		courriersArrivésServices.traiterCourrier(map);
 	}
 
 	@RequestMapping(value = "/archiverCourrier", method = RequestMethod.GET)
@@ -152,9 +152,9 @@ public class CourriersArrivésController {
 	}
 	@RequestMapping(value = "/getSousGroup", method = RequestMethod.GET)
 	@ResponseBody
-	public List<String> getSousGroup(@RequestParam("direction")String direction,@RequestParam("id")String id) throws Exception {
+	public List<String> getSousGroup(@RequestParam("id")String id,@RequestParam("direction")String direction) throws Exception {
 		Map<String, Object> map= courriersArrivésServices.getCourrierDetails(id);
-		return ls.getSousGroup((String)map.get("déstinataire"));
+		return ls.getSousGroup("DirectionGénérale");
 		
 	}
 }

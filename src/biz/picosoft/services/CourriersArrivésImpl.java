@@ -118,7 +118,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	@Override
 	public void traiterCourrier(Map<String,Object> map) {
-
+System.out.println("my map"+map.get("username"));
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
 				.singleResult();
