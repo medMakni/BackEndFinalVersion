@@ -50,10 +50,11 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 		System.out.println("prop here" + proprietésCourrier);
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriersArrivés",
-				proprietésCourrier);
+		
 		if ((boolean) proprietésCourrier.get("isValidated") != false) {
+			RuntimeService runtimeService = processEngine.getRuntimeService();
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriersArrivés",
+					proprietésCourrier);
 			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
@@ -75,12 +76,14 @@ public class CourriersArrivésImpl implements CourriersServices {
 				taskService.addCandidateGroup(
 						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 						"Bureau d'ordre");
+				return processInstance;
 			}
 		} else {
 			proprietésCourrier.replace("isValidated", true);
-			mettreAjour(processInstance.getId(), proprietésCourrier);
+			mettreAjour( (String) proprietésCourrier.get("idCourrier"), proprietésCourrier);
 		}
-		return processInstance;
+		return null;
+		
 	}
 
 	@Override
@@ -114,28 +117,29 @@ public class CourriersArrivésImpl implements CourriersServices {
 	}
 
 	@Override
-	public void traiterCourrier(String idCourrier, String user, String assignedTo, String commentaire) {
+	public void traiterCourrier(Map<String,Object> map) {
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
 				.singleResult();
-		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable(idCourrier,
+		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable((String)map.get("idCourrier"),
 				"commentHistory");
-		commentHistory.put(user, commentaire);
-		runtimeService.setVariable(idCourrier, "commentHistory", commentHistory);
+		commentHistory.put((String)map.get("username"),(String) map.get("annotation"));
+		runtimeService.setVariable((String)map.get("idCourrier"), "commentHistory", commentHistory);
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-		if ((boolean) runtimeService.getVariable(idCourrier, "isFinished") != true) {
+		if ((boolean) runtimeService.getVariable((String)map.get("idCourrier"), "isFinished") != true) {
 
 			taskService.addCandidateGroup(
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					assignedTo);
+					(String)map.get("idDepartement"));
 		}
 
 	}
 
 	@Override
 	public void archiverCourrier(String idCourrier) {
+		runtimeService.setVariable(idCourrier, "isFinished", true);
 
 	}
 
@@ -431,7 +435,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	public ResponseEntity<InputStreamResource>  postFile(String id, String nbreCourrier) throws Exception {
 		
-	
+	 
 		Map<String, Object> courriersDetails = runtimeService.getVariables(id);
 		@SuppressWarnings("unchecked")
 		List<String> pg= (List<String>) courriersDetails.get("listePiécesJointes");
@@ -462,7 +466,7 @@ System.out.println("aaaa"+nbreCourrier);
 		        .contentLength(myByteArray.length) 
 		        .contentType(MediaType.parseMediaType("application/octet-stream"))
 		        .body(new InputStreamResource(docCmis.getContentStream().getStream()));
-
+ 
 	}
 
 	protected static byte[] readContent(InputStream stream) throws Exception {
@@ -550,5 +554,18 @@ System.out.println("aaaa"+nbreCourrier);
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void delete(String idCourrier) {
+		// TODO Auto-generated method stub
+		runtimeService.deleteProcessInstance(idCourrier, "Supprimer définitivement le courrier");
+	}
+
+ 
+ 
+
+ 
+
+ 
 
 }

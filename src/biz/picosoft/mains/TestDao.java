@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
@@ -26,7 +23,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import biz.picosoft.services.CourriersArrivésImpl;
 import biz.picosoft.services.StatisticServiceImpl;
-import biz.picosoft.services.StatisticsService;
 
 @Configuration
 public class TestDao {
@@ -113,8 +109,10 @@ public class TestDao {
 		proprietés.put("expéditeur", "noz");
 		proprietés.put("déstinataire", "DirectionIT");
 		proprietés.put("isFinished", false);
-		proprietés.put("société", "ENISo4");
+		proprietés.put("société", "ENISo45");
 		proprietés.put("objet", "facture");
+		Map<String, Object> commentHistory = new HashMap<>();
+		proprietés.put("commentHistory", commentHistory);
 		File file = new File("C:/test2.jpg");
 		File file2 = new File("C:/Mon-CV.pdf");
 		List listePiécesJointes = new ArrayList<>();
@@ -124,28 +122,61 @@ public class TestDao {
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 
 		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
-		 courriersArrivésImplLocal.réviser(processInstance.getId(), true);
-		 
- 	// proprietés.put("affectedTo", "DirectionCommerciale");
-
-		//courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);
-		/*System.out.println("siz oactive tasks " + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
-		proprietés.put("affectedTo", "java");
-		courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);
-		System.out.println("siz oactive tasks " + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("fb"));
-		proprietés.put("isFinished", true);
-		courriersArrivésImplLocal.traiterCourrier(processInstance.getId(), proprietés);*/
-		System.out.println("active"+courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size());
-		System.out.println("finished"+courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("am").size());
-		StatisticServiceImpl statisticServiceImpl=new StatisticServiceImpl();
+		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
+		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+		Map<String, Object> map = new HashMap<>();
+		map.put("idCourrier", processInstance.getId());
+		map.put("username", "fbm");
+		map.put("idDepartement", "java");
+		map.put("annotation", "hello fbm");
+		courriersArrivésImplLocal.traiterCourrier(map);
+		System.out.println(
+				"active " + courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
+		//courriersArrivésImplLocal.archiverCourrier(processInstance.getId());
+		courriersArrivésImplLocal.delete(processInstance.getId());
+		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("fb"));
 		
-		System.out.println( "actif pro"+courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()+ "   "+( courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()+ courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("am").size()) ) ;
-		/*System.out.println("ended by dire "+ courriersArrivésImplLocal.getNbrOfFinishedCourrierArrivéParDirection("DirectionGénérale"));
-		System.out.println("is it ended ?  "+courriersArrivésImplLocal.getFinishedCourrier().size());
-	 	System.out.println("siz oactive tasks " + courriersArrivésImplLocal.getTaskService().createTaskQuery()
-				.processInstanceId(processInstance.getId()).list().size());
-		System.out.println("finished proc per dire "+statisticsService.getNbrFinishedCourrierArrivéPerDirection()+"active proc are "+statisticsService.getNbrActiveCourrierArrivéPerDirection()+"active in total "+courriersArrivésImplLocal.getListCourriersArrivées().size()+"   total finished "+ statisticsService.getNumberOfFinishedCourrier());
- */
+		// proprietés.put("affectedTo", "DirectionCommerciale");
+
+		// courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
+		// proprietés);
+		/*
+		 * System.out.println("siz oactive tasks " +
+		 * courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"))
+		 * ; proprietés.put("affectedTo", "java");
+		 * courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
+		 * proprietés); System.out.println("siz oactive tasks " +
+		 * courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("fb"))
+		 * ; proprietés.put("isFinished", true);
+		 * courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
+		 * proprietés);
+		 */
+
+		// System.out.println("finished"+courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("am").size());
+		// StatisticServiceImpl statisticServiceImpl=new StatisticServiceImpl();
+
+		// System.out.println( "actif
+		// pro"+courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()+
+		// " "+(
+		// courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("am").size()+
+		// courriersArrivésImplLocal.getListFinishedCourrierArrivéPerUser("am").size())
+		// ) ;
+		/*
+		 * System.out.println("ended by dire "+
+		 * courriersArrivésImplLocal.getNbrOfFinishedCourrierArrivéParDirection(
+		 * "DirectionGénérale"));
+		 * System.out.println("is it ended ?  "+courriersArrivésImplLocal.
+		 * getFinishedCourrier().size());
+		 * System.out.println("siz oactive tasks " +
+		 * courriersArrivésImplLocal.getTaskService().createTaskQuery()
+		 * .processInstanceId(processInstance.getId()).list().size());
+		 * System.out.println("finished proc per dire "+statisticsService.
+		 * getNbrFinishedCourrierArrivéPerDirection()+"active proc are "
+		 * +statisticsService.getNbrActiveCourrierArrivéPerDirection()
+		 * +"active in total "+courriersArrivésImplLocal.
+		 * getListCourriersArrivées().size()+"   total finished "+
+		 * statisticsService.getNumberOfFinishedCourrier());
+		 */
 		// System.out.println("robert is active tasks"
 		// +courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
 

@@ -2,6 +2,7 @@ package biz.picosoft.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
 public class Contacte implements Serializable {
@@ -29,8 +29,8 @@ public class Contacte implements Serializable {
 	String téléphone;
 	@Column(name = "adresse")
 	String adresse;
-	@ManyToOne
-	@JoinColumn(name = "société_id")
+	@ManyToOne 
+	@JoinColumn(name = "idSociété")
 	private Société société;
 
 	public Contacte() {

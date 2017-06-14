@@ -23,11 +23,11 @@ public class TestDaoS {
 		  ContacteDaoImpl contacteDaoImpl = (ContacteDaoImpl) context.getBean("contactDaoImpl");
 		sociétéDao.insert(société);
 		 Contacte contacte=new Contacte("imed", "imed@pico.biz", "7424554", "ghazella", société);
-		 Contacte contacte2=new Contacte("med", "med@pico.biz", "7424554", "ghazella", société);
-		// contacteDaoImpl.insert(contacte);
-		 sociétéDao.delete(société);
-		 //Contacte c=contacteDaoImpl.findById(Contacte.class,14);
-		 //contacteDaoImpl.delete(c);
+		 //Contacte contacte2=new Contacte("med", "med@pico.biz", "7424554", "ghazella", société);
+		 contacteDaoImpl.insert(contacte);
+		// sociétéDao.delete(société);
+		  Contacte c=contacteDaoImpl.findById(Contacte.class,14);
+		 contacteDaoImpl.delete(c);
 		//  ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
 		  SociétéServiceImpl sociétéServiceImpl=new SociétéServiceImpl();
 		System.out.println( sociétéServiceImpl.findAll());

@@ -29,11 +29,14 @@ import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.mains.TestDao;
 import biz.picosoft.services.CourriersArrivésImpl;
 import biz.picosoft.services.CourriersServices;
+import biz.picosoft.services.LdapService;
+import biz.picosoft.services.LdapServiceImpl;
 
 @RestController
 public class CourriersArrivésController {
 
 	CourriersServices courriersArrivésServices = (CourriersServices) new CourriersArrivésImpl();
+	LdapService ls=new LdapServiceImpl();
 
 	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET)
 	@ResponseBody
@@ -105,8 +108,8 @@ public class CourriersArrivésController {
 	
 	@RequestMapping(value = "/traiterCourrier", method = RequestMethod.GET)
 	@ResponseBody
-	public void traiterCourrier(String idCourrier, Map<String, Object> proprietésCourrier) {
-		courriersArrivésServices.traiterCourrier(idCourrier, proprietésCourrier);
+	public void traiterCourrier(@RequestBody Map<String, Object> map) {
+		courriersArrivésServices.traiterCourrier( map);
 	}
 
 	@RequestMapping(value = "/archiverCourrier", method = RequestMethod.GET)
@@ -147,5 +150,11 @@ public class CourriersArrivésController {
 	public ResponseEntity<InputStreamResource> downloadPDFFile(@RequestParam("idCourrier")String id,@RequestParam("nbreCourrier")String nbreCourrier) throws Exception {
 		return courriersArrivésServices.postFile(id,nbreCourrier);
 	}
-
+	@RequestMapping(value = "/getSousGroup", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getSousGroup(@RequestParam("direction")String direction,@RequestParam("id")String id) throws Exception {
+		Map<String, Object> map= courriersArrivésServices.getCourrierDetails(id);
+		return ls.getSousGroup((String)map.get("déstinataire"));
+		
+	}
 }

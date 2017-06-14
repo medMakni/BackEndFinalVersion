@@ -103,15 +103,8 @@ public class CourrierInterneImpl  implements CourriersServices {
 			}
 		} else {
 			
-			traiterCourrier((String) proprietésCourrier.get("idCourrier"), proprietésCourrier);
-			proprietésCourrier.replace("isValidated", true);
-			// add the groups to ldap and affect réviserCourrier to BO
-			String expéditeur = runtimeService.getVariable((String) proprietésCourrier.get("idCourrier"), "expéditeur")
-					.toString();
-			taskService.addCandidateGroup(taskService.createTaskQuery()
-					.processInstanceId((String) proprietésCourrier.get("idCourrier")).list().get(0).getId(),
-					"chefs" + expéditeur.substring("Direction".length()));
-			System.out.println("Coucou Chefs2" + expéditeur.substring("Direction".length()));
+			mettreAjour((String) proprietésCourrier.get("idCourrier"), proprietésCourrier);
+			
 		}
 
 		return null;
@@ -147,17 +140,9 @@ public class CourrierInterneImpl  implements CourriersServices {
 				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
 	}
 
-	@Override
-	public void traiterCourrier(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
+ 
 
-		
-	}
-
-	@Override
-	public void archiverCourrier(String idCourrier) {
-
-	}
-
+ 
 	// this method return all instances of courriers arrivés Process
 	@Override
 	public List<Map<String, Object>> getListCourriersArrivées() {
@@ -551,8 +536,32 @@ public class CourrierInterneImpl  implements CourriersServices {
 	}
 
 	@Override
-	public void traiterCourrier(String idCourrier, String user, String assignedTo, String commentaire) {
+	public void traiterCourrier(Map<String,Object> map) {
 		// TODO Auto-generated method stub
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
+				.singleResult();
+		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable((String)map.get("idCourrier"),
+				"commentHistory");
+		commentHistory.put((String)map.get("username"),(String) map.get("annotation"));
+		runtimeService.setVariable((String)map.get("idCourrier"), "commentHistory", commentHistory);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId() );
+		if ((boolean)  runtimeService.getVariable((String)map.get("idCourrier"),"isFinished") != true) {
+			 
+				taskService.addCandidateGroup(
+						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+
+						 map.get( "affectedTo").toString());
+			 
+		}
+	}
+
+
+	@Override
+	public void mettreAjour(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
+		// TODO Auto-generated method stub
+
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
 				.singleResult();
@@ -560,23 +569,35 @@ public class CourrierInterneImpl  implements CourriersServices {
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 				nouvellesProprietésCourrier);
-		if ((boolean) nouvellesProprietésCourrier.get("isFinished") != true) {
-			if ((boolean) nouvellesProprietésCourrier.get("isValidated") ==true) {
-			 
-				taskService.addCandidateGroup(
-						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-
-						nouvellesProprietésCourrier.get("affectedTo").toString());
-			}
-		}
+		nouvellesProprietésCourrier.replace("isValidated", true);
+		// add the groups to ldap and affect réviserCourrier to BO
+		String expéditeur = runtimeService.getVariable((String) nouvellesProprietésCourrier.get("idCourrier"), "expéditeur")
+				.toString();
+		taskService.addCandidateGroup(taskService.createTaskQuery()
+				.processInstanceId((String) nouvellesProprietésCourrier.get("idCourrier")).list().get(0).getId(),
+				"chefs" + expéditeur.substring("Direction".length()));
+		System.out.println("Coucou Chefs2" + expéditeur.substring("Direction".length()));
 	}
 
 	@Override
-	public void mettreAjour(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
-		// TODO Auto-generated method stub
-		
+	public void archiverCourrier(String idCourrier) {
+		runtimeService.setVariable(idCourrier, "isFinished", true);
+
 	}
 
+	@Override
+	public void delete(String idCourrier) {
+		// TODO Auto-generated method stub
+		runtimeService.deleteProcessInstance(idCourrier, "Supprimer définitivement le courrier");
+	}
+
+	@Override
+	public ResponseEntity<InputStreamResource> postFile(String id, String nbreCourrier) throws IOException, Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+ 
 
 
 }
