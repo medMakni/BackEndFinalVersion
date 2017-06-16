@@ -27,8 +27,11 @@ public int getNbrOfFinishedCourrierArrivéParDirection(String directionName);
 List<String> getListFinishedCourrierArrivéPerUser(String userId);
 Map<String, Object> getCourrierDetails(String idCourrier) throws Exception;
 List<Map<String, Object>> getFinishedCourrier();
+void delete(String idCOurrier);
+ResponseEntity<InputStreamResource> postFile() throws IOException, Exception;
 void mettreAjour( String idCourrier, Map<String, Object> nouvellesProprietésCourrier);
 ResponseEntity<InputStreamResource> postFile(String id,String nbreCourrier) throws IOException, Exception;
 
+ 
 
 }

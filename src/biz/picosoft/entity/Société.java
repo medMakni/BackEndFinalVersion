@@ -22,7 +22,7 @@ public class Société implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "société_id")
+	@Column(name = "idSociété")
 	int idSociété;
 	@Column(name =  "nom")
 	String nom;
@@ -32,7 +32,7 @@ public class Société implements Serializable {
 	String télèphone;
 	@Column(name = "adress")
 	String adress;
-	@OneToMany (fetch = FetchType.EAGER)
+	@OneToMany(cascade= CascadeType.REMOVE  ,fetch = FetchType.EAGER,mappedBy ="idContact", orphanRemoval=true) 
 	private List<Contacte> contacts;
 	
 	 public Société(String nom, String email, String télèphone, String adress) {

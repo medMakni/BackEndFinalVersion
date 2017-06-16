@@ -47,41 +47,66 @@ public class TestInterne {
 		proprietés.put("société", "Steg");
 		proprietés.put("objet", "facturessss100");
 		proprietés.put("starter", "fbm");
+		Map<String, Object> commentHistory = new HashMap<>();
+		proprietés.put("commentHistory", commentHistory);
 		File file = new File("D://cv/cover letter.docx");
 		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersIntereService.créerCourrier(proprietés);
-		System.out.println(
-				"à réviser  " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
- 
+		System.out.println("à réviser  " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
+
 		courriersIntereService.réviser(processInstance.getId(), true);
-		System.out.println("active for starter  "
-				+ courriersIntereService.getListActiveCourriersArrivésParUser("fbm"));
-	 
-	//	proprietés.put("idCourrier", processInstance.getId());
-		//courriersIntereService.traiterCourrier(processInstance.getId(), proprietés);
-		System.out.println(
-				"à réviser  " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
-	 
-		System.out.println(
-				"l autre chef département " + courriersIntereService.getListActiveCourriersArrivésParUser("rb"));
-		/*System.out.println(
-				"active tasks for commerciale :p " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
-		proprietés.put("affectedTo", "secrétairesC");
-		proprietés.replace("isFinished", false);
- 
-		courriersIntereService.traiterCourrier(processInstance.getId(), proprietés);
-		System.out.println(
-				"finis par direction" +   
-						
-						 courriersIntereService.getNbrOfFinishedCourrierArrivéParDirection("DirectionRH"));*/
-	 ;
-//		System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(2).getName());
-	 
+		// courriersIntereService.créerCourrier(courriersIntereService.getRuntimeService().getVariables(processInstance.getId()));
+		System.out
+				.println("active for other side  " + courriersIntereService.getListActiveCourriersArrivésParUser("rb"));
+		Map<String, Object> map = new HashMap<>();
+		map.put("idCourrier", processInstance.getId());
+		map.put("username", "fbm");
+		map.put("affectedTo", "java");
+		map.put("annotation", "hello fbm");
+		courriersIntereService.traiterCourrier(map);
+		System.out
+				.println("active " + courriersIntereService.getRuntimeService().getVariables(processInstance.getId()));
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put("idCourrier", processInstance.getId());
+		map2.put("username", "ouss");
+		map2.put("affectedTo", "java");
+		map2.put("annotation", "hello ouss");
+		courriersIntereService.traiterCourrier(map2);
+		System.out
+				.println("active " + courriersIntereService.getRuntimeService().getVariables(processInstance.getId()));
+		courriersIntereService.archiverCourrier(processInstance.getId());
+		System.out.println( "finis par direction" +
+				  
+				   courriersIntereService.getNbrOfFinishedCourrierArrivéParDirection(
+				   "DirectionCommerciale"));
+		// proprietés.put("idCourrier", processInstance.getId());
+		// courriersIntereService.traiterCourrier(processInstance.getId(),
+		// proprietés);
+		/*
+		 * System.out.println( "à réviser  " +
+		 * courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
+		 * 
+		 * System.out.println( "l autre chef département " +
+		 * courriersIntereService.getListActiveCourriersArrivésParUser("rb"));
+		 * /*System.out.println( "active tasks for commerciale :p " +
+		 * courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
+		 * proprietés.put("affectedTo", "secrétairesC");
+		 * proprietés.replace("isFinished", false);
+		 * 
+		 * courriersIntereService.traiterCourrier(processInstance.getId(),
+		 * proprietés); System.out.println( "finis par direction" +
+		 * 
+		 * courriersIntereService.getNbrOfFinishedCourrierArrivéParDirection(
+		 * "DirectionRH"));
+		 */
+		;
+		// System.out.println(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(2).getName());
+
 		// System.out.println("active tasks for weld ankoud :p "
 		// + courriersIntereService.getListActiveCourriersArrivésParUser("am"));
- 
+
 	}
 
 }

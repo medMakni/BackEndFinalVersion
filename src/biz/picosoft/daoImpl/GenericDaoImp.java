@@ -4,10 +4,12 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.hibernate.annotations.Cascade;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.picosoft.dao.GenericDao;
