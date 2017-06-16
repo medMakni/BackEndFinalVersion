@@ -143,6 +143,9 @@ public class CourrierSortieImpl  implements CourriersServices{
 
 @Override
 	public void archiverCourrier(String idCourrier) {
+	runtimeService.setVariable(idCourrier, "isFinished", true);
+	this.taskService.complete(
+			this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
 
 	}
 
@@ -583,9 +586,9 @@ public class CourrierSortieImpl  implements CourriersServices{
 	}
 
 	@Override
-	public void delete(String idCOurrier) {
+	public void delete(String idCourrier) {
 		// TODO Auto-generated method stub
-		
+		runtimeService.deleteProcessInstance(idCourrier, "Supprimer définitivement le courrier");
 	}
 
 	@Override
