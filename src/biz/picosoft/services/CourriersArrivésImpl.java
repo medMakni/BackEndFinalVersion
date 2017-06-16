@@ -64,7 +64,8 @@ public class CourriersArrivésImpl implements CourriersServices {
 				List<String> listOfFolderChildrens = folderDaoImpl
 						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
-
+				Map<String, Object> commentHistory = new HashMap<>();
+				proprietésCourrier.put("commentHistory", commentHistory);
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
