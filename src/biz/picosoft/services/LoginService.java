@@ -32,17 +32,19 @@ public class LoginService {
 		List<Group> j = processEngine.getIdentityService().createGroupQuery().groupMember(uid).list();
 		for (Group group : j) {
 			String groupName=group.getName();
+			System.out.println("uiuiui"+groupName);
 			if (groupName.contains("ROLE_")){
 				role.add(groupName.substring(5, groupName.length()));
 			}
-			else if (groupName.contains("Direction")) {
+			else if (groupName.contains("direction")) {
 				direction.add(groupName);
 			}
 			
 		}
+		
 		map.put("roles",role);
 		map.put("directions",direction);
-
+		System.out.println("fff"+map);
 		return map;
 	}
 

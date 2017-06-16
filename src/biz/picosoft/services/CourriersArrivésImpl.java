@@ -64,7 +64,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 				List<String> listOfFolderChildrens = folderDaoImpl
 						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
-
+				
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
@@ -118,7 +118,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	@Override
 	public void traiterCourrier(Map<String,Object> map) {
-System.out.println("my map"+map.get("username"));
+System.out.println("my map"+map.get("annotation"));
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
 				.singleResult();
@@ -140,6 +140,8 @@ System.out.println("my map"+map.get("username"));
 	@Override
 	public void archiverCourrier(String idCourrier) {
 		runtimeService.setVariable(idCourrier, "isFinished", true);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
 
 	}
 
