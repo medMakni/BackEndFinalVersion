@@ -114,7 +114,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
+				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction ".length()));
 	}
 
 	@Override

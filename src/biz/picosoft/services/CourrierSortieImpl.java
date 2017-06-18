@@ -91,7 +91,7 @@ public class CourrierSortieImpl  implements CourriersServices{
 					String expéditeur=runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
 					taskService.addCandidateGroup(
 							taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-							"chefs"+expéditeur.substring("Direction".length()));
+							"chefs"+expéditeur.substring("Direction ".length()));
 				 
 				}
 				return processInstance;
@@ -557,7 +557,7 @@ public class CourrierSortieImpl  implements CourriersServices{
 		 System.out.println("id expéditeur"+expéditeur);
 		taskService.addCandidateGroup(
 				taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"chefs"+expéditeur.substring("Direction".length()));
+				"chefs"+expéditeur.substring("Direction ".length()));
 
 	}
 
