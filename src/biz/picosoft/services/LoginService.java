@@ -36,7 +36,10 @@ public class LoginService {
 			if (groupName.contains("ROLE_")){
 				role.add(groupName.substring(5, groupName.length()));
 			}
-			else if (groupName.contains("direction")) {
+			else if (groupName.contains("chefs")||groupName.contains("secrétaire")){
+				role.add(groupName);
+			}
+			else if (groupName.contains("direction")||groupName.contains("Direction")) {
 				direction.add(groupName);
 			}
 			

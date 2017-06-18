@@ -114,7 +114,7 @@ public class CourriersArrivésController {
 
 	@RequestMapping(value = "/archiverCourrier", method = RequestMethod.GET)
 	@ResponseBody
-	public void archiverCourrier(String idCourrier) {
+	public void archiverCourrier(@RequestParam("id")String idCourrier) {
 		// TODO Auto-generated method stub
 		courriersArrivésServices.archiverCourrier(idCourrier);
 	}

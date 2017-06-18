@@ -40,9 +40,11 @@ public class TestSortie {
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "DirectionRH");
 		proprietés.put("expéditeur", "DirectionCommerciale");
-		proprietés.put("déstinataire", "DirectionCommerciale");
+		//proprietés.put("déstinataire", "DirectionIT");
 		proprietés.put("isValidated", true);
 		proprietés.put("isFinished", false);
+		Map<String, Object> commentHistory = new HashMap<>();
+		proprietés.put("commentHistory", commentHistory);
 		proprietés.put("société", "Steg");
 		proprietés.put("objet", "facturaa404");
 		proprietés.put("starter", "fbm");
@@ -51,22 +53,48 @@ public class TestSortie {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersSortieService.créerCourrier(proprietés);
-
-		System.out.println(
-				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("mz"));
+	
+		 System.out.println(
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("am"));
 		// System.out.println("Strateeer" +
 		// runtimeService.getVariable(processInstance.getId(), "starter"));
 		courriersSortieService.réviser(processInstance.getId(), true);
+		 System.out.println(
+					"active tasks for BO" + courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
+		
+	//	courriersSortieService.créerCourrier(courriersSortieService.getRuntimeService().getVariables(processInstance.getId()));
 		System.out.println(
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("am"));
+		Map<String, Object> map = new HashMap<>();
+		map.put("idCourrier", processInstance.getId());
+		map.put("username", "fbm");
+		map.put("annotation", "hello fbm");
+		map.put("isValidated", false);
+		courriersSortieService.traiterCourrier(map);
+		System.out.println(
+				"active tasks for starter  " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
+	
+		
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put("idCourrier", processInstance.getId());
+		map2.put("username", "fbm2");
+		map2.put("annotation", "hello fbm2");
+		map2.put("isValidated", true);
+		courriersSortieService.traiterCourrier(map2);
+		
+		System.out.println(
+				"active tasks for starter  " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
+	
+		/*System.out.println(
 				"active tasks for starter " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
 		System.out.println("active tasks for BO " + courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
 		System.out.println(
 				"active tasks for starter " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
-		//courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);
-		System.out.println("nbr of finished " +courriersSortieService.getFinishedCourrier().size());
+		//courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);*/
+		/*System.out.println("nbr of finished " +courriersSortieService.getFinishedCourrier().size());
 		System.out.println("nbr of finished par direction" +courriersSortieService.getNbrOfFinishedCourrierArrivéParDirection( "DirectionCommerciale"));
 		System.out.println("active courrier" +courriersSortieService.getListCourriersArrivées());
-		 
+		 */
 		/*proprietés.replace("isValidated", false);
 		courriersSortieService.traiterCourrier(processInstance.getId(), proprietés);
 		System.out.println(

@@ -64,7 +64,9 @@ public class CourriersArrivésImpl implements CourriersServices {
 				List<String> listOfFolderChildrens = folderDaoImpl
 						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
-				
+				Map<String, Object> commentHistory = new HashMap<>();
+				proprietésCourrier.put("isFinished",false);
+				proprietésCourrier.put("commentHistory", commentHistory);
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
@@ -105,20 +107,22 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	@Override
 	public void validerCourrier(String idCourrier) {
+		System.out.println("nkl"+idCourrier);
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
 		proprietésCourrier.replace("isValidated", true);
 		this.taskService = processEngine.getTaskService();
+		System.out.println("éééé"+ proprietésCourrier.get("départmentId"));
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
+				"chefs" + proprietésCourrier.get("départmentId").toString().substring("Direction ".length()));
 	}
 
 	@Override
 	public void traiterCourrier(Map<String,Object> map) {
-System.out.println("my map"+map.get("annotation"));
+System.out.println("my map "+map.get("username"));
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
 				.singleResult();
@@ -142,6 +146,8 @@ System.out.println("my map"+map.get("annotation"));
 		runtimeService.setVariable(idCourrier, "isFinished", true);
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
+	
+	
 
 	}
 
@@ -256,7 +262,7 @@ System.out.println("my map"+map.get("annotation"));
 		// get the list active tasks per user
 		List<Task> listTaskByProceeAndUser = this.taskService.createTaskQuery().processDefinitionKey("courriersArrivés")
 				.taskCandidateUser(userName).list();
-		System.out.println("hhhh" + listTaskByProceeAndUser);
+		System.out.println("makmak" + listTaskByProceeAndUser);
 
 		if (listTaskByProceeAndUser != null) {
 			// this will hold the vars of one task of the list of active process
@@ -553,7 +559,7 @@ System.out.println("aaaa"+nbreCourrier);
 
 	@Override
 	public ResponseEntity<InputStreamResource> postFile() throws IOException, Exception {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 

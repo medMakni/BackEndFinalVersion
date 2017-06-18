@@ -84,9 +84,9 @@ public class LdapServiceImpl implements LdapService {
 		// Attribute attr = attributes.get("cn");
 		CourriersArrivésImpl courriersArrivésImpl = new CourriersArrivésImpl();
 		if (direction != "DirectionGénérale")
-			groupList = ldapTemplate.list("cn=" + direction + ",cn=DirectionGénérale,ou=groups,o=mojo");
+			groupList = ldapTemplate.list("cn=" + direction + ",cn=Direction Générale,ou=groups,o=mojo");
 		else
-			groupList = ldapTemplate.list("cn=DirectionGénérale,ou=groups,o=mojo");
+			groupList = ldapTemplate.list("cn=Direction Générale,ou=groups,o=mojo");
 		List<String> sousGroupeName = new ArrayList<String>();
 		for (int i = 0; i < groupList.size(); i++) {
 			sousGroupeName.add(groupList.get(i).substring(groupList.get(i).indexOf("=") + 1));

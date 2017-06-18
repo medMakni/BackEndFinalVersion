@@ -582,6 +582,9 @@ public class CourrierInterneImpl  implements CourriersServices {
 	@Override
 	public void archiverCourrier(String idCourrier) {
 		runtimeService.setVariable(idCourrier, "isFinished", true);
+		this.taskService.complete(
+				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
+	
 
 	}
 
