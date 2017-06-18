@@ -84,7 +84,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 							.toString();
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(),
-							"chefs" + déstinataire.substring("Direction".length()));
+							"chefs" + déstinataire.substring("Direction ".length()));
 				} else {
 					// to know where to go in the exclusive gateway
 					runtimeService.setVariable(processInstance.getId(), "isStarterChef", false);
@@ -96,7 +96,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 					String expéditeur = runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(),
-							"chefs" + expéditeur.substring("Direction".length()));
+							"chefs" + expéditeur.substring("Direction ".length()));
 
 				}
 				return processInstance;
@@ -137,7 +137,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
-				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction".length()));
+				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction ".length()));
 	}
 
  
@@ -575,8 +575,8 @@ public class CourrierInterneImpl  implements CourriersServices {
 				.toString();
 		taskService.addCandidateGroup(taskService.createTaskQuery()
 				.processInstanceId((String) nouvellesProprietésCourrier.get("idCourrier")).list().get(0).getId(),
-				"chefs" + expéditeur.substring("Direction".length()));
-		System.out.println("Coucou Chefs2" + expéditeur.substring("Direction".length()));
+				"chefs" + expéditeur.substring("Direction ".length()));
+		System.out.println("Coucou Chefs2" + expéditeur.substring("Direction ".length()));
 	}
 
 	@Override
