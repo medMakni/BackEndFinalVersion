@@ -53,6 +53,6 @@ public class TestLdap {
 
 	public static void main(String[] args) throws Exception {
 		LdapServiceImpl ldapService=new LdapServiceImpl();
-		System.out.println(ldapService.getSousGroup("DirectionGénérale")); 
+		System.out.println(ldapService.getSousGroup("Direction Générale")); 
 	}
 }
