@@ -130,6 +130,7 @@ public class CourrierSortieImpl  implements CourriersServices{
 	public void validerCourrier(String idCourrier) {
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
 		proprietésCourrier.replace("isValidated", true);
+		proprietésCourrier.replace("checked", true);
 		this.taskService = processEngine.getTaskService();
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
