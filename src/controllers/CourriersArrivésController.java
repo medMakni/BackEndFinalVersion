@@ -45,7 +45,7 @@ public class CourriersArrivésController {
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
-		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListCourriersArrivées();
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListCourriers();
 
 		return listeCourrier;
 	}
@@ -130,14 +130,14 @@ public class CourriersArrivésController {
 	@ResponseBody
 	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
 
-		return courriersArrivésServices.getListActiveCourriersArrivésParUser(userName);
+		return courriersArrivésServices.getListActiveCourriersParUser(userName);
 	}
 
 	@RequestMapping(value = "/getListCourrierArrivéParDirection", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String direction) {
 
-		return courriersArrivésServices.getListActiveCourrierArrivéParDirection(direction);
+		return courriersArrivésServices.getListActiveCourrierParDirection(direction);
 	}
 	@RequestMapping(value = "/getCourrierDetails", method = RequestMethod.GET)
 	@ResponseBody
@@ -154,7 +154,7 @@ public class CourriersArrivésController {
 	@ResponseBody
 	public List<String> getSousGroup(@RequestParam("id")String id,@RequestParam("direction")String direction) throws Exception {
 		Map<String, Object> map= courriersArrivésServices.getCourrierDetails(id);
-		return ls.getSousGroup("DirectionGénérale");
+		return ls.getSousGroup(direction);
 		
 	}
 }

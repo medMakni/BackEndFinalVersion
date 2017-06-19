@@ -39,7 +39,7 @@ public class LdapServiceImpl implements LdapService {
 		// Attribute attr = attributes.get("cn");
 		CourriersArrivésImpl courriersArrivésImpl = new CourriersArrivésImpl();
 
-		groupList = ldapTemplate.list("cn=DirectionGénérale,ou=groups,o=mojo");
+		groupList = ldapTemplate.list("cn=Direction Générale,ou=groups,o=mojo");
 		List groupListeWithoutRole = new ArrayList<String>();
 		for (int i = 0; i < groupList.size(); i++) {
 			groupList.set(i, groupList.get(i).substring(groupList.get(i).indexOf("=") + 1, groupList.get(i).length()));
@@ -48,7 +48,7 @@ public class LdapServiceImpl implements LdapService {
 				groupListeWithoutRole.add(groupList.get(i));
 
 		}
-		groupListeWithoutRole.add("DirectionGénérale");
+		groupListeWithoutRole.add("Direction Générale");
 		return groupListeWithoutRole;
 
 	}

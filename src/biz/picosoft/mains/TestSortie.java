@@ -55,16 +55,16 @@ public class TestSortie {
 		ProcessInstance processInstance = courriersSortieService.créerCourrier(proprietés);
 	
 		 System.out.println(
-				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("am"));
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersParUser("am"));
 		// System.out.println("Strateeer" +
 		// runtimeService.getVariable(processInstance.getId(), "starter"));
 		courriersSortieService.réviser(processInstance.getId(), true);
 		 System.out.println(
-					"active tasks for BO" + courriersSortieService.getListActiveCourriersArrivésParUser("rb"));
+					"active tasks for BO" + courriersSortieService.getListActiveCourriersParUser("rb"));
 		
 	//	courriersSortieService.créerCourrier(courriersSortieService.getRuntimeService().getVariables(processInstance.getId()));
 		System.out.println(
-				"active tasks chef département  " + courriersSortieService.getListActiveCourriersArrivésParUser("am"));
+				"active tasks chef département  " + courriersSortieService.getListActiveCourriersParUser("am"));
 		Map<String, Object> map = new HashMap<>();
 		map.put("idCourrier", processInstance.getId());
 		map.put("username", "fbm");
@@ -72,7 +72,7 @@ public class TestSortie {
 		map.put("isValidated", false);
 		courriersSortieService.traiterCourrier(map);
 		System.out.println(
-				"active tasks for starter  " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
+				"active tasks for starter  " + courriersSortieService.getListActiveCourriersParUser("fbm"));
 	
 		
 		Map<String, Object> map2 = new HashMap<>();
@@ -83,7 +83,7 @@ public class TestSortie {
 		courriersSortieService.traiterCourrier(map2);
 		
 		System.out.println(
-				"active tasks for starter  " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));
+				"active tasks for starter  " + courriersSortieService.getListActiveCourriersParUser("fbm"));
 	
 		/*System.out.println(
 				"active tasks for starter " + courriersSortieService.getListActiveCourriersArrivésParUser("fbm"));

@@ -153,7 +153,7 @@ System.out.println("my map "+map.get("username"));
 
 	// this method return all instances of courriers arrivés Process
 	@Override
-	public List<Map<String, Object>> getListCourriersArrivées() {
+	public List<Map<String, Object>> getListCourriers() {
 		String expéditeur;
 		String société;
 		String date;
@@ -256,7 +256,7 @@ System.out.println("my map "+map.get("username"));
 
 	@Override
 	// this method will return vars of active process per user
-	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
+	public List<Map<String, Object>> getListActiveCourriersParUser(String userName) {
 		// list of vars of active process per user
 		List<Map<String, Object>> listVarsOfActiveProcesPerUser = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
@@ -299,7 +299,7 @@ System.out.println("my map "+map.get("username"));
 
 	@Override
 
-	public List<String> getListFinishedCourrierArrivéPerUser(String userId) {
+	public List<String> getListFinishedCourrierPerUser(String userId) {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
 		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
@@ -324,7 +324,7 @@ System.out.println("my map "+map.get("username"));
 	}
 
 	@Override
-	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String directionName) {
+	public List<Map<String, Object>> getListActiveCourrierParDirection(String directionName) {
 		// TODO Auto-generated method stub
 
 		// list of vars of active process per direction
@@ -491,7 +491,7 @@ System.out.println("aaaa"+nbreCourrier);
 	}
 
 	@Override
-	public int getNbrOfFinishedCourrierArrivéParDirection(String directionName) {
+	public int getNbrOfFinishedCourrierParDirection(String directionName) {
 
 		HistoryService historyService = processEngine.getHistoryService();
 

@@ -123,7 +123,7 @@ public class TestDao {
 
 		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
 		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
-		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"));
+		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersParUser("rb"));
 		Map<String, Object> map = new HashMap<>();
 		map.put("idCourrier", processInstance.getId());
 		map.put("username", "fbm");
@@ -134,7 +134,7 @@ public class TestDao {
 				"active " + courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
 		//courriersArrivésImplLocal.archiverCourrier(processInstance.getId());
 		courriersArrivésImplLocal.delete(processInstance.getId());
-		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("fb"));
+		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersParUser("fb"));
 		
 		// proprietés.put("affectedTo", "DirectionCommerciale");
 
