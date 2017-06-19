@@ -70,4 +70,5 @@ public class CourrierInterneController {
 		courriersInterneServices.créerCourrier(proprietésCourrier);
 
 	}
+	
 }
