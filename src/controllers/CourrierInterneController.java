@@ -70,5 +70,22 @@ public class CourrierInterneController {
 		courriersInterneServices.créerCourrier(proprietésCourrier);
 
 	}
+	@RequestMapping(value = "/listCourriersInternes", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getAllCourriers() {
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
+		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+
+		List<Map<String, Object>> listeCourrier = courriersInterneServices.getListCourriers();
+
+		return listeCourrier;
+	}
+	@RequestMapping(value = "/getListCourriersInternesParUser", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
+
+		return courriersInterneServices.getListActiveCourriersParUser(userName);
+	}
 	
 }
