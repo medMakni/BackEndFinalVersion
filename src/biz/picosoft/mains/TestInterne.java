@@ -54,12 +54,12 @@ public class TestInterne {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersIntereService.créerCourrier(proprietés);
-		System.out.println("à réviser  " + courriersIntereService.getListActiveCourriersArrivésParUser("mz"));
+		System.out.println("à réviser  " + courriersIntereService.getListActiveCourriersParUser("mz"));
 
 		courriersIntereService.réviser(processInstance.getId(), true);
 		// courriersIntereService.créerCourrier(courriersIntereService.getRuntimeService().getVariables(processInstance.getId()));
 		System.out
-				.println("active for other side  " + courriersIntereService.getListActiveCourriersArrivésParUser("rb"));
+				.println("active for other side  " + courriersIntereService.getListActiveCourriersParUser("rb"));
 		Map<String, Object> map = new HashMap<>();
 		map.put("idCourrier", processInstance.getId());
 		map.put("username", "fbm");
@@ -79,7 +79,7 @@ public class TestInterne {
 		courriersIntereService.archiverCourrier(processInstance.getId());
 		System.out.println( "finis par direction" +
 				  
-				   courriersIntereService.getNbrOfFinishedCourrierArrivéParDirection(
+				   courriersIntereService.getNbrOfFinishedCourrierParDirection(
 				   "DirectionCommerciale"));
 		// proprietés.put("idCourrier", processInstance.getId());
 		// courriersIntereService.traiterCourrier(processInstance.getId(),

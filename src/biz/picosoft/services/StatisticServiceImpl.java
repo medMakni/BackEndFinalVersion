@@ -24,7 +24,7 @@ public class StatisticServiceImpl implements StatisticsService {
 	public Map<String, Integer> getNumberOfActiveCourrier() {
 
 		Map<String, Integer> mapNumberOActiveCourrier = new HashMap<>();
-		mapNumberOActiveCourrier.put("courriersArrivés", courriersArrivésImpl.getListCourriersArrivées().size());
+		mapNumberOActiveCourrier.put("courriersArrivés", courriersArrivésImpl.getListCourriers().size());
 		mapNumberOActiveCourrier.put("courriersSorties", 0);
 		mapNumberOActiveCourrier.put("courriersInternes", 0);
 
@@ -49,7 +49,7 @@ public class StatisticServiceImpl implements StatisticsService {
 		for (int i = 0; i < ldapServiceImpl.getAllDirection().size(); i++) {
 			nomDirection = ldapServiceImpl.getAllDirection().get(i);
 			mapNbrActiveCourrierArrivéPerDirection.put(nomDirection,
-					courriersArrivésImpl.getListActiveCourrierArrivéParDirection(nomDirection).size());
+					courriersArrivésImpl.getListActiveCourrierParDirection(nomDirection).size());
 		}
 		return mapNbrActiveCourrierArrivéPerDirection;
 	}
@@ -62,7 +62,7 @@ public class StatisticServiceImpl implements StatisticsService {
 		for (int i = 0; i < ldapServiceImpl.getAllDirection().size(); i++) {
 			nomDirection = ldapServiceImpl.getAllDirection().get(i);
 			mapNbrFinishedCourrierArrivéPerDirection.put(nomDirection,
-					courriersArrivésImpl.getNbrOfFinishedCourrierArrivéParDirection(nomDirection));
+					courriersArrivésImpl.getNbrOfFinishedCourrierParDirection(nomDirection));
 		}
 		return mapNbrFinishedCourrierArrivéPerDirection;
 		 
@@ -95,7 +95,7 @@ public class StatisticServiceImpl implements StatisticsService {
 	@Override
 	public float getRateOfCourrierArrivéPerUser(String uid) {
 		 
-		return( courriersArrivésImpl.getListActiveCourriersArrivésParUser(uid).size()/( courriersArrivésImpl.getListActiveCourriersArrivésParUser(uid).size()+courriersArrivésImpl.getListFinishedCourrierArrivéPerUser(uid).size()))*100;
+		return( courriersArrivésImpl.getListActiveCourriersParUser(uid).size()/( courriersArrivésImpl.getListActiveCourriersParUser(uid).size()+courriersArrivésImpl.getListFinishedCourrierPerUser(uid).size()))*100;
 	}
 
 }

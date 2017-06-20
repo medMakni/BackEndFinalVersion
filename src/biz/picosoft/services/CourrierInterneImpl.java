@@ -96,6 +96,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 									.getId());
 					// add the groups to ldap and affect réviserCourrier to BO
 					String expéditeur = runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
+					System.out.println("expéditeur "+expéditeur);
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(),
 							"chefs" + expéditeur.substring("Direction ".length()));
@@ -148,7 +149,7 @@ public class CourrierInterneImpl  implements CourriersServices {
  
 	// this method return all instances of courriers arrivés Process
 	@Override
-	public List<Map<String, Object>> getListCourriersArrivées() {
+	public List<Map<String, Object>> getListCourriers() {
 		String expéditeur;
 		String société;
 		String date;
@@ -251,7 +252,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 
 	@Override
 	// this method will return vars of active process per user
-	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(String userName) {
+	public List<Map<String, Object>> getListActiveCourriersParUser(String userName) {
 		// list of vars of active process per user
 		List<Map<String, Object>> listVarsOfActiveProcesPerUser = new ArrayList<Map<String, Object>>();
 		// get the list active tasks per user
@@ -294,7 +295,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 
 	
 	@Override
-	public List<String> getListFinishedCourrierArrivéPerUser(String userId) {
+	public List<String> getListFinishedCourrierPerUser(String userId) {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
 		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
@@ -319,7 +320,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 	}
 
 	@Override
-	public List<Map<String, Object>> getListActiveCourrierArrivéParDirection(String directionName) {
+	public List<Map<String, Object>> getListActiveCourrierParDirection(String directionName) {
 		// TODO Auto-generated method stub
 
 		// list of vars of active process per direction
@@ -473,7 +474,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 	}
 
 	@Override
-	public int getNbrOfFinishedCourrierArrivéParDirection(String directionName) {
+	public int getNbrOfFinishedCourrierParDirection(String directionName) {
 
 		HistoryService historyService = processEngine.getHistoryService();
 
