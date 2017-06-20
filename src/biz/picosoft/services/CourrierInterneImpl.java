@@ -113,6 +113,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 
 	@Override
 	public void réviser(String idCourrier, boolean isValidated) {
+		System.out.println("ertert"+isValidated);
 
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(idCourrier)
@@ -133,6 +134,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
 		proprietésCourrier.replace("isValidated", true);
 		proprietésCourrier.replace("isChecked", true);
+		System.out.println("ertert"+proprietésCourrier);
 		this.taskService = processEngine.getTaskService();
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
@@ -545,6 +547,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 				.singleResult();
 		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable((String)map.get("idCourrier"),
 				"commentHistory");
+		System.out.println("cvcvcv"+commentHistory);
 		commentHistory.put((String)map.get("username"),(String) map.get("annotation"));
 		runtimeService.setVariable((String)map.get("idCourrier"), "commentHistory", commentHistory);
 		this.taskService.complete(

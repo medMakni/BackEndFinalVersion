@@ -78,6 +78,8 @@ public class CourriersArrivésController {
 		proprietésCourrier.put("départmentId", direction);
 		proprietésCourrier.put("isValidated", true);
 		proprietésCourrier.put("expéditeur", "Steg");
+		proprietésCourrier.put("isChecked", false);
+
 		List<File> listeFile = new ArrayList<>();
 		for (int i = 0; i < listePiécesJointes.size(); i++) {
 			listeFile.add(courriersArrivésServices.multipartToFile(listePiécesJointes.get(i)));
