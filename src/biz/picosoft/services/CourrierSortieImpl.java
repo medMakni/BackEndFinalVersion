@@ -64,10 +64,12 @@ public class CourrierSortieImpl  implements CourriersServices{
 				List<String> listOfFolderChildrens = folderDaoImpl
 						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
-
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
+				Map<String, Object> commentHistory = new HashMap<>();
+				proprietésCourrier.put("isFinished",false);
+				proprietésCourrier.put("commentHistory", commentHistory);
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
 				
 				//check if the starter is a cheff to know if will validate or not
