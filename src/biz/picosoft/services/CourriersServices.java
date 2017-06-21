@@ -31,7 +31,7 @@ void delete(String idCOurrier);
 ResponseEntity<InputStreamResource> postFile() throws IOException, Exception;
 void mettreAjour( String idCourrier, Map<String, Object> nouvellesProprietésCourrier);
 ResponseEntity<InputStreamResource> postFile(String id,String nbreCourrier) throws IOException, Exception;
-
+List<Map<String, Object>> getCourrierByStarter(String uid);
  
 
 }

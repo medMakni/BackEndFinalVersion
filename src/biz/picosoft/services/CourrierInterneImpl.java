@@ -37,13 +37,12 @@ import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
 import biz.picosoft.mains.TestDao;
 
-public class CourrierInterneImpl  implements CourriersServices {
+public class CourrierInterneImpl implements CourriersServices {
 	ProcessEngine processEngine;
 	Session session;
 	RuntimeService runtimeService;
 	TaskService taskService;
 
-	 
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
 	// and then attach the folder of the mail
@@ -65,7 +64,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
 				Map<String, Object> commentHistory = new HashMap<>();
-				proprietésCourrier.put("isFinished",false);
+				proprietésCourrier.put("isFinished", false);
 				proprietésCourrier.put("commentHistory", commentHistory);
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
@@ -96,7 +95,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 									.getId());
 					// add the groups to ldap and affect réviserCourrier to BO
 					String expéditeur = runtimeService.getVariable(processInstance.getId(), "expéditeur").toString();
-					System.out.println("expéditeur "+expéditeur);
+					System.out.println("expéditeur " + expéditeur);
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(),
 							"chefs" + expéditeur.substring("Direction ".length()));
@@ -105,9 +104,9 @@ public class CourrierInterneImpl  implements CourriersServices {
 				return processInstance;
 			}
 		} else {
-			
+
 			mettreAjour((String) proprietésCourrier.get("idCourrier"), proprietésCourrier);
-			
+
 		}
 
 		return null;
@@ -144,9 +143,6 @@ public class CourrierInterneImpl  implements CourriersServices {
 				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction ".length()));
 	}
 
- 
-
- 
 	// this method return all instances of courriers arrivés Process
 	@Override
 	public List<Map<String, Object>> getListCourriers() {
@@ -220,7 +216,7 @@ public class CourrierInterneImpl  implements CourriersServices {
 
 		return folderCourrier.getId();
 	}
-	 
+
 	public ProcessEngine getProcessEngine() {
 		return processEngine;
 	}
@@ -293,7 +289,6 @@ public class CourrierInterneImpl  implements CourriersServices {
 		return listVarsOfActiveProcesPerUser;
 	}
 
-	
 	@Override
 	public List<String> getListFinishedCourrierPerUser(String userId) {
 		HistoryService historyService = this.processEngine.getHistoryService();
@@ -374,7 +369,6 @@ public class CourrierInterneImpl  implements CourriersServices {
 		this.taskService = taskService;
 	}
 
-	
 	public File multipartToFile(MultipartFile multipart) {
 		File convFile = new File(multipart.getOriginalFilename());
 		try {
@@ -435,11 +429,8 @@ public class CourrierInterneImpl  implements CourriersServices {
 		return courriersDetails;
 	}
 
- 
 	@Override
 	public ResponseEntity<InputStreamResource> postFile() throws Exception {
- 
-	 
 
 		DocumentDaoImpl dao = new DocumentDaoImpl();
 
@@ -454,12 +445,17 @@ public class CourrierInterneImpl  implements CourriersServices {
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 		headers.add("Pragma", "no-cache");
 		headers.add("Expires", "0");
-		return null;/*ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
-				.contentType(MediaType.parseMediaType("application/octet-stream"))
-				.body(new InputStreamResource(docCmis.getContentStream().getStream()));*/
+		return null;/*
+					 * ResponseEntity.ok().headers(headers).contentLength(
+					 * myByteArray.length)
+					 * .contentType(MediaType.parseMediaType(
+					 * "application/octet-stream")) .body(new
+					 * InputStreamResource(docCmis.getContentStream().getStream(
+					 * )));
+					 */
 
 	}
-	 
+
 	protected static byte[] readContent(InputStream stream) throws Exception {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -540,27 +536,26 @@ public class CourrierInterneImpl  implements CourriersServices {
 	}
 
 	@Override
-	public void traiterCourrier(Map<String,Object> map) {
+	public void traiterCourrier(Map<String, Object> map) {
 		// TODO Auto-generated method stub
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
-				.singleResult();
-		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable((String)map.get("idCourrier"),
-				"commentHistory");
-		commentHistory.put((String)map.get("username"),(String) map.get("annotation"));
-		runtimeService.setVariable((String)map.get("idCourrier"), "commentHistory", commentHistory);
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+				.processInstanceId((String) map.get("idCourrier")).singleResult();
+		Map<String, String> commentHistory = (Map<String, String>) runtimeService
+				.getVariable((String) map.get("idCourrier"), "commentHistory");
+		commentHistory.put((String) map.get("username"), (String) map.get("annotation"));
+		runtimeService.setVariable((String) map.get("idCourrier"), "commentHistory", commentHistory);
 		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId() );
-		if ((boolean)  runtimeService.getVariable((String)map.get("idCourrier"),"isFinished") != true) {
-			 
-				taskService.addCandidateGroup(
-						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
+		if ((boolean) runtimeService.getVariable((String) map.get("idCourrier"), "isFinished") != true) {
 
-						 map.get( "affectedTo").toString());
-			 
+			taskService.addCandidateGroup(
+					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
+
+					map.get("affectedTo").toString());
+
 		}
 	}
-
 
 	@Override
 	public void mettreAjour(String idCourrier, Map<String, Object> nouvellesProprietésCourrier) {
@@ -575,8 +570,8 @@ public class CourrierInterneImpl  implements CourriersServices {
 				nouvellesProprietésCourrier);
 		nouvellesProprietésCourrier.replace("isValidated", true);
 		// add the groups to ldap and affect réviserCourrier to BO
-		String expéditeur = runtimeService.getVariable((String) nouvellesProprietésCourrier.get("idCourrier"), "expéditeur")
-				.toString();
+		String expéditeur = runtimeService
+				.getVariable((String) nouvellesProprietésCourrier.get("idCourrier"), "expéditeur").toString();
 		taskService.addCandidateGroup(taskService.createTaskQuery()
 				.processInstanceId((String) nouvellesProprietésCourrier.get("idCourrier")).list().get(0).getId(),
 				"chefs" + expéditeur.substring("Direction ".length()));
@@ -586,9 +581,8 @@ public class CourrierInterneImpl  implements CourriersServices {
 	@Override
 	public void archiverCourrier(String idCourrier) {
 		runtimeService.setVariable(idCourrier, "isFinished", true);
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
-	
+		this.taskService
+				.complete(this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
 
 	}
 
@@ -604,7 +598,38 @@ public class CourrierInterneImpl  implements CourriersServices {
 		return null;
 	}
 
- 
+	@Override
+	public List<Map<String, Object>> getCourrierByStarter(String uid) {
+		List<Map<String, Object>> listCourrierByStarter = new ArrayList<Map<String, Object>>();
+		// TODO Auto-generated method stub
+		HistoryService historyService = this.processEngine.getHistoryService();
+		List<HistoricProcessInstance> listFinishedCourriersInstances = historyService
+				.createHistoricProcessInstanceQuery().variableValueEquals("starter", uid).finished().list();
+		List<ProcessInstance> listActiveCourrierByStarter = runtimeService.createProcessInstanceQuery()
+				.variableValueEquals("starter", uid).list();
+		for (ProcessInstance processInstance : listActiveCourrierByStarter) {
+			listCourrierByStarter.add(runtimeService.getVariables(processInstance.getId()));
+		}
+		for (HistoricProcessInstance processInstance : listFinishedCourriersInstances) {
+			listCourrierByStarter.add(processInstance.getProcessVariables());
+			Map<String, Object> parameter;
+			String varName;
+			Object varValue;
+			parameter = new HashMap<String, Object>();
+			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(processInstance.getId()).orderByVariableName().desc().list().size(); j++) {
+				varName = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(processInstance.getId()).orderByVariableName().desc().list().get(j)
+						.getVariableName();
+				varValue = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(processInstance.getId()).orderByVariableName().desc().list().get(j)
+						.getValue();
+				parameter.put(varName, varValue);
+			}
+			listCourrierByStarter.add(parameter);
+		}
 
+		return listCourrierByStarter;
+	}
 
 }

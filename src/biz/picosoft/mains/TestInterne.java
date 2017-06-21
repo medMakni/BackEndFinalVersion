@@ -39,9 +39,9 @@ public class TestInterne {
 		CourrierInterneImpl courriersIntereService = new CourrierInterneImpl();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "chefsIT");
-		proprietés.put("expéditeur", "DirectionCommerciale");
-		proprietés.put("déstinataire", "DirectionIT");
+		proprietés.put("départmentId", "chefs IT");
+		proprietés.put("expéditeur", "Direction Commerciale");
+		proprietés.put("déstinataire", "Direction IT");
 		proprietés.put("isValidated", true);
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "Steg");
@@ -54,9 +54,9 @@ public class TestInterne {
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersIntereService.créerCourrier(proprietés);
-		System.out.println("à réviser  " + courriersIntereService.getListActiveCourriersParUser("mz"));
+		System.out.println("à réviser  " + courriersIntereService.getListActiveCourriersParUser("fbm"));
 
-		courriersIntereService.réviser(processInstance.getId(), true);
+	/*	courriersIntereService.réviser(processInstance.getId(), true);
 		// courriersIntereService.créerCourrier(courriersIntereService.getRuntimeService().getVariables(processInstance.getId()));
 		System.out
 				.println("active for other side  " + courriersIntereService.getListActiveCourriersParUser("rb"));

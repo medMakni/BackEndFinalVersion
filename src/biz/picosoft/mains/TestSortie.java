@@ -38,8 +38,8 @@ public class TestSortie {
 		CourrierSortieImpl courriersSortieService = new CourrierSortieImpl();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "DirectionRH");
-		proprietés.put("expéditeur", "DirectionCommerciale");
+		proprietés.put("départmentId", "Direction RH");
+		proprietés.put("expéditeur", "Direction Commerciale");
 		//proprietés.put("déstinataire", "DirectionIT");
 		proprietés.put("isValidated", true);
 		proprietés.put("isFinished", false);
@@ -55,15 +55,15 @@ public class TestSortie {
 		ProcessInstance processInstance = courriersSortieService.créerCourrier(proprietés);
 	
 		 System.out.println(
-				"active tasks chef département  " + courriersSortieService.getListActiveCourriersParUser("am"));
+				"active tasks chef département  " + courriersSortieService.getCourrierByStarter("fbm"));
 		// System.out.println("Strateeer" +
 		// runtimeService.getVariable(processInstance.getId(), "starter"));
-		courriersSortieService.réviser(processInstance.getId(), true);
-		 System.out.println(
-					"active tasks for BO" + courriersSortieService.getListActiveCourriersParUser("rb"));
+	//	courriersSortieService.réviser(processInstance.getId(), true);
+		/* System.out.println(
+					"active tasks for BO" + courriersSortieService.getListActiveCourriersParUser("fbm"));
 		
 	//	courriersSortieService.créerCourrier(courriersSortieService.getRuntimeService().getVariables(processInstance.getId()));
-		System.out.println(
+		/*System.out.println(
 				"active tasks chef département  " + courriersSortieService.getListActiveCourriersParUser("am"));
 		Map<String, Object> map = new HashMap<>();
 		map.put("idCourrier", processInstance.getId());
