@@ -14,10 +14,12 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import biz.picosoft.mains.TestDao;
@@ -25,15 +27,15 @@ import biz.picosoft.services.CourrierSortieImpl;
 import biz.picosoft.services.CourriersServices;
 import biz.picosoft.services.LdapService;
 import biz.picosoft.services.LdapServiceImpl;
-
+@RestController
 public class CourrierSortieController {
 	CourriersServices courriersSortieServices = (CourriersServices) new CourrierSortieImpl();
 	LdapService ls=new LdapServiceImpl();
 	
 	
-	@RequestMapping(value = "/créerCourrierInterne", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
+	@RequestMapping(value = "/créerCourrierSortie", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
-	public void créerCourrierInterne(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
+	public void créerCourrierSortie(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
 			@RequestParam("objet") String objet, @RequestParam("societe") String société,
 			@RequestParam("dateOut") Object dateOut, @RequestParam("direction") String direction, @RequestParam("starter") String starter ) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
@@ -74,6 +76,29 @@ public class CourrierSortieController {
 		System.out.println(proprietésCourrier);
 		courriersSortieServices.créerCourrier(proprietésCourrier);
 
+	}
+	@RequestMapping(value = "/listCourriersSorties", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getAllCourriers() {
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
+		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+
+		List<Map<String, Object>> listeCourrier = courriersSortieServices.getListCourriers();
+
+		return listeCourrier;
+	}
+	@RequestMapping(value = "/getListCourriersSortiesParUser", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
+
+		return courriersSortieServices.getListActiveCourriersParUser(userName);
+	}
+	@RequestMapping(value = "/réviserSortie", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public void réviser(@RequestBody Map<String, Object> data) {
+		System.out.println("rrr"+data.get("idCourrier"));
+		courriersSortieServices.réviser((String)data.get("idCourrier"), (boolean)data.get("isValidated"));
 	}
 
 }

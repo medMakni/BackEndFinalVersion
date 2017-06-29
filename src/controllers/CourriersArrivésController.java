@@ -49,7 +49,27 @@ public class CourriersArrivésController {
 
 		return listeCourrier;
 	}
+	
+	
+	@RequestMapping(value = "/getFinishedCourrier", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getFinishedCourrier() {
+		
 
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getFinishedCourrier();
+
+		return listeCourrier;
+	}
+
+	@RequestMapping(value = "/getListFinishedCourrierPerUser", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getListFinishedCourrierPerUser(@RequestParam("userid")String userid) {
+		
+
+		List<String> listeCourrier = courriersArrivésServices.getListFinishedCourrierPerUser(userid);
+
+		return listeCourrier;
+	}
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
 	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
@@ -157,6 +177,13 @@ public class CourriersArrivésController {
 	public List<String> getSousGroup(@RequestParam("id")String id,@RequestParam("direction")String direction) throws Exception {
 		Map<String, Object> map= courriersArrivésServices.getCourrierDetails(id);
 		return ls.getSousGroup(direction);
+		
+	}
+	@RequestMapping(value = "/getAllDirections", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getAllDirections() throws Exception {
+		List<String> map= ls.getAllDirection();
+		return map;
 		
 	}
 }

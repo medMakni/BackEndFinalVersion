@@ -58,9 +58,9 @@ public class CourrierInterneController {
 		proprietésCourrier.put("dateOut", dateOut);
 		proprietésCourrier.put("départmentId", direction);
 		proprietésCourrier.put("isValidated", true);
-		proprietésCourrier.put("expéditeur", "Direction Générale");
+		proprietésCourrier.put("expéditeur", "Direction IT");
 		proprietésCourrier.put("starter",starter);
-		proprietésCourrier.put("déstinataire","Direction IT");
+		proprietésCourrier.put("déstinataire","Direction Générale");
 
 		proprietésCourrier.put("isChecked", false);
 
