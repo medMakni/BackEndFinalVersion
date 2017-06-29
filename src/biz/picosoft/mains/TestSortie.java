@@ -39,7 +39,7 @@ public class TestSortie {
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
 		proprietés.put("départmentId", "Direction RH");
-		proprietés.put("expéditeur", "Direction Commerciale");
+		proprietés.put("expéditeur", "Direction IT");
 		//proprietés.put("déstinataire", "DirectionIT");
 		proprietés.put("isValidated", true);
 		proprietés.put("isFinished", false);
@@ -47,15 +47,18 @@ public class TestSortie {
 		proprietés.put("commentHistory", commentHistory);
 		proprietés.put("société", "Steg");
 		proprietés.put("objet", "facturaa404");
-		proprietés.put("starter", "fbm");
+		proprietés.put("starter", "jm");
 		File file = new File("D://cv/cover letter.docx");
 		List listePiécesJointes = new ArrayList<>();
 		listePiécesJointes.add(file);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersSortieService.créerCourrier(proprietés);
+		System.out.println(
+				"active tasks for BO" + courriersSortieService.getCourrierByStarter("jm"));
 	
 		 System.out.println(
-				"active tasks chef département  " + courriersSortieService.getCourrierByStarter("fbm"));
+				"active tasks chef département  " +   courriersSortieService.getListActiveCourriersParUser("rb"));
+		 
 		// System.out.println("Strateeer" +
 		// runtimeService.getVariable(processInstance.getId(), "starter"));
 	//	courriersSortieService.réviser(processInstance.getId(), true);

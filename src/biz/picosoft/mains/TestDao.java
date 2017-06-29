@@ -104,10 +104,10 @@ public class TestDao {
 		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "DirectionGénérale");
+		proprietés.put("départmentId", "Direction Générale");
 		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "noz");
-		proprietés.put("déstinataire", "DirectionIT");
+		proprietés.put("déstinataire", "Direction IT");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "ENISo45");
 		proprietés.put("objet", "facture");
