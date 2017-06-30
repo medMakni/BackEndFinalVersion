@@ -290,7 +290,7 @@ public class CourrierInterneImpl implements CourriersServices {
 	}
 
 	@Override
-	public List<String> getListFinishedCourrierPerUser(String userId) {
+	public List<Map<String, Object>> getListFinishedCourrierPerUser(String userId) {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
 		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
@@ -311,8 +311,29 @@ public class CourrierInterneImpl implements CourriersServices {
 
 		}
 
-		return listFinishedCourriersInvolvedMrX;
+		List<Map<String, Object>> listVarsOfFinshedCourrier = new ArrayList<>();
+		Map<String, Object> parameter;
+		String varName;
+		Object varValue;
+		for (int i = 0; i < listFinishedCourriersInvolvedMrX.size(); i++) {
+			parameter = new HashMap<String, Object>();
+			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc()
+					.list().size(); j++) {
+				varName = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
+						.desc().list().get(j).getVariableName();
+				varValue = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
+						.desc().list().get(j).getValue();
+				parameter.put(varName, varValue);
+			}
+			listVarsOfFinshedCourrier.add(parameter);
+		}
+		
+		return listVarsOfFinshedCourrier;
 	}
+
 
 	@Override
 	public List<Map<String, Object>> getListActiveCourrierParDirection(String directionName) {
@@ -631,5 +652,13 @@ public class CourrierInterneImpl implements CourriersServices {
 
 		return listCourrierByStarter;
 	}
+
+	@Override
+	public List<Map<String, Object>> getActiveAndFinishedCourriersPerUser(String uid) {
+		 List<Map<String, Object>> ActiveAndFinishedCourriersPerUser=getListActiveCourriersParUser( uid);
+		 ActiveAndFinishedCourriersPerUser.addAll( getListFinishedCourrierPerUser(uid));
+				return ActiveAndFinishedCourriersPerUser;
+	}
+
 
 }

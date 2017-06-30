@@ -135,7 +135,8 @@ public class TestDao {
 		//courriersArrivésImplLocal.archiverCourrier(processInstance.getId());
 		courriersArrivésImplLocal.delete(processInstance.getId());
 		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersParUser("fb"));
-		
+	 
+		System.out.println("finished"+courriersArrivésImplLocal.getListActiveCourriersParUser("fbm") );
 		// proprietés.put("affectedTo", "DirectionCommerciale");
 
 		// courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
