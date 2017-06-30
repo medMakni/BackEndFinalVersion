@@ -122,9 +122,13 @@ public class TestDao {
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 
 		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
-		courriersArrivésImplLocal.réviser(processInstance.getId(), true);
+StatisticServiceImpl statisticServiceImpl=new  StatisticServiceImpl();
+		System.out.println(statisticServiceImpl.getRateOfCourrierArrivéPerUser("rb"));
+ 
+		
+		/*courriersArrivésImplLocal.réviser(processInstance.getId(), true);
 		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersParUser("rb"));
-		Map<String, Object> map = new HashMap<>();
+	/*	Map<String, Object> map = new HashMap<>();
 		map.put("idCourrier", processInstance.getId());
 		map.put("username", "fbm");
 		map.put("idDepartement", "java");

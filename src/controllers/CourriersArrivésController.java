@@ -38,6 +38,16 @@ public class CourriersArrivésController {
 	CourriersServices courriersArrivésServices = (CourriersServices) new CourriersArrivésImpl();
 	LdapService ls=new LdapServiceImpl();
 
+	@RequestMapping(value = "/getActiveAndFinishedCourriersPerUser", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getActiveAndFinishedCourriersPerUser(@RequestParam("uid")String uid) {
+		
+
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getActiveAndFinishedCourriersPerUser(uid);
+
+		return listeCourrier;
+	}
+	
 	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getAllCourriers() {
@@ -49,7 +59,27 @@ public class CourriersArrivésController {
 
 		return listeCourrier;
 	}
+	
+	
+	@RequestMapping(value = "/getFinishedCourrier", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getFinishedCourrier() {
+		
 
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getFinishedCourrier();
+
+		return listeCourrier;
+	}
+
+	@RequestMapping(value = "/getListFinishedCourrierPerUser", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getListFinishedCourrierPerUser(@RequestParam("userid")String userid) {
+		
+
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListFinishedCourrierPerUser(userid);
+
+		return listeCourrier;
+	}
 	@RequestMapping(value = "/créerCourriers", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
 	public void créerCourriers(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
@@ -78,6 +108,8 @@ public class CourriersArrivésController {
 		proprietésCourrier.put("départmentId", direction);
 		proprietésCourrier.put("isValidated", true);
 		proprietésCourrier.put("expéditeur", "Steg");
+		proprietésCourrier.put("isChecked", false);
+
 		List<File> listeFile = new ArrayList<>();
 		for (int i = 0; i < listePiécesJointes.size(); i++) {
 			listeFile.add(courriersArrivésServices.multipartToFile(listePiécesJointes.get(i)));
@@ -155,6 +187,13 @@ public class CourriersArrivésController {
 	public List<String> getSousGroup(@RequestParam("id")String id,@RequestParam("direction")String direction) throws Exception {
 		Map<String, Object> map= courriersArrivésServices.getCourrierDetails(id);
 		return ls.getSousGroup(direction);
+		
+	}
+	@RequestMapping(value = "/getAllDirections", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getAllDirections() throws Exception {
+		List<String> map= ls.getAllDirection();
+		return map;
 		
 	}
 }

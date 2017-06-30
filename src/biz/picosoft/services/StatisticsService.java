@@ -23,4 +23,6 @@ public interface StatisticsService {
 	Map<String, Integer> getNbrFinishedCourrierInternesPerDirection( );
 	
 	float getRateOfCourrierArrivéPerUser(String uid);
+	float getRateOfCourrierInternePerUser(String uid);
+	float getRateOfCourrierSortiePerUser(String uid);
 }
