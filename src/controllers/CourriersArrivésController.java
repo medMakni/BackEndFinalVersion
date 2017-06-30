@@ -48,6 +48,16 @@ public class CourriersArrivésController {
 		return listeCourrier;
 	}
 	
+	@RequestMapping(value = "/getCourrierByStarter", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getCourrierByStarter(@RequestParam("uid")String uid) {
+		
+
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getCourrierByStarter(uid);
+
+		return listeCourrier;
+	}
+	
 	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getAllCourriers() {
@@ -73,7 +83,7 @@ public class CourriersArrivésController {
 
 	@RequestMapping(value = "/getListFinishedCourrierPerUser", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Map<String, Object>> getListFinishedCourrierPerUser(@RequestParam("userid")String userid) {
+	public List<Map<String, Object>> getListFinishedCourrierPerUser(@RequestParam("uid")String userid) {
 		
 
 		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListFinishedCourrierPerUser(userid);
