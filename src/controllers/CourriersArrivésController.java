@@ -38,6 +38,16 @@ public class CourriersArrivésController {
 	CourriersServices courriersArrivésServices = (CourriersServices) new CourriersArrivésImpl();
 	LdapService ls=new LdapServiceImpl();
 
+	@RequestMapping(value = "/getActiveAndFinishedCourriersPerUser", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getActiveAndFinishedCourriersPerUser(@RequestParam("uid")String uid) {
+		
+
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getActiveAndFinishedCourriersPerUser(uid);
+
+		return listeCourrier;
+	}
+	
 	@RequestMapping(value = "/listCourriersArrivés", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getAllCourriers() {
@@ -63,10 +73,10 @@ public class CourriersArrivésController {
 
 	@RequestMapping(value = "/getListFinishedCourrierPerUser", method = RequestMethod.GET)
 	@ResponseBody
-	public List<String> getListFinishedCourrierPerUser(@RequestParam("userid")String userid) {
+	public List<Map<String, Object>> getListFinishedCourrierPerUser(@RequestParam("userid")String userid) {
 		
 
-		List<String> listeCourrier = courriersArrivésServices.getListFinishedCourrierPerUser(userid);
+		List<Map<String, Object>> listeCourrier = courriersArrivésServices.getListFinishedCourrierPerUser(userid);
 
 		return listeCourrier;
 	}

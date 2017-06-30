@@ -17,6 +17,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -300,7 +301,7 @@ System.out.println("my map "+map.get("username"));
 
 	@Override
 
-	public List<String> getListFinishedCourrierPerUser(String userId) {
+	public List<Map<String, Object>> getListFinishedCourrierPerUser(String userId) {
 		HistoryService historyService = this.processEngine.getHistoryService();
 		List<String> listFinishedCourriersId = new ArrayList<>();
 		List<HistoricProcessInstance> listFinishedCourriersArrivéInstances = historyService
@@ -321,7 +322,27 @@ System.out.println("my map "+map.get("username"));
 
 		}
 
-		return listFinishedCourriersInvolvedMrX;
+		List<Map<String, Object>> listVarsOfFinshedCourrier = new ArrayList<>();
+		Map<String, Object> parameter;
+		String varName;
+		Object varValue;
+		for (int i = 0; i < listFinishedCourriersInvolvedMrX.size(); i++) {
+			parameter = new HashMap<String, Object>();
+			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc()
+					.list().size(); j++) {
+				varName = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
+						.desc().list().get(j).getVariableName();
+				varValue = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
+						.desc().list().get(j).getValue();
+				parameter.put(varName, varValue);
+			}
+			listVarsOfFinshedCourrier.add(parameter);
+		}
+		
+		return listVarsOfFinshedCourrier;
 	}
 
 	@Override
@@ -398,45 +419,6 @@ System.out.println("my map "+map.get("username"));
 	public Map<String, Object> getCourrierDetails(String idCourrier) throws Exception {
 		Map<String, Object> courriersDetails = runtimeService.getVariables(idCourrier);
 		courriersDetails.put("idCourrier", idCourrier);
-		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
-		// List<String> listPiéceJointeId = new ArrayList<>();
-		/*
-		 * listPiéceJointeId = (List<String>)
-		 * courriersDetails.get("listePiécesJointes"); DocumentDaoImpl
-		 * documentDaoImpl = new DocumentDaoImpl(); for (int i = 0; i <
-		 * listPiéceJointeId.size(); i++) {
-		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
-		 * listPiéceJointeId.get(i).substring(0,
-		 * listPiéceJointeId.get(i).indexOf(";")))); }
-		 * courriersDetails.put("listePiéceJointeObject",
-		 * listePiéceJointeObject);
-		 */
-
-		/*
-		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); CmisObject
-		 * doc = documentDaoImpl.getDocument(
-		 * "workspace://SpacesStore/bda6fb3c-b19c-45c6-a1f2-0d70b2492ff5");
-		 * courriersDetails.put("doc", doc);
-		 * System.out.println(doc.getProperties());
-		 */
-
-		// List<CmisObject> listePiéceJointeObject = new ArrayList<>();
-		// List<String> listPiéceJointeId = new ArrayList<>();
-		// listPiéceJointeId = (List<String>)
-		// courriersDetails.get("listePiécesJointes");
-		/*
-		 * DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl(); for (int i =
-		 * 0; i < listPiéceJointeId.size(); i++) {
-		 * listePiéceJointeObject.add(documentDaoImpl.getDocument(
-		 * listPiéceJointeId.get(i).substring(0,
-		 * listPiéceJointeId.get(i).indexOf(";"))));
-		 * 
-		 * System.out.println("idddddd"+listPiéceJointeId.get(i).substring(0,
-		 * listPiéceJointeId.get(i).indexOf(";")));}
-		 * courriersDetails.put("listePiéceJointeObject",
-		 * listePiéceJointeObject);
-		 */
-
 		return courriersDetails;
 	}
 
@@ -568,6 +550,47 @@ System.out.println("aaaa"+nbreCourrier);
 	public void delete(String idCourrier) {
 		// TODO Auto-generated method stub
 		runtimeService.deleteProcessInstance(idCourrier, "Supprimer définitivement le courrier");
+	}
+
+	@Override
+	public List<Map<String, Object>> getCourrierByStarter(String uid) {
+		List<Map<String, Object>> listCourrierByStarter = new ArrayList<Map<String, Object>>();
+		// TODO Auto-generated method stub
+		HistoryService historyService = this.processEngine.getHistoryService();
+		List<HistoricProcessInstance> listFinishedCourriersInstances = historyService
+				.createHistoricProcessInstanceQuery().variableValueEquals("starter", uid).finished().list();
+		List<ProcessInstance> listActiveCourrierByStarter = runtimeService.createProcessInstanceQuery()
+				.variableValueEquals("starter", uid).list();
+		for (ProcessInstance processInstance : listActiveCourrierByStarter) {
+			listCourrierByStarter.add(runtimeService.getVariables(processInstance.getId()));
+		}
+		for (HistoricProcessInstance processInstance : listFinishedCourriersInstances) {
+			listCourrierByStarter.add(processInstance.getProcessVariables());
+			Map<String, Object> parameter;
+			String varName;
+			Object varValue;
+			parameter = new HashMap<String, Object>();
+			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(processInstance.getId()).orderByVariableName().desc().list().size(); j++) {
+				varName = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(processInstance.getId()).orderByVariableName().desc().list().get(j)
+						.getVariableName();
+				varValue = historyService.createHistoricVariableInstanceQuery()
+						.processInstanceId(processInstance.getId()).orderByVariableName().desc().list().get(j)
+						.getValue();
+				parameter.put(varName, varValue);
+			}
+			listCourrierByStarter.add(parameter);
+		}
+
+		return listCourrierByStarter;
+	}
+
+	@Override
+	public List<Map<String, Object>> getActiveAndFinishedCourriersPerUser(String uid) {
+		 List<Map<String, Object>> ActiveAndFinishedCourriersPerUser=getListActiveCourriersParUser( uid);
+		 ActiveAndFinishedCourriersPerUser.addAll( getListFinishedCourrierPerUser(uid));
+				return ActiveAndFinishedCourriersPerUser;
 	}
 
  

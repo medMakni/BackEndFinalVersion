@@ -24,14 +24,14 @@ List<Map<String, Object> > getListActiveCourriersParUser(String userName);
 List<Map<String, Object> > getListActiveCourrierParDirection(String direction);
 public File multipartToFile(MultipartFile multipart);
 public int getNbrOfFinishedCourrierParDirection(String directionName);
-List<String> getListFinishedCourrierPerUser(String userId);
+List<Map<String, Object>>  getListFinishedCourrierPerUser(String userId);
 Map<String, Object> getCourrierDetails(String idCourrier) throws Exception;
 List<Map<String, Object>> getFinishedCourrier();
 void delete(String idCOurrier);
 ResponseEntity<InputStreamResource> postFile() throws IOException, Exception;
 void mettreAjour( String idCourrier, Map<String, Object> nouvellesProprietésCourrier);
 ResponseEntity<InputStreamResource> postFile(String id,String nbreCourrier) throws IOException, Exception;
-
- 
+List<Map<String, Object>> getCourrierByStarter(String uid);
+List<Map<String, Object>> getActiveAndFinishedCourriersPerUser(String uid); 
 
 }

@@ -104,10 +104,10 @@ public class TestDao {
 		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
 		Map<String, Object> proprietés = new HashMap<String, Object>();
 		proprietés.put("date", "19-5-5");
-		proprietés.put("départmentId", "DirectionGénérale");
+		proprietés.put("départmentId", "Direction Générale");
 		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "noz");
-		proprietés.put("déstinataire", "DirectionIT");
+		proprietés.put("déstinataire", "Direction IT");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "ENISo45");
 		proprietés.put("objet", "facture");
@@ -135,7 +135,8 @@ public class TestDao {
 		//courriersArrivésImplLocal.archiverCourrier(processInstance.getId());
 		courriersArrivésImplLocal.delete(processInstance.getId());
 		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersParUser("fb"));
-		
+	 
+		System.out.println("finished"+courriersArrivésImplLocal.getListActiveCourriersParUser("fbm") );
 		// proprietés.put("affectedTo", "DirectionCommerciale");
 
 		// courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
