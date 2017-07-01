@@ -23,27 +23,29 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import biz.picosoft.mains.TestDao;
-import biz.picosoft.services.CourrierInterneImpl;
+import biz.picosoft.services.CourrierSortieImpl;
 import biz.picosoft.services.CourriersServices;
 import biz.picosoft.services.LdapService;
 import biz.picosoft.services.LdapServiceImpl;
 @RestController
-public class CourrierInterneController {
-	CourriersServices courriersInterneServices = (CourriersServices) new CourrierInterneImpl();
+public class CourrierSortieController {
+	CourriersServices courriersSortieServices = (CourriersServices) new CourrierSortieImpl();
 	LdapService ls=new LdapServiceImpl();
-	@RequestMapping(value = "/créerCourrierInterne", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
+	
+	
+	@RequestMapping(value = "/créerCourrierSortie", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
 	@ResponseBody
-	public void créerCourrierInterne(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
+	public void créerCourrierSortie(@RequestParam("listePiecesJointes") List<MultipartFile> listePiécesJointes,
 			@RequestParam("objet") String objet, @RequestParam("societe") String société,
 			@RequestParam("dateOut") Object dateOut, @RequestParam("direction") String direction, @RequestParam("starter") String starter ) {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
-		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersInetrnes.bpmn")
+		String deploymentId = repositoryService.createDeployment().addClasspathResource("CourriersSorties.bpmn")
 				.deploy().getId();
 		// repositoryService.createDeployment().addClasspathResource("myProcess.bpmn").deploy();
-		System.out.println("idddddd" + deploymentId);
+		System.out.println("idddddd" + deploymentId); 
 
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -58,50 +60,45 @@ public class CourrierInterneController {
 		proprietésCourrier.put("dateOut", dateOut);
 		proprietésCourrier.put("départmentId", direction);
 		proprietésCourrier.put("isValidated", true);
-		proprietésCourrier.put("expéditeur", "Direction IT");
+		proprietésCourrier.put("expéditeur", "Direction Générale");
 		proprietésCourrier.put("starter",starter);
-		proprietésCourrier.put("déstinataire","Direction Générale");
+		proprietésCourrier.put("déstinataire","Direction IT");
 
 		proprietésCourrier.put("isChecked", false);
 
 		List<File> listeFile = new ArrayList<>();
 		for (int i = 0; i < listePiécesJointes.size(); i++) {
-			listeFile.add(courriersInterneServices.multipartToFile(listePiécesJointes.get(i)));
+			listeFile.add(courriersSortieServices.multipartToFile(listePiécesJointes.get(i)));
 		}
 
 		proprietésCourrier.put("listePiécesJointes", listeFile);
 
 		System.out.println(proprietésCourrier);
-		courriersInterneServices.créerCourrier(proprietésCourrier);
+		courriersSortieServices.créerCourrier(proprietésCourrier);
 
 	}
-	@RequestMapping(value = "/listCourriersInternes", method = RequestMethod.GET)
+	@RequestMapping(value = "/listCourriersSorties", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getAllCourriers() {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("activit.cfg.xml");
 		ProcessEngine processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
-		List<Map<String, Object>> listeCourrier = courriersInterneServices.getListCourriers();
+		List<Map<String, Object>> listeCourrier = courriersSortieServices.getListCourriers();
 
 		return listeCourrier;
 	}
-	@RequestMapping(value = "/getListCourriersInternesParUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/getListCourriersSortiesParUser", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getListActiveCourriersArrivésParUser(@RequestParam("username") String userName) {
 
-		return courriersInterneServices.getListActiveCourriersParUser(userName);
+		return courriersSortieServices.getListActiveCourriersParUser(userName);
 	}
-	@RequestMapping(value = "/réviserInterne", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/réviserSortie", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public void réviser(@RequestBody Map<String, Object> data) {
 		System.out.println("rrr"+data.get("idCourrier"));
-		courriersInterneServices.réviser((String)data.get("idCourrier"), (boolean)data.get("isValidated"));
+		courriersSortieServices.réviser((String)data.get("idCourrier"), (boolean)data.get("isValidated"));
 	}
-	@RequestMapping(value = "/traiterCourrierInterne", method = RequestMethod.POST)
-	@ResponseBody
-	public void traiterCourrierInterne(@RequestBody Map<String, Object> map) {
-		courriersInterneServices.traiterCourrier(map);
-	}
-	
+
 }
