@@ -107,7 +107,7 @@ public class TestDao {
 		proprietés.put("départmentId", "Direction Générale");
 		proprietés.put("isValidated", true);
 		proprietés.put("expéditeur", "noz");
-		proprietés.put("déstinataire", "Direction IT");
+		proprietés.put("déstinataire", "Direction Commerciale");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "ENISo45");
 		proprietés.put("objet", "facture");
@@ -122,31 +122,31 @@ public class TestDao {
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
 
 		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
-StatisticServiceImpl statisticServiceImpl=new  StatisticServiceImpl();
+		StatisticServiceImpl statisticServiceImpl = new StatisticServiceImpl();
 		System.out.println(statisticServiceImpl.getRateOfCourrierArrivéPerUser("rb"));
- 
-		
-		/*courriersArrivésImplLocal.réviser(processInstance.getId(), true);
-		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersParUser("rb"));
-	/*	Map<String, Object> map = new HashMap<>();
-		map.put("idCourrier", processInstance.getId());
-		map.put("username", "fbm");
-		map.put("idDepartement", "java");
-		map.put("annotation", "hello fbm");
-		courriersArrivésImplLocal.traiterCourrier(map);
-		System.out.println(
-				"active " + courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
-		//courriersArrivésImplLocal.archiverCourrier(processInstance.getId());
-		courriersArrivésImplLocal.delete(processInstance.getId());
-		System.out.println("active " + courriersArrivésImplLocal.getListActiveCourriersParUser("fb"));
-	 
-		System.out.println("finished"+courriersArrivésImplLocal.getListActiveCourriersParUser("fbm") );
-		// proprietés.put("affectedTo", "DirectionCommerciale");
 
-		// courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
-		// proprietés);
-		/*
-		 * System.out.println("siz oactive tasks " +
+		 
+		 courriersArrivésImplLocal.réviser(processInstance.getId(), true);
+		   System.out.println("active " +
+		  courriersArrivésImplLocal.getListActiveCourriersParUser("mz")); /*
+		 * Map<String, Object> map = new HashMap<>(); map.put("idCourrier",
+		 * processInstance.getId()); map.put("username", "fbm");
+		 * map.put("idDepartement", "java"); map.put("annotation", "hello fbm");
+		 * courriersArrivésImplLocal.traiterCourrier(map); System.out.println(
+		 * "active " +
+		 * courriersArrivésImplLocal.getRuntimeService().getVariables(
+		 * processInstance.getId()));
+		 * //courriersArrivésImplLocal.archiverCourrier(processInstance.getId())
+		 * ; courriersArrivésImplLocal.delete(processInstance.getId());
+		 * System.out.println("active " +
+		 * courriersArrivésImplLocal.getListActiveCourriersParUser("fb"));
+		 * 
+		 * System.out.println("finished"+courriersArrivésImplLocal.
+		 * getListActiveCourriersParUser("fbm") ); //
+		 * proprietés.put("affectedTo", "DirectionCommerciale");
+		 * 
+		 * // courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),
+		 * // proprietés); /* System.out.println("siz oactive tasks " +
 		 * courriersArrivésImplLocal.getListActiveCourriersArrivésParUser("rb"))
 		 * ; proprietés.put("affectedTo", "java");
 		 * courriersArrivésImplLocal.traiterCourrier(processInstance.getId(),

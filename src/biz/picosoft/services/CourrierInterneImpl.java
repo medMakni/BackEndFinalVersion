@@ -42,6 +42,7 @@ public class CourrierInterneImpl implements CourriersServices {
 	Session session;
 	RuntimeService runtimeService;
 	TaskService taskService;
+	FolderDaoImpl folderDaoImpl;
 
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
@@ -57,11 +58,11 @@ public class CourrierInterneImpl implements CourriersServices {
 			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
-				FolderDaoImpl folderDaoImpl = new FolderDaoImpl(session);
+
 				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
 						(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
-				List<String> listOfFolderChildrens = folderDaoImpl
-						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
+				List<String> listOfFolderChildrens = this.folderDaoImpl
+						.getAllChildrens((Folder) this.folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
 				Map<String, Object> commentHistory = new HashMap<>();
 				proprietésCourrier.put("isFinished", false);
@@ -86,6 +87,10 @@ public class CourrierInterneImpl implements CourriersServices {
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(),
 							"chefs" + déstinataire.substring("Direction ".length()));
+					this.folderDaoImpl.folderPermission(runtimeService.getVariables(processInstance.getId())
+							.get("idCourrierArrivéFolder").toString(),
+							"chefs" + déstinataire.substring("Direction ".length()));
+
 				} else {
 					// to know where to go in the exclusive gateway
 					runtimeService.setVariable(processInstance.getId(), "isStarterChef", false);
@@ -98,6 +103,9 @@ public class CourrierInterneImpl implements CourriersServices {
 					System.out.println("expéditeur " + expéditeur);
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(),
+							"chefs" + expéditeur.substring("Direction ".length()));
+					this.folderDaoImpl.folderPermission(runtimeService.getVariables(processInstance.getId())
+							.get("idCourrierArrivéFolder").toString(),
 							"chefs" + expéditeur.substring("Direction ".length()));
 
 				}
@@ -141,6 +149,9 @@ public class CourrierInterneImpl implements CourriersServices {
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction ".length()));
+		this.folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(),
+				"chefs" + proprietésCourrier.get("déstinataire").toString().substring("Direction ".length()));
+
 	}
 
 	// this method return all instances of courriers arrivés Process
@@ -184,26 +195,26 @@ public class CourrierInterneImpl implements CourriersServices {
 		Folder folderCourrier = null;
 		if (listePiécesJointes != null) {
 			DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-			FolderDaoImpl folderDaoImpl = new FolderDaoImpl(this.session);
+
 			Folder CourriersInternesFolderPerYear;
 			Folder CourriersInternesFolder;
 
 			try {
 				try {
-					CourriersInternesFolder = (Folder) folderDaoImpl.getFolderByPath("/CourriersInternes");
+					CourriersInternesFolder = (Folder) this.folderDaoImpl.getFolderByPath("/CourriersInternes");
 				} catch (Exception myExction) {
-					CourriersInternesFolder = folderDaoImpl.createFolder((Folder) folderDaoImpl.getFolderByPath("/"),
-							"CourriersInternes");
+					CourriersInternesFolder = this.folderDaoImpl
+							.createFolder((Folder) this.folderDaoImpl.getFolderByPath("/"), "CourriersInternes");
 				}
-				CourriersInternesFolderPerYear = (Folder) folderDaoImpl.getFolderByPath(
+				CourriersInternesFolderPerYear = (Folder) this.folderDaoImpl.getFolderByPath(
 						CourriersInternesFolder.getPath() + "/" + Calendar.getInstance().get(Calendar.YEAR));
 			} catch (Exception myExction) {
 
-				CourriersInternesFolderPerYear = folderDaoImpl.createFolder(
-						(Folder) folderDaoImpl.getFolderByPath("/CourriersInternes"),
+				CourriersInternesFolderPerYear = this.folderDaoImpl.createFolder(
+						(Folder) this.folderDaoImpl.getFolderByPath("/CourriersInternes"),
 						Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
 			}
-			folderCourrier = folderDaoImpl.createFolder(CourriersInternesFolderPerYear, expéditeur + id);
+			folderCourrier = this.folderDaoImpl.createFolder(CourriersInternesFolderPerYear, expéditeur + id);
 			for (int i = 0; i < listePiécesJointes.size(); i++) {
 				try {
 					documentDaoImpl.inserte(listePiécesJointes.get(i), folderCourrier);
@@ -235,7 +246,7 @@ public class CourrierInterneImpl implements CourriersServices {
 		@SuppressWarnings("resource")
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
-
+		folderDaoImpl = new FolderDaoImpl(this.session);
 	}
 
 	public Session getSession() {
@@ -318,22 +329,21 @@ public class CourrierInterneImpl implements CourriersServices {
 		for (int i = 0; i < listFinishedCourriersInvolvedMrX.size(); i++) {
 			parameter = new HashMap<String, Object>();
 			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
-					.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc()
-					.list().size(); j++) {
+					.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc().list()
+					.size(); j++) {
 				varName = historyService.createHistoricVariableInstanceQuery()
-						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
-						.desc().list().get(j).getVariableName();
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc().list()
+						.get(j).getVariableName();
 				varValue = historyService.createHistoricVariableInstanceQuery()
-						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
-						.desc().list().get(j).getValue();
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc().list()
+						.get(j).getValue();
 				parameter.put(varName, varValue);
 			}
 			listVarsOfFinshedCourrier.add(parameter);
 		}
-		
+
 		return listVarsOfFinshedCourrier;
 	}
-
 
 	@Override
 	public List<Map<String, Object>> getListActiveCourrierParDirection(String directionName) {
@@ -574,6 +584,9 @@ public class CourrierInterneImpl implements CourriersServices {
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 
 					map.get("affectedTo").toString());
+			this.folderDaoImpl.folderPermission(
+					runtimeService.getVariables(processInstance.getId()).get("idCourrierArrivéFolder").toString(),
+					map.get("affectedTo").toString());
 
 		}
 	}
@@ -596,6 +609,8 @@ public class CourrierInterneImpl implements CourriersServices {
 		taskService.addCandidateGroup(taskService.createTaskQuery()
 				.processInstanceId((String) nouvellesProprietésCourrier.get("idCourrier")).list().get(0).getId(),
 				"chefs" + expéditeur.substring("Direction ".length()));
+		this.	folderDaoImpl.folderPermission(runtimeService.getVariables(processInstance.getId()).get("idCourrierArrivéFolder").toString(), 	"chefs" + expéditeur.substring("Direction ".length()));
+		
 		System.out.println("Coucou Chefs2" + expéditeur.substring("Direction ".length()));
 	}
 
@@ -655,10 +670,9 @@ public class CourrierInterneImpl implements CourriersServices {
 
 	@Override
 	public List<Map<String, Object>> getActiveAndFinishedCourriersPerUser(String uid) {
-		 List<Map<String, Object>> ActiveAndFinishedCourriersPerUser=getListActiveCourriersParUser( uid);
-		 ActiveAndFinishedCourriersPerUser.addAll( getListFinishedCourrierPerUser(uid));
-				return ActiveAndFinishedCourriersPerUser;
+		List<Map<String, Object>> ActiveAndFinishedCourriersPerUser = getListActiveCourriersParUser(uid);
+		ActiveAndFinishedCourriersPerUser.addAll(getListFinishedCourrierPerUser(uid));
+		return ActiveAndFinishedCourriersPerUser;
 	}
-
 
 }

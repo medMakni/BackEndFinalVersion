@@ -41,6 +41,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	ProcessEngine processEngine;
 	Session session;
+	FolderDaoImpl folderDaoImpl;
 	RuntimeService runtimeService;
 	TaskService taskService;
 
@@ -59,11 +60,10 @@ public class CourriersArrivésImpl implements CourriersServices {
 			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
-				FolderDaoImpl folderDaoImpl = new FolderDaoImpl(session);
 				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
 						(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
-				List<String> listOfFolderChildrens = folderDaoImpl
-						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
+				List<String> listOfFolderChildrens = this.folderDaoImpl
+						.getAllChildrens((Folder)this. folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
 				Map<String, Object> commentHistory = new HashMap<>();
 				proprietésCourrier.put("isFinished",false);
@@ -79,6 +79,8 @@ public class CourriersArrivésImpl implements CourriersServices {
 				taskService.addCandidateGroup(
 						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 						"Bureau d'ordre");
+				//Alfresco Folder Security
+				this.folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(), "Bureau d'ordre");
 				return processInstance;
 			}
 		} else {
@@ -120,6 +122,9 @@ public class CourriersArrivésImpl implements CourriersServices {
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"chefs" + proprietésCourrier.get("départmentId").toString().substring("Direction ".length()));
+		//Alfresco Folder Security
+		this.	folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(),"chefs" + proprietésCourrier.get("départmentId").toString().substring("Direction ".length()));
+	
 	}
 
 	@Override
@@ -139,6 +144,9 @@ System.out.println("my map "+map.get("username"));
 			taskService.addCandidateGroup(
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 					(String)map.get("idDepartement"));
+			
+			this.	folderDaoImpl.folderPermission(runtimeService.getVariables(processInstance.getId()).get("idCourrierArrivéFolder").toString(), (String)map.get("idDepartement"));
+			
 		}
 
 	}
@@ -194,26 +202,26 @@ System.out.println("my map "+map.get("username"));
 		Folder folderCourrier = null;
 		if (listePiécesJointes != null) {
 			DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-			FolderDaoImpl folderDaoImpl = new FolderDaoImpl(this.session);
+			
 			Folder courriersArrivésFolderPerYear;
 			Folder courriersArrivésFolder;
 
 			try {
 				try {
-					courriersArrivésFolder = (Folder) folderDaoImpl.getFolderByPath("/courriersArrivés");
+					courriersArrivésFolder = (Folder) this.folderDaoImpl.getFolderByPath("/courriersArrivés");
 				} catch (Exception myExction) {
-					courriersArrivésFolder = folderDaoImpl.createFolder((Folder) folderDaoImpl.getFolderByPath("/"),
+					courriersArrivésFolder = this.folderDaoImpl.createFolder((Folder) this.folderDaoImpl.getFolderByPath("/"),
 							"courriersArrivés");
 				}
-				courriersArrivésFolderPerYear = (Folder) folderDaoImpl.getFolderByPath(
+				courriersArrivésFolderPerYear = (Folder) this.folderDaoImpl.getFolderByPath(
 						courriersArrivésFolder.getPath() + "/" + Calendar.getInstance().get(Calendar.YEAR));
 			} catch (Exception myExction) {
 
-				courriersArrivésFolderPerYear = folderDaoImpl.createFolder(
-						(Folder) folderDaoImpl.getFolderByPath("/courriersArrivés"),
+				courriersArrivésFolderPerYear =this.folderDaoImpl.createFolder(
+						(Folder)this.folderDaoImpl.getFolderByPath("/courriersArrivés"),
 						Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
 			}
-			folderCourrier = folderDaoImpl.createFolder(courriersArrivésFolderPerYear, expéditeur + id);
+			folderCourrier = this.folderDaoImpl.createFolder(courriersArrivésFolderPerYear, expéditeur + id);
 			for (int i = 0; i < listePiécesJointes.size(); i++) {
 				try {
 					documentDaoImpl.inserte(listePiécesJointes.get(i), folderCourrier);
@@ -242,9 +250,11 @@ System.out.println("my map "+map.get("username"));
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		this.runtimeService = processEngine.getRuntimeService();
 		this.taskService = processEngine.getTaskService();
+		
 		@SuppressWarnings("resource")
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
+		this.folderDaoImpl = new FolderDaoImpl(this.session);
 
 	}
 
@@ -382,6 +392,7 @@ System.out.println("my map "+map.get("username"));
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"ROLE_Secrétaire Générale");
+	 
 	}
 
 	public RuntimeService getRuntimeService() {

@@ -42,7 +42,7 @@ public class CourrierSortieImpl implements CourriersServices {
 	Session session;
 	RuntimeService runtimeService;
 	TaskService taskService;
-
+	FolderDaoImpl folderDaoImpl;
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
 	// and then attach the folder of the mail
@@ -57,11 +57,10 @@ public class CourrierSortieImpl implements CourriersServices {
 			@SuppressWarnings("unchecked")
 			List<File> listePiécesJointes = (List<File>) proprietésCourrier.get("listePiécesJointes");
 			if (listePiécesJointes != null) {
-				FolderDaoImpl folderDaoImpl = new FolderDaoImpl(session);
 				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
 						(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
-				List<String> listOfFolderChildrens = folderDaoImpl
-						.getAllChildrens((Folder) folderDaoImpl.getFolderById(idCourrierArrivéFolder));
+				List<String> listOfFolderChildrens = this.folderDaoImpl
+						.getAllChildrens((Folder) this.folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
@@ -81,6 +80,8 @@ public class CourrierSortieImpl implements CourriersServices {
 							.processInstanceId(processInstance.getId()).list().get(0).getId());
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(), "chefsBO");
+					this.	folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(), "chefsBO");
+					
 				} else {
 					// to know where to go in the exclusive gateway
 					runtimeService.setVariable(processInstance.getId(), "isStarterChef", false);
@@ -93,6 +94,8 @@ public class CourrierSortieImpl implements CourriersServices {
 					taskService.addCandidateGroup(taskService.createTaskQuery()
 							.processInstanceId(processInstance.getId()).list().get(0).getId(),
 							"chefs" + expéditeur.substring("Direction ".length()));
+					this.	folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(), "chefs" + expéditeur.substring("Direction ".length()));
+					
 
 				}
 				return processInstance;
@@ -134,6 +137,8 @@ public class CourrierSortieImpl implements CourriersServices {
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(), "chefsBO");
+		this.	folderDaoImpl.folderPermission( proprietésCourrier.get("idCourrierArrivéFolder").toString(),  "chefsBO");
+		
 	}
 
 	@Override
@@ -185,26 +190,25 @@ public class CourrierSortieImpl implements CourriersServices {
 		Folder folderCourrier = null;
 		if (listePiécesJointes != null) {
 			DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-			FolderDaoImpl folderDaoImpl = new FolderDaoImpl(this.session);
 			Folder courriéSortieFolderPerYear;
 			Folder courriéSortieFolder;
 
 			try {
 				try {
-					courriéSortieFolder = (Folder) folderDaoImpl.getFolderByPath("/courriéSortie");
+					courriéSortieFolder = (Folder) this.folderDaoImpl.getFolderByPath("/courriéSortie");
 				} catch (Exception myExction) {
-					courriéSortieFolder = folderDaoImpl.createFolder((Folder) folderDaoImpl.getFolderByPath("/"),
+					courriéSortieFolder = this.folderDaoImpl.createFolder((Folder) this.folderDaoImpl.getFolderByPath("/"),
 							"courriéSortie");
 				}
-				courriéSortieFolderPerYear = (Folder) folderDaoImpl.getFolderByPath(
+				courriéSortieFolderPerYear = (Folder) this.folderDaoImpl.getFolderByPath(
 						courriéSortieFolder.getPath() + "/" + Calendar.getInstance().get(Calendar.YEAR));
 			} catch (Exception myExction) {
 
-				courriéSortieFolderPerYear = folderDaoImpl.createFolder(
-						(Folder) folderDaoImpl.getFolderByPath("/courriéSortie"),
+				courriéSortieFolderPerYear = this.folderDaoImpl.createFolder(
+						(Folder) this.folderDaoImpl.getFolderByPath("/courriéSortie"),
 						Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
 			}
-			folderCourrier = folderDaoImpl.createFolder(courriéSortieFolderPerYear, expéditeur + id);
+			folderCourrier = this.folderDaoImpl.createFolder(courriéSortieFolderPerYear, expéditeur + id);
 			for (int i = 0; i < listePiécesJointes.size(); i++) {
 				try {
 					documentDaoImpl.inserte(listePiécesJointes.get(i), folderCourrier);
@@ -236,7 +240,7 @@ public class CourrierSortieImpl implements CourriersServices {
 		@SuppressWarnings("resource")
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
-
+		this.folderDaoImpl = new FolderDaoImpl(session);
 	}
 
 	public Session getSession() {
@@ -571,7 +575,8 @@ public class CourrierSortieImpl implements CourriersServices {
 		System.out.println("id expéditeur" + expéditeur);
 		taskService.addCandidateGroup(taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"chefs" + expéditeur.substring("Direction ".length()));
-
+		this.	folderDaoImpl.folderPermission(runtimeService.getVariables(processInstance.getId()).get("idCourrierArrivéFolder").toString(), 	"chefs" + expéditeur.substring("Direction ".length()));
+		
 	}
 
 	@Override

@@ -11,6 +11,8 @@ import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.data.Ace;
+import org.apache.chemistry.opencmis.commons.enums.AclPropagation;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 
 import biz.picosoft.dao.FolderDao;
@@ -79,6 +81,21 @@ public class FolderDaoImpl implements FolderDao {
 	public FolderDaoImpl(Session session) {
 		super();
 		this.session = session;
+	}
+
+	@Override
+	public void folderPermission(String folderId,String affectedGroup){
+		 
+		List<String> permissions = new ArrayList<String>();
+		permissions.add("cmis:read");
+		String principal = "GROUP_"+affectedGroup;
+		Ace aceIn = session.getObjectFactory().createAce(principal, permissions);
+		System.out.println("is direct ? " + aceIn.isDirect());
+		List<Ace> aceListIn = new ArrayList<Ace>();
+		aceListIn.add(aceIn);
+		 CmisObject folder = getFolderById(folderId);
+		folder.addAcl(aceListIn, AclPropagation.REPOSITORYDETERMINED);
+
 	}
 
 }

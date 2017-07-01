@@ -17,4 +17,5 @@ public interface DocumentDao {
 	CmisObject getDocument(String id);
 
 	void update(Document document, Map<String, String> properties);
+	
 }

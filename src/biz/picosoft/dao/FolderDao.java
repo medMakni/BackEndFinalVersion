@@ -20,4 +20,6 @@ public interface FolderDao {
 	public void deleteFolder(Folder folder);
 
 	public Folder createFolder(Folder rootFolder, String name);
+	
+	void folderPermission(String folderPath,String affectedGroup);
 }
