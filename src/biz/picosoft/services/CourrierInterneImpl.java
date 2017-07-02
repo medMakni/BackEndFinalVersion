@@ -33,8 +33,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sun.mail.iap.Response;
 
+import biz.picosoft.dao.CourrierDao;
+import biz.picosoft.daoImpl.ContacteDaoImpl;
+import biz.picosoft.daoImpl.CourrierDaoImpl;
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
+import biz.picosoft.daoImpl.SociétéDaoImpl;
+import biz.picosoft.entity.CourrierSortie;
+import biz.picosoft.factory.CourrierFactory;
 import biz.picosoft.mains.TestDao;
 
 public class CourrierInterneImpl implements CourriersServices {
@@ -43,7 +49,9 @@ public class CourrierInterneImpl implements CourriersServices {
 	RuntimeService runtimeService;
 	TaskService taskService;
 	FolderDaoImpl folderDaoImpl;
-
+	CourrierDao courrierDao;
+	SociétéDaoImpl sociétéDao;
+	ContacteDaoImpl contacteDaoImpl;
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
 	// and then attach the folder of the mail
@@ -71,6 +79,18 @@ public class CourrierInterneImpl implements CourriersServices {
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
+				
+				// local db
+				CourrierFactory courrierFactory = new CourrierFactory();
+				CourrierSortie courrier = (CourrierSortie) courrierFactory.getCourrier("Courrier Interne");
+				courrier.setContacte(
+						this.contacteDaoImpl.getContactFromNom(proprietésCourrier.get("contacte").toString()));
+				courrier.setDateCréation(proprietésCourrier.get("date").toString());
+				courrier.setIdDocument(idCourrierArrivéFolder);
+				courrier.setIdDépartement(proprietésCourrier.get("départmentId").toString());
+				courrier.setIdProcess(processInstance.getId());
+				courrier.setSociété(this.sociétéDao.getSociétéFromNom(proprietésCourrier.get("société").toString()));
+				this.courrierDao.insert(courrier);
 				// check if the starter is a cheff to know if will validate or
 				// not
 				if (isCheff(runtimeService.getVariable(processInstance.getId(), "starter").toString())) {
@@ -249,6 +269,10 @@ public class CourrierInterneImpl implements CourriersServices {
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
 		folderDaoImpl = new FolderDaoImpl(this.session);
+		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		this.courrierDao=(CourrierDaoImpl) context.getBean("courrierDaoImpl");
+		this.sociétéDao = (SociétéDaoImpl) context.getBean("sociétéDaoImpl");
+		this.contacteDaoImpl = (ContacteDaoImpl) context.getBean("contactDaoImpl");
 	}
 
 	public Session getSession() {

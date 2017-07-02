@@ -32,8 +32,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import biz.picosoft.dao.CourrierDao;
+import biz.picosoft.daoImpl.ContacteDaoImpl;
+import biz.picosoft.daoImpl.CourrierDaoImpl;
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
+import biz.picosoft.daoImpl.SociétéDaoImpl;
+import biz.picosoft.entity.CourrierSortie;
+import biz.picosoft.factory.CourrierFactory;
 import biz.picosoft.mains.TestDao;
 
 @Service
@@ -44,7 +50,10 @@ public class CourriersArrivésImpl implements CourriersServices {
 	FolderDaoImpl folderDaoImpl;
 	RuntimeService runtimeService;
 	TaskService taskService;
-
+	/*CourrierDao courrierDao;
+	SociétéDaoImpl sociétéDao;
+	ContacteDaoImpl contacteDaoImpl;
+*/
 	@Override
 	// this method create a mail process and attach its file to it by calling
 	// the attach file method
@@ -52,7 +61,7 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	public ProcessInstance créerCourrier(Map<String, Object> proprietésCourrier) {
 		System.out.println("prop here" + proprietésCourrier);
-		
+
 		if ((boolean) proprietésCourrier.get("isValidated") != false) {
 			RuntimeService runtimeService = processEngine.getRuntimeService();
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("courriersArrivés",
@@ -63,15 +72,27 @@ public class CourriersArrivésImpl implements CourriersServices {
 				String idCourrierArrivéFolder = attachFiles(listePiécesJointes,
 						(String) proprietésCourrier.get("expéditeur"), processInstance.getId());
 				List<String> listOfFolderChildrens = this.folderDaoImpl
-						.getAllChildrens((Folder)this. folderDaoImpl.getFolderById(idCourrierArrivéFolder));
+						.getAllChildrens((Folder) this.folderDaoImpl.getFolderById(idCourrierArrivéFolder));
 				proprietésCourrier.put("idCourrierArrivéFolder", idCourrierArrivéFolder);
 				Map<String, Object> commentHistory = new HashMap<>();
-				proprietésCourrier.put("isFinished",false);
+				proprietésCourrier.put("isFinished", false);
 				proprietésCourrier.put("commentHistory", commentHistory);
 				proprietésCourrier.replace("listePiécesJointes", listOfFolderChildrens);
 				runtimeService.setVariable(processInstance.getId(), "listePiécesJointes", listOfFolderChildrens);
 				proprietésCourrier.put("idCourrier", processInstance.getId());
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
+
+				/* local db
+				CourrierFactory courrierFactory = new CourrierFactory();
+				CourrierSortie courrier = (CourrierSortie) courrierFactory.getCourrier("Courrier Arrivé");
+				courrier.setContacte(
+						this.contacteDaoImpl.getContactFromNom(proprietésCourrier.get("contacte").toString()));
+				courrier.setDateCréation(proprietésCourrier.get("date").toString());
+				courrier.setIdDocument(idCourrierArrivéFolder);
+				courrier.setIdDépartement(proprietésCourrier.get("départmentId").toString());
+				courrier.setIdProcess(processInstance.getId());
+				courrier.setSociété(this.sociétéDao.getSociétéFromNom(proprietésCourrier.get("société").toString()));
+				this.courrierDao.insert(courrier);*/
 				this.taskService.complete(this.taskService.createTaskQuery().processInstanceId(processInstance.getId())
 						.list().get(0).getId());
 				// add the groups to ldap and affect réviserCourrier to BO
@@ -79,16 +100,17 @@ public class CourriersArrivésImpl implements CourriersServices {
 				taskService.addCandidateGroup(
 						taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
 						"Bureau d'ordre");
-				//Alfresco Folder Security
-				this.folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(), "Bureau d'ordre");
+				// Alfresco Folder Security
+				this.folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(),
+						"Bureau d'ordre");
 				return processInstance;
 			}
 		} else {
 			proprietésCourrier.replace("isValidated", true);
-			mettreAjour( (String) proprietésCourrier.get("idCourrier"), proprietésCourrier);
+			mettreAjour((String) proprietésCourrier.get("idCourrier"), proprietésCourrier);
 		}
 		return null;
-		
+
 	}
 
 	@Override
@@ -110,43 +132,46 @@ public class CourriersArrivésImpl implements CourriersServices {
 
 	@Override
 	public void validerCourrier(String idCourrier) {
-		System.out.println("nkl"+idCourrier);
+		System.out.println("nkl" + idCourrier);
 		Map<String, Object> proprietésCourrier = runtimeService.getVariables((idCourrier));
 		proprietésCourrier.replace("isValidated", true);
 		proprietésCourrier.replace("isChecked", true);
 		this.taskService = processEngine.getTaskService();
-		System.out.println("éééé"+ proprietésCourrier.get("départmentId"));
+		System.out.println("éééé" + proprietésCourrier.get("départmentId"));
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				proprietésCourrier);
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"chefs" + proprietésCourrier.get("départmentId").toString().substring("Direction ".length()));
-		//Alfresco Folder Security
-		this.	folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(),"chefs" + proprietésCourrier.get("départmentId").toString().substring("Direction ".length()));
-	
+		// Alfresco Folder Security
+		this.folderDaoImpl.folderPermission(proprietésCourrier.get("idCourrierArrivéFolder").toString(),
+				"chefs" + proprietésCourrier.get("départmentId").toString().substring("Direction ".length()));
+
 	}
 
 	@Override
-	public void traiterCourrier(Map<String,Object> map) {
-System.out.println("my map "+map.get("username"));
+	public void traiterCourrier(Map<String, Object> map) {
+		System.out.println("my map " + map.get("username"));
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId((String)map.get("idCourrier"))
-				.singleResult();
-		Map<String, String> commentHistory = (Map<String, String>) runtimeService.getVariable((String)map.get("idCourrier"),
-				"commentHistory");
-		commentHistory.put((String)map.get("username"),(String) map.get("annotation"));
-		runtimeService.setVariable((String)map.get("idCourrier"), "commentHistory", commentHistory);
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+				.processInstanceId((String) map.get("idCourrier")).singleResult();
+		Map<String, String> commentHistory = (Map<String, String>) runtimeService
+				.getVariable((String) map.get("idCourrier"), "commentHistory");
+		commentHistory.put((String) map.get("username"), (String) map.get("annotation"));
+		runtimeService.setVariable((String) map.get("idCourrier"), "commentHistory", commentHistory);
 		this.taskService.complete(
 				this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId());
-		if ((boolean) runtimeService.getVariable((String)map.get("idCourrier"), "isFinished") != true) {
+		if ((boolean) runtimeService.getVariable((String) map.get("idCourrier"), "isFinished") != true) {
 
 			taskService.addCandidateGroup(
 					taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0).getId(),
-					(String)map.get("idDepartement"));
-			
-			this.	folderDaoImpl.folderPermission(runtimeService.getVariables(processInstance.getId()).get("idCourrierArrivéFolder").toString(), (String)map.get("idDepartement"));
-			
+					(String) map.get("idDepartement"));
+
+			this.folderDaoImpl.folderPermission(
+					runtimeService.getVariables(processInstance.getId()).get("idCourrierArrivéFolder").toString(),
+					(String) map.get("idDepartement"));
+
 		}
 
 	}
@@ -154,10 +179,8 @@ System.out.println("my map "+map.get("username"));
 	@Override
 	public void archiverCourrier(String idCourrier) {
 		runtimeService.setVariable(idCourrier, "isFinished", true);
-		this.taskService.complete(
-				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
-	
-	
+		this.taskService
+				.complete(this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId());
 
 	}
 
@@ -202,7 +225,7 @@ System.out.println("my map "+map.get("username"));
 		Folder folderCourrier = null;
 		if (listePiécesJointes != null) {
 			DocumentDaoImpl documentDaoImpl = new DocumentDaoImpl();
-			
+
 			Folder courriersArrivésFolderPerYear;
 			Folder courriersArrivésFolder;
 
@@ -210,15 +233,15 @@ System.out.println("my map "+map.get("username"));
 				try {
 					courriersArrivésFolder = (Folder) this.folderDaoImpl.getFolderByPath("/courriersArrivés");
 				} catch (Exception myExction) {
-					courriersArrivésFolder = this.folderDaoImpl.createFolder((Folder) this.folderDaoImpl.getFolderByPath("/"),
-							"courriersArrivés");
+					courriersArrivésFolder = this.folderDaoImpl
+							.createFolder((Folder) this.folderDaoImpl.getFolderByPath("/"), "courriersArrivés");
 				}
 				courriersArrivésFolderPerYear = (Folder) this.folderDaoImpl.getFolderByPath(
 						courriersArrivésFolder.getPath() + "/" + Calendar.getInstance().get(Calendar.YEAR));
 			} catch (Exception myExction) {
 
-				courriersArrivésFolderPerYear =this.folderDaoImpl.createFolder(
-						(Folder)this.folderDaoImpl.getFolderByPath("/courriersArrivés"),
+				courriersArrivésFolderPerYear = this.folderDaoImpl.createFolder(
+						(Folder) this.folderDaoImpl.getFolderByPath("/courriersArrivés"),
 						Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
 			}
 			folderCourrier = this.folderDaoImpl.createFolder(courriersArrivésFolderPerYear, expéditeur + id);
@@ -250,12 +273,17 @@ System.out.println("my map "+map.get("username"));
 		this.processEngine = (ProcessEngine) applicationContext.getBean("processEngine");
 		this.runtimeService = processEngine.getRuntimeService();
 		this.taskService = processEngine.getTaskService();
-		
+
 		@SuppressWarnings("resource")
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		session = ctx.getBean(Session.class);
+		/*@SuppressWarnings("resource")
+		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		
 		this.folderDaoImpl = new FolderDaoImpl(this.session);
-
+		this.courrierDao=(CourrierDaoImpl) context.getBean("courrierDaoImpl");
+		this.sociétéDao = (SociétéDaoImpl) context.getBean("sociétéDaoImpl");
+		this.contacteDaoImpl = (ContacteDaoImpl) context.getBean("contactDaoImpl");*/
 	}
 
 	public Session getSession() {
@@ -339,19 +367,19 @@ System.out.println("my map "+map.get("username"));
 		for (int i = 0; i < listFinishedCourriersInvolvedMrX.size(); i++) {
 			parameter = new HashMap<String, Object>();
 			for (int j = 0; j < historyService.createHistoricVariableInstanceQuery()
-					.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc()
-					.list().size(); j++) {
+					.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc().list()
+					.size(); j++) {
 				varName = historyService.createHistoricVariableInstanceQuery()
-						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
-						.desc().list().get(j).getVariableName();
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc().list()
+						.get(j).getVariableName();
 				varValue = historyService.createHistoricVariableInstanceQuery()
-						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName()
-						.desc().list().get(j).getValue();
+						.processInstanceId(listFinishedCourriersInvolvedMrX.get(i)).orderByVariableName().desc().list()
+						.get(j).getValue();
 				parameter.put(varName, varValue);
 			}
 			listVarsOfFinshedCourrier.add(parameter);
 		}
-		
+
 		return listVarsOfFinshedCourrier;
 	}
 
@@ -392,7 +420,7 @@ System.out.println("my map "+map.get("username"));
 		this.taskService.addCandidateGroup(
 				this.taskService.createTaskQuery().processInstanceId(idCourrier).list().get(0).getId(),
 				"ROLE_Secrétaire Générale");
-	 
+
 	}
 
 	public RuntimeService getRuntimeService() {
@@ -435,40 +463,34 @@ System.out.println("my map "+map.get("username"));
 
 	@Override
 
-	public ResponseEntity<InputStreamResource>  postFile(String id, String nbreCourrier) throws Exception {
-		
-	 
+	public ResponseEntity<InputStreamResource> postFile(String id, String nbreCourrier) throws Exception {
+
 		Map<String, Object> courriersDetails = runtimeService.getVariables(id);
 		@SuppressWarnings("unchecked")
-		List<String> pg= (List<String>) courriersDetails.get("listePiécesJointes");
-		System.out.println("azerty"+pg);
+		List<String> pg = (List<String>) courriersDetails.get("listePiécesJointes");
+		System.out.println("azerty" + pg);
 		DocumentDaoImpl dao = new DocumentDaoImpl();
-	    HttpHeaders headers = new HttpHeaders();
-	    byte[] myByteArray = null ;
-	    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-	    headers.add("Pragma", "no-cache");
-	    headers.add("Expires", "0");
-System.out.println("aaaa"+nbreCourrier); 
-		
-	    Document docCmis =((Document) dao.getDocument(pg.get(Integer.parseInt(nbreCourrier)))) ;
+		HttpHeaders headers = new HttpHeaders();
+		byte[] myByteArray = null;
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
+		System.out.println("aaaa" + nbreCourrier);
 
-		 myByteArray = readContent(docCmis.getContentStream().getStream());
-		
+		Document docCmis = ((Document) dao.getDocument(pg.get(Integer.parseInt(nbreCourrier))));
+
+		myByteArray = readContent(docCmis.getContentStream().getStream());
 
 		// ClassPathResource myFile = new
 		// ClassPathResource(docCmis.getContentStreamFileName());
 		// System.out.println("eeeee"+pdfFile);
 
-	
-	    headers.add("filename"+Integer.parseInt(nbreCourrier) ,docCmis.getName());
-		
-	    return ResponseEntity
-		        .ok()
-		        .headers(headers)
-		        .contentLength(myByteArray.length) 
-		        .contentType(MediaType.parseMediaType("application/octet-stream"))
-		        .body(new InputStreamResource(docCmis.getContentStream().getStream()));
- 
+		headers.add("filename" + Integer.parseInt(nbreCourrier), docCmis.getName());
+
+		return ResponseEntity.ok().headers(headers).contentLength(myByteArray.length)
+				.contentType(MediaType.parseMediaType("application/octet-stream"))
+				.body(new InputStreamResource(docCmis.getContentStream().getStream()));
+
 	}
 
 	protected static byte[] readContent(InputStream stream) throws Exception {
@@ -599,16 +621,9 @@ System.out.println("aaaa"+nbreCourrier);
 
 	@Override
 	public List<Map<String, Object>> getActiveAndFinishedCourriersPerUser(String uid) {
-		 List<Map<String, Object>> ActiveAndFinishedCourriersPerUser=getListActiveCourriersParUser( uid);
-		 ActiveAndFinishedCourriersPerUser.addAll( getListFinishedCourrierPerUser(uid));
-				return ActiveAndFinishedCourriersPerUser;
+		List<Map<String, Object>> ActiveAndFinishedCourriersPerUser = getListActiveCourriersParUser(uid);
+		ActiveAndFinishedCourriersPerUser.addAll(getListFinishedCourrierPerUser(uid));
+		return ActiveAndFinishedCourriersPerUser;
 	}
-
- 
- 
-
- 
-
- 
 
 }

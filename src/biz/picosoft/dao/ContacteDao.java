@@ -3,5 +3,5 @@ package biz.picosoft.dao;
 import biz.picosoft.entity.Contacte;
 
 public interface ContacteDao extends GenericDao<Contacte> {
-
+Contacte getContactFromNom(String nom);
 }

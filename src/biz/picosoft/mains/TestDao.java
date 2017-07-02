@@ -110,6 +110,7 @@ public class TestDao {
 		proprietés.put("déstinataire", "Direction Commerciale");
 		proprietés.put("isFinished", false);
 		proprietés.put("société", "ENISo45");
+		proprietés.put("contacte", "ENISo45");
 		proprietés.put("objet", "facture");
 		Map<String, Object> commentHistory = new HashMap<>();
 		proprietés.put("commentHistory", commentHistory);
@@ -120,7 +121,7 @@ public class TestDao {
 		listePiécesJointes.add(file2);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-
+/**
 		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
 		StatisticServiceImpl statisticServiceImpl = new StatisticServiceImpl();
 		System.out.println(statisticServiceImpl.getRateOfCourrierArrivéPerUser("rb"));

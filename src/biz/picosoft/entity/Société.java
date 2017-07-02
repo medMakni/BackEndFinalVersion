@@ -34,7 +34,8 @@ public class Société implements Serializable {
 	String adress;
 	@OneToMany(cascade= CascadeType.REMOVE  ,fetch = FetchType.EAGER,mappedBy ="idContact", orphanRemoval=true) 
 	private List<Contacte> contacts;
-	
+	@OneToMany(cascade= CascadeType.REMOVE  ,fetch = FetchType.EAGER,mappedBy ="idCourrier", orphanRemoval=true) 
+	private List<Courrier> courrier;
 	 public Société(String nom, String email, String télèphone, String adress) {
 		super();
 		this.nom = nom;

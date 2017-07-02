@@ -1,5 +1,6 @@
 package biz.picosoft.daoImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -14,8 +15,12 @@ import biz.picosoft.entity.Contacte;
 import biz.picosoft.entity.Société;
 @Component
 public class SociétéDaoImpl extends GenericDaoImp<Société> implements SociétéDao {
-	public List<Contacte> findAllContacts(Société société){
-		return société.getContacts();
+	public List<String> findAllContacts(Société société){
+		List<String> contactsNameList=new ArrayList<String>();
+		for(int i=0;i<société.getContacts().size();i++){
+			contactsNameList.add(société.getContacts().get(i).getNom());
+		}
+		return contactsNameList;
 	}
 	
 public Société getSociétéFromNom(String nomSociété){

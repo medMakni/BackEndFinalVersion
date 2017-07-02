@@ -16,23 +16,23 @@ public class TestDaoS {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
  
-		Société société=new Société("pico", "pico@gmail.com", "74255546", "el ghazella");
+		Société société=new Société("pico2", "pico@gmail.com", "74255546", "el ghazella");
 		
 		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 		SociétéDaoImpl sociétéDao=(SociétéDaoImpl) context.getBean("sociétéDaoImpl");
 		  ContacteDaoImpl contacteDaoImpl = (ContacteDaoImpl) context.getBean("contactDaoImpl");
 		sociétéDao.insert(société);
-		 Contacte contacte=new Contacte("imed", "imed@pico.biz", "7424554", "ghazella", société);
+		 Contacte contacte=new Contacte("souad", "imed@pico.biz", "7424554", "ghazella", société);
 		 //Contacte contacte2=new Contacte("med", "med@pico.biz", "7424554", "ghazella", société);
 		 contacteDaoImpl.insert(contacte);
 		// sociétéDao.delete(société);
-		  Contacte c=contacteDaoImpl.findById(Contacte.class,4);
-		 contacteDaoImpl.delete(c);
+		//  Contacte c=contacteDaoImpl.findById(Contacte.class,4);
+		 //contacteDaoImpl.delete(c);
 		//  ContacteServiceImpl contacteServiceImpl=new ContacteServiceImpl();
 		  SociétéServiceImpl sociétéServiceImpl=new SociétéServiceImpl();
 		  Société société2=sociétéDao.findById(Société.class, 2);
-		  sociétéServiceImpl.delete(2);
-		System.out.println( sociétéServiceImpl.findAll());
+		 // sociétéServiceImpl.delete(2);
+	//	System.out.println( sociétéServiceImpl.findAll());
 		
 		// contacteServiceImpl.insert("imed", "imed@pico.biz", "7424554", "ghazella", 26);
 		// contacteServiceImpl.delete(23); 

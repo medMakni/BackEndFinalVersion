@@ -47,7 +47,7 @@ public class SociétéContoller {
 	}
 	@RequestMapping(value = "/findCompanyByContact", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Contacte> findAllContacts(int idSociété) {
+	public List<String> findAllContacts(int idSociété) {
 		return sociétéService.findAllContacts(idSociété);
 	}
 

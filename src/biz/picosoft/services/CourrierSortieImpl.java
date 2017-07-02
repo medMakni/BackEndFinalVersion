@@ -35,6 +35,9 @@ import com.sun.mail.iap.Response;
 
 import biz.picosoft.daoImpl.DocumentDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
+import biz.picosoft.entity.Courrier;
+import biz.picosoft.entity.CourrierSortie;
+import biz.picosoft.factory.CourrierFactory;
 import biz.picosoft.mains.TestDao;
 
 public class CourrierSortieImpl implements CourriersServices {
@@ -69,7 +72,7 @@ public class CourrierSortieImpl implements CourriersServices {
 				proprietésCourrier.put("isFinished", false);
 				proprietésCourrier.put("commentHistory", commentHistory);
 				runtimeService.setVariables(processInstance.getId(), proprietésCourrier);
-
+ 	
 				// check if the starter is a cheff to know if will validate or
 				// not
 				if (isCheff(runtimeService.getVariable(processInstance.getId(), "starter").toString())) {

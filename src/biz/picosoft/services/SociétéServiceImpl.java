@@ -74,7 +74,7 @@ public class SociétéServiceImpl implements SociétéService {
 	}
 
 	@Override
-	public List<Contacte> findAllContacts(int idSociété) {
+	public List<String> findAllContacts(int idSociété) {
 		Société société=sociétéDao.findById(Société.class, idSociété);
 		return sociétéDao.findAllContacts(société);
 

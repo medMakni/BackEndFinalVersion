@@ -18,11 +18,31 @@ import org.apache.chemistry.opencmis.commons.data.Ace;
 import org.apache.chemistry.opencmis.commons.enums.AclPropagation;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import biz.picosoft.daoImpl.ContacteDaoImpl;
+import biz.picosoft.daoImpl.CourrierDaoImpl;
 import biz.picosoft.daoImpl.FolderDaoImpl;
+import biz.picosoft.daoImpl.SociétéDaoImpl;
+import biz.picosoft.entity.Contacte;
+import biz.picosoft.entity.Courrier;
+import biz.picosoft.entity.CourrierArrivé;
+import biz.picosoft.entity.CourrierInterne;
+import biz.picosoft.entity.CourrierSortie;
+import biz.picosoft.entity.Société;
 
 public class Test {
 	public static void main(String args[]) {
+		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		CourrierDao courrierDao=(CourrierDaoImpl) context.getBean("courrierDaoImpl");
+		SociétéDaoImpl sociétéDao=(SociétéDaoImpl) context.getBean("sociétéDaoImpl");
+		  ContacteDaoImpl contacteDaoImpl = (ContacteDaoImpl) context.getBean("contactDaoImpl");
+	Contacte contact=contacteDaoImpl.findById(Contacte.class, 15);
+	Société société=sociétéDao.findById(Société.class, 5);
+	CourrierSortie c=new CourrierSortie("sss", "20", "resource", "17-5-4", société, contact);
+	CourrierInterne c2=new CourrierInterne("sss"," 20","sss", "resource", "17-5-4");
+	courrierDao.insert(c2);
 		/*Map<String, String> parameter = new HashMap<String, String>();
 
 		// user credentials

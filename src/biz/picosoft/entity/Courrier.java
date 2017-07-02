@@ -19,46 +19,23 @@ public class Courrier implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idCourrier")
 	long idCourrier;
-	@Column(name = "idSource")
-	long idSource;
-	@Column(name = "idDépartement")
-	long idDépartement;
-	@OneToOne
+	@Column(name = "idDocument")
+	String idDocument;
+	@Column(name = "idProcess")
+	String idProcess;
+	/*@OneToOne
 	private Contacte contacte;
 	// long[] listePiéceJointe;
-
+*/
 	/*
 	 * public Courrier(long idSource, long idDépartement, long idContct, long[]
 	 * listePiéceJointe) { super(); this.idSource = idSource; this.idDépartement
 	 * = idDépartement; this.idContact = idContct; this.listePiéceJointe =
 	 * listePiéceJointe; }
 	 */
-
-	public long getIdSource() {
-		return idSource;
+	public Courrier() {
+ 
 	}
-
-	public Courrier(long idSource, long idDépartement, Contacte contacte) {
-		super();
-		this.idSource = idSource;
-		this.idDépartement = idDépartement;
-		this.contacte = contacte;
-	}
-
-	 
-
-	public void setIdSource(long idSource) {
-		this.idSource = idSource;
-	}
-
-	public long getIdDépartement() {
-		return idDépartement;
-	}
-
-	public void setIdDépartement(long idDépartement) {
-		this.idDépartement = idDépartement;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -66,7 +43,11 @@ public class Courrier implements Serializable {
 		result = prime * result + (int) (idCourrier ^ (idCourrier >>> 32));
 		return result;
 	}
-
+	public Courrier(String idDocument, String idProcess) {
+		super();
+		this.idDocument = idDocument;
+		this.idProcess = idProcess;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -80,11 +61,28 @@ public class Courrier implements Serializable {
 			return false;
 		return true;
 	}
-
+	public long getIdCourrier() {
+		return idCourrier;
+	}
+	public void setIdCourrier(long idCourrier) {
+		this.idCourrier = idCourrier;
+	}
+	public String getIdDocument() {
+		return idDocument;
+	}
+	public void setIdDocument(String idDocument) {
+		this.idDocument = idDocument;
+	}
+	public String getIdProcess() {
+		return idProcess;
+	}
+	public void setIdProcess(String string) {
+		this.idProcess = string;
+	}
 	@Override
 	public String toString() {
-		return "Courrier [idCourrier=" + idCourrier + ", idSource=" + idSource + ", idDépartement=" + idDépartement
-				+ "]";
+		return "Courrier [idCourrier=" + idCourrier + ", idDocument=" + idDocument + ", idProcess=" + idProcess + "]";
 	}
 
+ 
 }
