@@ -123,23 +123,30 @@ public class StatisticServiceImpl implements StatisticsService {
 
 	@Override
 	public float getRateOfCourrierArrivéPerUser(String uid) {
+		if(courriersArrivésImpl.getActiveAndFinishedCourriersPerUser(uid).size()!=0){
 		float rate = (float) courriersArrivésImpl.getListActiveCourriersParUser(uid).size()
 				/ courriersArrivésImpl.getActiveAndFinishedCourriersPerUser(uid).size();
-		return (rate*100);
+		return (rate*100);}
+		else return 0;
 	}
 
 	@Override
 	public float getRateOfCourrierInternePerUser(String uid) {
+		if(courrierInterneImpl.getActiveAndFinishedCourriersPerUser(uid).size()!=0){
 		float rate = (float) courrierInterneImpl.getListActiveCourriersParUser(uid).size()
 				/ courrierInterneImpl.getActiveAndFinishedCourriersPerUser(uid).size();
-		return (rate*100);
+		return (rate*100);}
+		else return 0; 
 	}
 
 	@Override
 	public float getRateOfCourrierSortiePerUser(String uid) {
+		if(courrierSortieImpl.getActiveAndFinishedCourriersPerUser(uid).size()!=0){
 		float rate = (float) courrierSortieImpl.getListActiveCourriersParUser(uid).size()
 				/ courrierSortieImpl.getActiveAndFinishedCourriersPerUser(uid).size();
-		return (rate*100);
+		 
+		return (rate*100);}
+		else return 0;
 	}
 
 }

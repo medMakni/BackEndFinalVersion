@@ -11,15 +11,19 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biz.picosoft.daoImpl.FolderDaoImpl;
+import biz.picosoft.services.StatisticServiceImpl;
 
 public class TestAlfresco {
 	public static void main(String[] args) {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
+	/*	ApplicationContext ctx = new AnnotationConfigApplicationContext(TestDao.class);
 		Session session = ctx.getBean(Session.class);
 		FolderDaoImpl folderDaoImpl=new  FolderDaoImpl(session);
 		Folder folder=(Folder) folderDaoImpl.getFolderById( "workspace://SpacesStore/df5e452b-46bf-4482-b8ba-dff1f9ab1965");
  
-		System.out.println(  folderDaoImpl.getAllChildrens(folder) );
-		
+		System.out.println(  folderDaoImpl.getAllChildrens(folder) );*/
+		StatisticServiceImpl statisticServiceImpl=new StatisticServiceImpl();
+		System.out.println("Arrivé Rates"+statisticServiceImpl.getRateOfCourrierArrivéPerUser("am"));
+		System.out.println("sortie Rates"+statisticServiceImpl.getRateOfCourrierSortiePerUser("am"));
+		System.out.println("Interne Rates"+statisticServiceImpl.getRateOfCourrierInternePerUser("am"));
 	}
 }
