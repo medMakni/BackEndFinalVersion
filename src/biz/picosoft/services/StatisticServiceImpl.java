@@ -1,6 +1,8 @@
 package biz.picosoft.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StatisticServiceImpl implements StatisticsService {
@@ -147,6 +149,24 @@ public class StatisticServiceImpl implements StatisticsService {
 		 
 		return (rate*100);}
 		else return 0;
+	}
+
+	@Override
+	public List<Map<String, Integer>> getCourrierFinisPerDirection() {
+		List<Map<String, Integer>> listCourrierFinisPersDirection=new ArrayList<>();
+		listCourrierFinisPersDirection.add(getNbrFinishedCourrierArrivéPerDirection());
+		listCourrierFinisPersDirection.add(getNbrFinishedCourrierInternesPerDirection());
+		listCourrierFinisPersDirection.add(getNbrFinishedCourrierSortiesPerDirection());
+		return listCourrierFinisPersDirection;
+	}
+
+	@Override
+	public List<Map<String, Integer>> getCourrierActifsPerDirection() {
+		List<Map<String, Integer>> listCourrierActifsPersDirection=new ArrayList<>();
+		listCourrierActifsPersDirection.add(getNbrActiveCourrierArrivéPerDirection());
+		listCourrierActifsPersDirection.add(getNbrActiveCourrierSortiesPerDirection());
+		listCourrierActifsPersDirection.add(getNbrActiveCourrierInternesPerDirection());
+		return listCourrierActifsPersDirection;
 	}
 
 }

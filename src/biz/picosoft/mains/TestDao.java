@@ -114,18 +114,17 @@ public class TestDao {
 		proprietés.put("objet", "facture");
 		Map<String, Object> commentHistory = new HashMap<>();
 		proprietés.put("commentHistory", commentHistory);
-		File file = new File("C:/test2.jpg");
-		File file2 = new File("C:/Mon-CV.pdf");
+	 
+		//File file2 = new File("C:/outputFile.txt");
 		List listePiécesJointes = new ArrayList<>();
-		listePiécesJointes.add(file);
-		listePiécesJointes.add(file2);
+		//listePiécesJointes.add(file2);
 		proprietés.put("listePiécesJointes", listePiécesJointes);
 		ProcessInstance processInstance = courriersArrivésImplLocal.créerCourrier(proprietés);
-/**
-		System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
+
+		/*System.out.println(courriersArrivésImplLocal.getRuntimeService().getVariables(processInstance.getId()));
 		StatisticServiceImpl statisticServiceImpl = new StatisticServiceImpl();
 		System.out.println(statisticServiceImpl.getRateOfCourrierArrivéPerUser("rb"));
-
+		 */
 		 
 		 courriersArrivésImplLocal.réviser(processInstance.getId(), true);
 		   System.out.println("active " +

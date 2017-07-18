@@ -1,5 +1,6 @@
 package biz.picosoft.services;
 
+import java.util.List;
 import java.util.Map;
 
 public interface StatisticsService {
@@ -9,7 +10,8 @@ public interface StatisticsService {
 	Map<String, Integer> getNumberOfActiveCourrier();
 
 	Map<String, Integer> getNumberOfFinishedCourrier();
-
+	List<Map<String, Integer>> getCourrierFinisPerDirection();
+	List<Map<String, Integer>> getCourrierActifsPerDirection();
 	Map<String, Integer> getNbrActiveCourrierArrivéPerDirection( );
 
 	Map<String, Integer> getNbrFinishedCourrierArrivéPerDirection( );

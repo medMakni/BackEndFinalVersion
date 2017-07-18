@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <collaboration id="Collaboration">
-    <participant id="pool1" name="Pool" processRef="CourriersInternes"></participant>
+    <participant id="pool1" name="Processus courrier interne" processRef="CourriersInternes"></participant>
   </collaboration>
   <process id="CourriersInternes" name="CourriersInternes" isExecutable="true">
     <laneSet id="laneSet_CourriersInternes">
-      <lane id="lane2" name="Créateur du courrier">
+      <lane id="lane2" name="Employé">
         <flowNodeRef>startevent1</flowNodeRef>
         <flowNodeRef>usertask1</flowNodeRef>
         <flowNodeRef>exclusivegateway2</flowNodeRef>
       </lane>
-      <lane id="lane3" name="Chef du département">
+      <lane id="lane3" name="Chef direction">
         <flowNodeRef>usertask2</flowNodeRef>
         <flowNodeRef>exclusivegateway3</flowNodeRef>
       </lane>
-      <lane id="lane4" name="Chef du département ">
+      <lane id="lane4" name="Chef direction">
         <flowNodeRef>usertask3</flowNodeRef>
         <flowNodeRef>endevent2</flowNodeRef>
         <flowNodeRef>exclusivegateway1</flowNodeRef>
@@ -33,21 +33,21 @@
     <userTask id="usertask4" name="Traiter Courrier"></userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="usertask3" targetRef="exclusivegateway1"></sequenceFlow>
-    <sequenceFlow id="flow6" name="not finished" sourceRef="exclusivegateway1" targetRef="usertask4">
+    <sequenceFlow id="flow6" name="Affecter une tâche" sourceRef="exclusivegateway1" targetRef="usertask4">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isFinished ==
 				false}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="usertask4" targetRef="exclusivegateway4"></sequenceFlow>
-    <sequenceFlow id="flow10" name="finished" sourceRef="exclusivegateway4" targetRef="endevent1">
+    <sequenceFlow id="flow10" name="Terminer le workflow" sourceRef="exclusivegateway4" targetRef="endevent1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isFinished ==
 				true}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow11" name="notfinished" sourceRef="exclusivegateway4" targetRef="usertask4">
+    <sequenceFlow id="flow11" name="réaffecter  la tâche" sourceRef="exclusivegateway4" targetRef="usertask4">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isFinished ==
 				false}]]></conditionExpression>
     </sequenceFlow>
     <endEvent id="endevent2" name="End"></endEvent>
-    <sequenceFlow id="flow12" name="finished" sourceRef="exclusivegateway1" targetRef="endevent2">
+    <sequenceFlow id="flow12" name="Terminer le workflow" sourceRef="exclusivegateway1" targetRef="endevent2">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isFinished ==
 		true}]]></conditionExpression>
     </sequenceFlow>
@@ -124,7 +124,7 @@
         <omgdi:waypoint x="352.0" y="820.0"></omgdi:waypoint>
         <omgdi:waypoint x="352.0" y="880.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="56.0" x="355.0" y="840.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="92.0" x="355.0" y="840.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
@@ -135,7 +135,7 @@
         <omgdi:waypoint x="352.0" y="1010.0"></omgdi:waypoint>
         <omgdi:waypoint x="352.0" y="1030.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="38.0" x="369.0" y="1010.0"></omgdc:Bounds>
+          <omgdc:Bounds height="42.0" width="100.0" x="369.0" y="1010.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
@@ -144,14 +144,14 @@
         <omgdi:waypoint x="561.0" y="907.0"></omgdi:waypoint>
         <omgdi:waypoint x="405.0" y="907.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="53.0" x="441.0" y="956.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="93.0" x="441.0" y="956.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
         <omgdi:waypoint x="372.0" y="800.0"></omgdi:waypoint>
         <omgdi:waypoint x="460.0" y="800.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="38.0" x="390.0" y="766.0"></omgdc:Bounds>
+          <omgdc:Bounds height="42.0" width="100.0" x="390.0" y="766.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
